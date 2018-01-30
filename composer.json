@@ -1,0 +1,35 @@
+{
+	"name": "oktopost/snuggle",
+    "description": "PHP connector for Couch DB",
+	"type": "library",
+	"license": "MIT",
+	"homepage": "https://github.com/Oktopost/Snuggle",
+	
+	"authors": [
+		{
+			"name": "Alexey Puchkov",
+			"email": "alexey@oktopost.com",
+			"role": "Developer"
+		}
+	],
+	"minimum-stability": "stable",
+	"require": {
+		"php": ">=7.1",
+		"oktopost/objection": "^1.0.0",
+		"unstable-cacao/structura": "^1.0",
+		"unstable-cacao/traitor": "^1.0"
+	},
+    "require-dev": {
+        "phpunit/phpunit": "^6.2",
+        "satooshi/php-coveralls": "^1.0"
+    },
+	"autoload": {
+		"psr-0": {
+			"Skeleton": "src"
+		}
+	},
+    "scripts": {
+        "test": "./vendor/phpunit/phpunit/phpunit --dont-report-useless-tests",
+        "test-cover": "./vendor/phpunit/phpunit/phpunit --dont-report-useless-tests --coverage-html ./build/cover"
+    }
+}
