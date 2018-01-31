@@ -2,18 +2,17 @@
 namespace Snuggle\Config;
 
 
+use Snuggle\Exceptions;
 use Snuggle\SnuggleScope;
-use Snuggle\Exceptions\InvalidConfigException;
-use Snuggle\Exceptions\ConfigurationNotFoundException;
 
 
-class ConfigurationManager
+class ConnectionConfigsManager
 {
 	/** @var LoadersCollection */
 	private $loaders = null;
 	
-	/** @var ConfigCollection */
-	private $configs;
+	/** @var ConnectionConfig[] */
+	private $configs = [];
 	
 	
 	private function tryLoad(string $name): bool
@@ -27,21 +26,15 @@ class ConfigurationManager
 			return false;
 		
 		$config = ConnectionConfig::create($config);
-		$this->configs->set($name, $config);
+		$this->configs[$name] = $config;
 		
 		return true;
 	}
 	
 	
-	public function __construct()
-	{
-		$this->configs = new ConfigCollection();
-	}
-	
-	
 	public function has(string $name): bool
 	{
-		if ($this->configs->has($name))
+		if (isset($this->configs[$name]))
 			return true;
 		
 		if ($this->tryLoad($name))
@@ -53,7 +46,7 @@ class ConfigurationManager
 	public function get(string $name = 'main'): ConnectionConfig
 	{
 		if (!isset($this->configs[$name]) && !$this->tryLoad($name))
-			throw new ConfigurationNotFoundException($name);
+			throw new Exceptions\ConfigurationNotFoundException($name);
 		
 		return $this->configs[$name];
 	}
@@ -67,8 +60,8 @@ class ConfigurationManager
 	}
 	
 	/**
-	 * @param $item
-	 * @param null $data
+	 * @param string|array $item
+	 * @param array|null $data
 	 */
 	public function add($item, $data = null): void
 	{
@@ -78,14 +71,18 @@ class ConfigurationManager
 			$item = 'main';
 		}
 		
-		if (is_array($data))
+		if (isset($this->configs[$item]))
+		{
+			throw new Exceptions\ConfigurationAlreadyDefinedException($item);
+		}
+		else if (is_array($data))
 		{
 			$config = ConnectionConfig::create($data);
-			$this->configs->set($item, $config);
+			$this->configs[$item] = $config;
 		}
 		else if ($data instanceof ConnectionConfig) 
 		{
-			$this->configs->set($item, $data);
+			$this->configs[$item] = $data;
 		}
 		else if (interface_exists($data))
 		{
@@ -97,7 +94,7 @@ class ConfigurationManager
 		}
 		else	
 		{
-			throw new InvalidConfigException();
+			throw new Exceptions\InvalidConfigFormatException();
 		}
 	}
 }

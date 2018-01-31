@@ -2,7 +2,7 @@
 namespace Snuggle\Exceptions;
 
 
-class ConfigurationNotFoundException extends SnuggleException
+class ConfigurationNotFoundException extends FatalSnuggleException
 {
 	private $name;
 	

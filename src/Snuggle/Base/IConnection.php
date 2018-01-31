@@ -1,5 +1,5 @@
 <?php
-namespace Snuggle;
+namespace Snuggle\Base;
 
 
 use Snuggle\Base\Request\IRawRequest;

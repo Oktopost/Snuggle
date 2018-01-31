@@ -5,7 +5,7 @@ namespace Snuggle\Exceptions;
 use Snuggle\Config\ConnectionConfig;
 
 
-class InvalidConfigException extends FatalSnuggleException
+class InvalidConfigFormatException extends FatalSnuggleException
 {
 	public function __construct()
 	{
