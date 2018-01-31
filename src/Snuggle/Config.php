@@ -58,6 +58,7 @@ class Config implements IConfig
 		return $this->getConnectionFactory()->get($config);
 	}
 	
+	
 	/**
 	 * @param string|array $item Name of the connection. If set to array, name will be 'main'
 	 * @param array|null $data

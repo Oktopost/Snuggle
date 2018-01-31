@@ -1,5 +1,5 @@
 <?php
-namespace Snuggle\Base\Response;
+namespace Snuggle\Base\Connection\Response;
 
 
 interface IBody

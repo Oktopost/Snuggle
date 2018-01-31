@@ -2,8 +2,8 @@
 namespace Snuggle\Connection\Response;
 
 
-use Snuggle\Base\Response\IBody;
-use Snuggle\Base\Response\IRawResponse;
+use Snuggle\Base\Connection\Response\IBody;
+use Snuggle\Base\Connection\Response\IRawResponse;
 
 
 class RawResponse implements IRawResponse
@@ -62,12 +62,12 @@ class RawResponse implements IRawResponse
 	
 	public function isSuccessful(): bool
 	{
-		return $this->code % 100 == 2;
+		return $this->code / 100 == 2;
 	}
 	
 	public function isFailed(): bool
 	{
-		return $this->code % 100 != 2;
+		return $this->code / 100 != 2;
 	}
 	
 	public function isNotFound(): bool
@@ -77,7 +77,7 @@ class RawResponse implements IRawResponse
 	
 	public function isServerError(): bool
 	{
-		return $this->code % 100 == 5;
+		return $this->code / 100 == 5;
 	}
 	
 	public function getHeader(string $name): ?string

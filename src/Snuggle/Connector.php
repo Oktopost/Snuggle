@@ -2,11 +2,12 @@
 namespace Snuggle;
 
 
-use Snuggle\Base\Commands\ICmdDirect;
 use Snuggle\Base\ICommand;
 use Snuggle\Base\IConnector;
 use Snuggle\Base\IConnection;
 use Snuggle\Base\Commands\ICmdDB;
+use Snuggle\Base\Commands\ICmdDirect;
+use Snuggle\Base\Commands\ICmdServer;
 use Snuggle\Base\Factories\ICommandFactory;
 
 
@@ -55,5 +56,10 @@ class Connector implements IConnector
 	public function direct(): ICmdDirect
 	{
 		return $this->setup($this->factory->direct()); 
+	}
+	
+	public function server(): ICmdServer
+	{
+		return $this->setup($this->factory->server());
 	}
 }

@@ -2,7 +2,7 @@
 namespace Snuggle\Connection\Response;
 
 
-use Snuggle\Base\Response\IBody;
+use Snuggle\Base\Connection\Response\IBody;
 use Snuggle\Exceptions\UnexpectedResponseException;
 
 

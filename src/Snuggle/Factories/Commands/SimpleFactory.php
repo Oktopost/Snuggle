@@ -4,7 +4,11 @@ namespace Snuggle\Factories\Commands;
 
 use Snuggle\Base\Commands\ICmdDB;
 use Snuggle\Base\Commands\ICmdDirect;
+use Snuggle\Base\Commands\ICmdServer;
 use Snuggle\Base\Factories\ICommandFactory;
+
+use Snuggle\Commands\CmdDirect;
+use Snuggle\Commands\CmdServer;
 
 
 class SimpleFactory implements ICommandFactory
@@ -16,6 +20,11 @@ class SimpleFactory implements ICommandFactory
 	
 	public function direct(): ICmdDirect
 	{
-		return null;
+		return new CmdDirect();
+	}
+	
+	public function server(): ICmdServer
+	{
+		return new CmdServer();
 	}
 }
