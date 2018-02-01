@@ -22,6 +22,12 @@ trait TQuery
 	
 	public function queryBody(): ?string
 	{
-		return $this->execute()->getBody();
+		$body = $this->execute()->getBody();
+		return $body ? $body->getString() : null;
+	}
+	
+	public function queryJson($asArray = false)
+	{
+		return $this->execute()->getJsonBody($asArray);
 	}
 }

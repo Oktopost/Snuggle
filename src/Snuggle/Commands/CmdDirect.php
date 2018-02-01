@@ -10,6 +10,7 @@ class CmdDirect extends AbstractExecutable implements ICmdDirect
 {
 	use TQuery;
 	
+	
 	public function setBody($body): ICmdDirect
 	{
 		$this->request()->setBody($body);

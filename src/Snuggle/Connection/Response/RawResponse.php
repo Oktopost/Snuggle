@@ -41,9 +41,9 @@ class RawResponse implements IRawResponse
 		return $this->body;
 	}
 	
-	public function getRawBody(): string
+	public function getRawBody(): ?string
 	{
-		return $this->body ? $this->body->getString() : '';
+		return $this->body ? $this->body->getString() : null;
 	}
 	
 	/**

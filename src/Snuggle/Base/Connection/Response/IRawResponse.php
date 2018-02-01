@@ -6,7 +6,7 @@ interface IRawResponse
 {
 	public function getBody(): ?IBody;
 	public function hasBody(): bool;
-	public function getRawBody(): string;
+	public function getRawBody(): ?string;
 	public function getJsonBody($asArray = false);
 	
 	public function getCode(): int;
