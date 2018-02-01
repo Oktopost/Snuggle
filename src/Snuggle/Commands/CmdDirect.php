@@ -4,6 +4,7 @@ namespace Snuggle\Commands;
 
 use Snuggle\Base\Commands\ICmdDirect;
 use Snuggle\Commands\Common\TQuery;
+use Snuggle\Connection\Method;
 
 
 class CmdDirect extends AbstractExecutable implements ICmdDirect
@@ -63,5 +64,30 @@ class CmdDirect extends AbstractExecutable implements ICmdDirect
 	{
 		$this->request()->setMethod($method);
 		return $this;
+	}
+	
+	public function setGET(): ICmdDirect
+	{
+		return $this->setMethod(Method::GET);
+	}
+	
+	public function setHEAD(): ICmdDirect
+	{
+		return $this->setMethod(Method::HEAD);
+	}
+	
+	public function setPUT(): ICmdDirect
+	{
+		return $this->setMethod(Method::PUT);
+	}
+	
+	public function setPOST(): ICmdDirect
+	{
+		return $this->setMethod(Method::POST);
+	}
+	
+	public function setDELETE(): ICmdDirect
+	{
+		return $this->setMethod(Method::DELETE);
 	}
 }

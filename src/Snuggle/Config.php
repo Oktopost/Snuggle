@@ -6,9 +6,16 @@ use Snuggle\Base\IConfig;
 use Snuggle\Base\IConnection;
 use Snuggle\Base\Factories\ICommandFactory;
 use Snuggle\Base\Factories\IConnectionFactory;
+use Snuggle\Base\Connection\IConnectionDecorator;
+use Snuggle\Base\Connection\IConnectionDecoratorProducer;
+
 use Snuggle\Config\IConfigLoader;
 use Snuggle\Config\ConnectionConfig;
 use Snuggle\Config\ConnectionConfigsManager;
+
+use Snuggle\Connection\ConnectorBuilder;
+
+use Snuggle\Exceptions\FatalSnuggleException;
 use Snuggle\Factories\Commands\SimpleFactory;
 use Snuggle\Factories\Connections\HttpfullFactory;
 
@@ -23,6 +30,9 @@ class Config implements IConfig
 	
 	/** @var IConnectionFactory */
 	private $connectionFactory = null;
+	
+	/** @var string[]|IConnectionDecorator[]|IConnectionDecoratorProducer[] */
+	private $decorators = [];
 	
 	
 	public function __construct()
@@ -58,6 +68,11 @@ class Config implements IConfig
 		return $this->getConnectionFactory()->get($config);
 	}
 	
+	public function getDecorators(): array 
+	{
+		return $this->decorators;
+	}
+	
 	
 	/**
 	 * @param string|array $item Name of the connection. If set to array, name will be 'main'
@@ -78,6 +93,32 @@ class Config implements IConfig
 	{
 		$this->connectionsManager->addLoaders($loader);
 		return $this;
+	}
+	
+	/**
+	 * @param IConnectionDecorator|IConnectionDecoratorProducer|string|array $decorator
+	 * @return IConfig
+	 */
+	public function addConnectionDecorator(...$decorator): IConfig
+	{
+		foreach ($decorator as $item)
+		{
+			if (is_array($item))
+			{
+				$this->addConnectionDecorator(...$item);
+			}
+			else if (
+				is_string($item) || 
+				$item instanceof IConnectionDecorator || 
+				$item instanceof IConnectionDecoratorProducer)
+			{
+				$this->decorators[] = $item;
+			}
+			else
+			{
+				throw new FatalSnuggleException('Provided Item is not a valid connection decorator');
+			}
+		}
 	}
 	
 	/**

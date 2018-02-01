@@ -1,5 +1,5 @@
 <?php
-namespace Snuggle;
+namespace Snuggle\Connection;
 
 
 use Snuggle\Base\ICommand;

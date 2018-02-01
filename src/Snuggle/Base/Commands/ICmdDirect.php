@@ -13,4 +13,10 @@ interface ICmdDirect extends IExecutable, IQuery
 	public function setQueryParams(array $params): ICmdDirect;
 	public function setJsonQueryParams(array $params): ICmdDirect;
 	public function setMethod(string $method): ICmdDirect;
+	
+	public function setGET(): ICmdDirect;
+	public function setHEAD(): ICmdDirect;
+	public function setPUT(): ICmdDirect;
+	public function setPOST(): ICmdDirect;
+	public function setDELETE(): ICmdDirect;
 }

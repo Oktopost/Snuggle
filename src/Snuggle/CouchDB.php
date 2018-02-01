@@ -4,6 +4,7 @@ namespace Snuggle;
 
 use Snuggle\Base\IConfig;
 use Snuggle\Base\IConnector;
+use Snuggle\Connection\ConnectorBuilder;
 
 
 class CouchDB
@@ -11,10 +12,14 @@ class CouchDB
 	/** @var Config */
 	private $config;
 	
+	/** @var ConnectorBuilder */
+	private $connectorBuilder;
+	
 	
 	public function __construct()
 	{
 		$this->config = new Config();
+		$this->connectorBuilder = new ConnectorBuilder($this->config);
 	}
 	
 	
@@ -25,12 +30,6 @@ class CouchDB
 	
 	public function connector(string $name = 'main'): IConnector
 	{
-		$connection		= $this->config->getConnection($name);
-		$commandFactory	= $this->config->getCommandFactory();
-		
-		return new Connector(
-			$commandFactory,
-			$connection
-		);
+		return $this->connectorBuilder->getConnection($name);
 	}
 }
