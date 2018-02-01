@@ -33,6 +33,16 @@ class DBInfoParser
 		$data->Sizes->Active	= $body['sizes']['active'] ?? 0;
 		$data->Sizes->External	= $body['sizes']['external'] ?? 0;
 		
+		if ($body['cluster'])
+		{
+			$data->Cluster->IsClustered = true;
+			
+			$data->Cluster->Replicas	= $body['cluster']['n'] ?? 0;
+			$data->Cluster->Shards		= $body['cluster']['q'] ?? 0;
+			$data->Cluster->ReadQuorum	= $body['cluster']['r'] ?? 0;
+			$data->Cluster->WriteQuorum	= $body['cluster']['w'] ?? 0;
+		}
+		
 		return $data;
 	}
 }

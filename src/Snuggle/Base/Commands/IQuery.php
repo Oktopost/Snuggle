@@ -2,7 +2,10 @@
 namespace Snuggle\Base\Commands;
 
 
-interface IQuery
+use Snuggle\Base\ICommand;
+
+
+interface IQuery extends ICommand
 {
 	public function queryCode(): int;
 	public function queryBody(): ?string;

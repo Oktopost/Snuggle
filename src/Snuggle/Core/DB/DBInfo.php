@@ -10,15 +10,16 @@ use Snuggle\Base\Core\IMappedObject;
 
 
 /**
- * @property string		$UUID
- * @property string		$Name
- * @property bool		$CompactRunning
- * @property int		$DiskFormatVersion
- * @property int		$DocsCount
- * @property int		$DeletedDocsCount
- * @property string		$UpdateSeq
- * @property int		$PurgeSeq
- * @property DBSizeInfo	$Sizes
+ * @property string			$UUID
+ * @property string			$Name
+ * @property bool			$CompactRunning
+ * @property int			$DiskFormatVersion
+ * @property int			$DocsCount
+ * @property int			$DeletedDocsCount
+ * @property string			$UpdateSeq
+ * @property int			$PurgeSeq
+ * @property DBSizeInfo		$Sizes
+ * @property DBClusterInfo	$Cluster
  */
 class DBInfo extends LiteObject implements IMappedObject
 {

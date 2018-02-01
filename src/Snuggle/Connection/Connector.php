@@ -2,6 +2,7 @@
 namespace Snuggle\Connection;
 
 
+use Snuggle\Base\Commands\ICmdGet;
 use Snuggle\Base\ICommand;
 use Snuggle\Base\IConnector;
 use Snuggle\Base\IConnection;
@@ -61,5 +62,10 @@ class Connector implements IConnector
 	public function server(): ICmdServer
 	{
 		return $this->setup($this->factory->server());
+	}
+	
+	public function get(): ICmdGet
+	{
+		return $this->setup($this->factory->get());
 	}
 }

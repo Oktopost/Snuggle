@@ -1,0 +1,55 @@
+<?php
+namespace Snuggle\Base\Commands;
+
+
+use Snuggle\Core\Doc;
+
+
+interface ICmdGet extends IExecutable, IQuery
+{
+	public function from(string $db): ICmdGet;
+	public function rev(string $rev): ICmdGet;
+	
+	/**
+	 * @param bool $ignoreMissing If true and document not found, null is returned instead of 404 exception.
+	 * @return ICmdGet
+	 */
+	public function ignoreMissing(bool $ignoreMissing = true): ICmdGet;
+	
+	/**
+	 * @param string $target Document ID or Database name
+	 * @param string|null $id If set, the documents ID. 
+	 * @return ICmdGet
+	 */
+	public function doc(string $target, ?string $id = null): ICmdGet;
+	
+	
+	/**
+	 * @param bool $include
+	 * @param string|string[]|null $since
+	 * @return ICmdGet
+	 */
+	public function withAttachments(bool $include = true, $since = null): ICmdGet;
+	
+	public function withAttachmentsEncoding(bool $include = true): ICmdGet;
+	
+	public function withConflicts(bool $include = true): ICmdGet;
+	public function withDeleteConflicts(bool $include = true): ICmdGet;
+	public function withRevisions(bool $include = true, bool $withInfo = true): ICmdGet;
+	public function withRevisionsInfo(bool $withInfo = true): ICmdGet;
+	public function withMeta(bool $include = true): ICmdGet;
+	
+	public function withLocalSeq(bool $include = true): ICmdGet;
+	
+	public function forceLatest(bool $force): ICmdGet;
+	
+	
+	public function queryExists(): bool;
+	
+	/**
+	 * @param string|null $target Document ID or Database name
+	 * @param string|null $id If set, the documents ID. 
+	 * @return Doc|null
+	 */
+	public function queryDoc(?string $target = null, ?string $id = null): ?Doc;
+}

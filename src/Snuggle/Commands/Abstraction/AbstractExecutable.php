@@ -4,38 +4,30 @@ namespace Snuggle\Commands\Abstraction;
 
 use Snuggle\Base\Commands\IExecutable;
 use Snuggle\Base\Connection\Response\IRawResponse;
-use Snuggle\Commands\Abstraction\AbstractCommand;
+
+use Snuggle\Connection\Method;
 use Snuggle\Exceptions\HttpException;
 use Snuggle\Connection\Request\RawRequest;
 
 
-class AbstractExecutable extends AbstractCommand implements IExecutable
+abstract class AbstractExecutable extends AbstractCommand implements IExecutable
 {
-	/** @var RawRequest */
-	private $request;
-	
-	
-	protected function request(): RawRequest
+	protected function executeRequest($uri, $method = Method::GET, array $params = []): IRawResponse
 	{
-		return $this->request;
+		$request = $this->createRequest($uri, $method, $params);
+		return $this->getConnection()->request($request);
 	}
 	
-	protected function executeRequest(): IRawResponse
+	protected function createRequest($uri, $method = Method::GET, array $params = []): RawRequest
 	{
-		return $this->getConnection()->request($this->request);
+		$request = new RawRequest();
+		
+		return $request
+			->setURI($uri)
+			->setQueryParams($params)
+			->setMethod($method);
 	}
 	
-	
-	public function __construct()
-	{
-		$this->request = new RawRequest();
-	}
-	
-	
-	public function execute(): IRawResponse
-	{
-		return $this->getConnection()->request($this->request);
-	}
 	
 	public function executeSafe(?\Exception &$e = null): ?IRawResponse
 	{
