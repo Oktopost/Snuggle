@@ -29,7 +29,7 @@ class ErrorHandler extends AbstractDecorator implements IConnectionDecorator
 		
 		if ($response->isFailed())
 		{
-			throw HttpExceptionFactory::getException($request, $response);
+			throw HttpExceptionFactory::getException($response);
 		}
 		
 		return $response;

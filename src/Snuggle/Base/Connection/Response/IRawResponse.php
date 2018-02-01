@@ -2,12 +2,17 @@
 namespace Snuggle\Base\Connection\Response;
 
 
+use Snuggle\Base\Connection\Request\IRawRequest;
+
+
 interface IRawResponse
 {
+	public function request(): IRawRequest;
+	
 	public function getBody(): ?IBody;
 	public function hasBody(): bool;
 	public function getRawBody(): ?string;
-	public function getJsonBody($asArray = false);
+	public function getJsonBody($asArray = true);
 	
 	public function getCode(): int;
 	public function isSuccessful(): bool;

@@ -2,6 +2,7 @@
 namespace Snuggle\Connection\Response;
 
 
+use Snuggle\Base\Connection\Request\IRawRequest;
 use Snuggle\Base\Connection\Response\IBody;
 use Snuggle\Base\Connection\Response\IRawResponse;
 
@@ -14,9 +15,13 @@ class RawResponse implements IRawResponse
 	/** @var Body|null */
 	private $body = null;
 	
+	/** @var  IRawRequest */
+	private $request;
 	
-	public function __construct(int $code, array $headers, ?string $body = null)
+	
+	public function __construct(IRawRequest $request, int $code, array $headers, ?string $body = null)
 	{
+		$this->request = $request;
 		$this->code = $code;
 		$this->headers = $headers;
 		
@@ -50,7 +55,7 @@ class RawResponse implements IRawResponse
 	 * @param bool $asArray
 	 * @return mixed
 	 */
-	public function getJsonBody($asArray = false)
+	public function getJsonBody($asArray = true)
 	{
 		return $this->body ? $this->body->getJson($asArray) : null;
 	}
@@ -93,5 +98,10 @@ class RawResponse implements IRawResponse
 	public function getHeaders(): array 
 	{
 		return $this->headers;
+	}
+	
+	public function request(): IRawRequest
+	{
+		return $this->request;
 	}
 }

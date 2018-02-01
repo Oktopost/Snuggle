@@ -41,7 +41,7 @@ class Body implements IBody
 		return $this->body;
 	}
 	
-	public function getJson($asArray = false) 
+	public function getJson($asArray = true) 
 	{
 		if ($asArray && $this->decodedAsArrayBody)
 			return $this->decodedAsArrayBody;

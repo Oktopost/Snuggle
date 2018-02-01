@@ -15,12 +15,25 @@ class HttpException extends SnuggleException
 	private $request;
 	
 	
-	public function __construct(IRawResponse $response, IRawRequest $request, ?string $message = null)
+	private function createMessage(IRawResponse $response, ?string $message = null): string
 	{
-		parent::__construct($message);
+		if ($message)
+			$message .= '. ';
+		else 
+			$message = '';
+		
+		$body = $response->getRawBody() ?: '';
+		
+		return $message . "Code {$response->getCode()} body {$body}";
+	}
+	
+	
+	public function __construct(IRawResponse $response, ?string $message = null)
+	{
+		parent::__construct($this->createMessage($response, $message));
 		
 		$this->response = $response;
-		$this->request = $request;
+		$this->request = $response->request();
 	}
 	
 	

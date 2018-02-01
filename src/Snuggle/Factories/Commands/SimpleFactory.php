@@ -7,6 +7,7 @@ use Snuggle\Base\Commands\ICmdDirect;
 use Snuggle\Base\Commands\ICmdServer;
 use Snuggle\Base\Factories\ICommandFactory;
 
+use Snuggle\Commands\CmdDB;
 use Snuggle\Commands\CmdDirect;
 use Snuggle\Commands\CmdServer;
 
@@ -15,7 +16,7 @@ class SimpleFactory implements ICommandFactory
 {
 	public function db(): ICmdDB
 	{
-		return null;
+		return new CmdDB();
 	}
 	
 	public function direct(): ICmdDirect

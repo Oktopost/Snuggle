@@ -56,9 +56,10 @@ class HttpfullConnection implements IConnection
 		return $httpfullRequest->send();
 	}
 	
-	private function parse(Response $response): IRawResponse
+	private function parse(IRawRequest $request, Response $response): IRawResponse
 	{
 		return new RawResponse(
+			$request,
 			$response->code, 
 			$response->headers->toArray(),
 			$response->hasBody() ? $response->body : null
@@ -87,6 +88,6 @@ class HttpfullConnection implements IConnection
 			throw new SnuggleException($e->getMessage(), $e->getCode());
 		}
 		
-		return $this->parse($response);
+		return $this->parse($request, $response);
 	}
 }

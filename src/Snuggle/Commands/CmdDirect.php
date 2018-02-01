@@ -4,6 +4,7 @@ namespace Snuggle\Commands;
 
 use Snuggle\Base\Commands\ICmdDirect;
 use Snuggle\Commands\Common\TQuery;
+use Snuggle\Commands\Abstraction\AbstractExecutable;
 use Snuggle\Connection\Method;
 
 

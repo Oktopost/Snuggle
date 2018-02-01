@@ -8,7 +8,7 @@ use Snuggle\Exceptions\HttpException;
 /**
  * Response does not match the expected format or HTTP code.
  */
-class UnexpectedResponseException extends HttpException
+class UnexpectedHttpResponseException extends HttpException
 {
 	
 }

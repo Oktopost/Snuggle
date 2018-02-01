@@ -1,9 +1,10 @@
 <?php
-namespace Snuggle\Commands;
+namespace Snuggle\Commands\Abstraction;
 
 
 use Snuggle\Base\Commands\IExecutable;
 use Snuggle\Base\Connection\Response\IRawResponse;
+use Snuggle\Commands\Abstraction\AbstractCommand;
 use Snuggle\Exceptions\HttpException;
 use Snuggle\Connection\Request\RawRequest;
 

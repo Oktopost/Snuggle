@@ -130,7 +130,7 @@ class RawRequest implements IRawRequest
 	
 	public function hasBody(): bool
 	{
-		return is_null($this->body);
+		return !is_null($this->body);
 	}
 	
 	public function getHeaders(): array

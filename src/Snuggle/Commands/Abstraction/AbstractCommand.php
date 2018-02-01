@@ -1,12 +1,9 @@
 <?php
-namespace Snuggle\Commands;
+namespace Snuggle\Commands\Abstraction;
 
 
 use Snuggle\Base\ICommand;
 use Snuggle\Base\IConnection;
-use Snuggle\Base\Connection\Response\IRawResponse;
-use Snuggle\Connection\Method;
-use Snuggle\Connection\Request\RawRequest;
 
 
 class AbstractCommand implements ICommand
@@ -14,16 +11,6 @@ class AbstractCommand implements ICommand
 	/** @var IConnection */
 	private $connection;
 	
-	
-	protected function requestURI($uri, $method = Method::GET): IRawResponse
-	{
-		$request = new RawRequest();
-		$request
-			->setURI($uri)
-			->setMethod($method);
-		
-		return $this->connection->request($request);
-	}
 	
 	protected function getConnection(): IConnection
 	{

@@ -26,7 +26,7 @@ trait TQuery
 		return $body ? $body->getString() : null;
 	}
 	
-	public function queryJson($asArray = false)
+	public function queryJson($asArray = true)
 	{
 		return $this->execute()->getJsonBody($asArray);
 	}
