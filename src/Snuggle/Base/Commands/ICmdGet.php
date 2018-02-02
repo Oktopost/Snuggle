@@ -41,7 +41,7 @@ interface ICmdGet extends IExecutable, IQuery
 	
 	public function withLocalSeq(bool $include = true): ICmdGet;
 	
-	public function forceLatest(bool $force): ICmdGet;
+	public function forceLatest(bool $force = true): ICmdGet;
 	
 	
 	public function queryExists(): bool;

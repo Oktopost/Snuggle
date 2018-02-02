@@ -4,11 +4,11 @@ namespace Snuggle\Commands;
 
 use Snuggle\Core\Server\Index;
 use Snuggle\Base\Commands\ICmdServer;
-use Snuggle\Commands\Abstraction\AbstractToolSetCommand;
+use Snuggle\Commands\Abstraction\AbstractCommand;
 use Snuggle\Exceptions\SnuggleException;
 
 
-class CmdServer extends AbstractToolSetCommand implements ICmdServer
+class CmdServer extends AbstractCommand implements ICmdServer
 {
 	public function info(): Index
 	{

@@ -4,15 +4,16 @@ namespace Snuggle\Commands;
 
 use Snuggle\Base\Commands\ICmdDB;
 
-use Snuggle\Commands\Abstraction\AbstractToolSetCommand;
-use Snuggle\Connection\Method;
-use Snuggle\Connection\Parsers\DB\DBInfoParser;
-use Snuggle\Connection\Parsers\OkResponse;
 use Snuggle\Core\DB\DBInfo;
+use Snuggle\Connection\Method;
+use Snuggle\Connection\Parsers\OkResponse;
+use Snuggle\Connection\Parsers\DB\DBInfoParser;
+
+use Snuggle\Commands\Abstraction\AbstractCommand;
 use Snuggle\Exceptions\Http\NotFoundException;
 
 
-class CmdDB extends AbstractToolSetCommand implements ICmdDB
+class CmdDB extends AbstractCommand implements ICmdDB
 {
 	public function create(string $name, ?int $shards = null): void
 	{

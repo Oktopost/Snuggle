@@ -5,11 +5,11 @@ namespace Snuggle\Commands;
 use Snuggle\Base\Commands\ICmdGet;
 use Snuggle\Base\Connection\Response\IRawResponse;
 
-use Snuggle\Connection\Parsers\DocParser;
 use Snuggle\Core\Doc;
 use Snuggle\Commands\Common\TQuery;
 use Snuggle\Commands\Abstraction\AbstractExecutable;
 use Snuggle\Connection\Method;
+use Snuggle\Connection\Parsers\SingleDocParser;
 use Snuggle\Exceptions\FatalSnuggleException;
 use Snuggle\Exceptions\Http\NotFoundException;
 
@@ -65,7 +65,7 @@ class CmdGet extends AbstractExecutable implements ICmdGet
 	
 	private function queryDocumentUnsafe(): Doc
 	{
-		return DocParser::parse($this->execute());
+		return SingleDocParser::parse($this->execute());
 	}
 	
 	
@@ -172,7 +172,7 @@ class CmdGet extends AbstractExecutable implements ICmdGet
 		return $this->setBoolParam('local_seq', $include);
 	}
 	
-	public function forceLatest(bool $force): ICmdGet
+	public function forceLatest(bool $force = true): ICmdGet
 	{
 		return $this->setBoolParam('latest', $force);
 	}
