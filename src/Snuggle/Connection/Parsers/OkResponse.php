@@ -21,7 +21,7 @@ class OkResponse
 		
 		if (!$res || !is_array($res) || ($res['ok'] ?? false) !== true)
 		{
-			throw new UnexpectedHttpResponseException($response, $response->request(), 'Expecting {"ok":true}');
+			throw new UnexpectedHttpResponseException($response, 'Expecting {"ok":true}');
 		}
 	}
 }

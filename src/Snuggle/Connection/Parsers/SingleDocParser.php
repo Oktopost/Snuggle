@@ -2,6 +2,7 @@
 namespace Snuggle\Connection\Parsers;
 
 
+use Snuggle\Connection\Parsers\Document\RevisionInfoParser;
 use Snuggle\Core\Doc;
 use Snuggle\Base\Connection\Response\IRawResponse;
 
@@ -44,6 +45,22 @@ class SingleDocParser
 		
 		if (isset($body['_local_seq']))
 			$meta->LocalSeq = $body['_local_seq'];
+		
+		if (isset($body['_revisions']['start']) &&
+			is_int($body['_revisions']['start']) && 	
+			isset($body['_revisions']['ids']) && 
+			is_array($body['_revisions']['ids']))
+		{
+			$meta->setRevisions(
+				(int)$body['_revisions']['start'],
+				$body['_revisions']['ids']
+			);
+		}
+		
+		if (isset($body['_revs_info']))
+		{
+			$meta->Revisions = RevisionInfoParser::parseAll($body['_revs_info']);
+		}
 		
 		return $doc;
 	}
