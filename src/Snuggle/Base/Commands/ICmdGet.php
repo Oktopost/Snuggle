@@ -5,24 +5,13 @@ namespace Snuggle\Base\Commands;
 use Snuggle\Core\Doc;
 
 
-interface ICmdGet extends IExecutable, IQuery
+interface ICmdGet extends IExecutable, IQuery, ISingleDoc
 {
-	public function from(string $db): ICmdGet;
-	public function rev(string $rev): ICmdGet;
-	
 	/**
 	 * @param bool $ignoreMissing If true and document not found, null is returned instead of 404 exception.
 	 * @return ICmdGet
 	 */
 	public function ignoreMissing(bool $ignoreMissing = true): ICmdGet;
-	
-	/**
-	 * @param string $target Document ID or Database name
-	 * @param string|null $id If set, the documents ID. 
-	 * @return ICmdGet
-	 */
-	public function doc(string $target, ?string $id = null): ICmdGet;
-	
 	
 	/**
 	 * @param bool $include

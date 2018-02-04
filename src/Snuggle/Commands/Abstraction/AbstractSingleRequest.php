@@ -17,7 +17,7 @@ abstract class AbstractSingleRequest extends AbstractExecutable
 		return $this->request;
 	}
 	
-	protected function executeRequest(): IRawResponse
+	protected function executeCurrentRequest(): IRawResponse
 	{
 		return $this->getConnection()->request($this->request);
 	}

@@ -3,15 +3,16 @@ namespace Snuggle\Commands;
 
 
 use Snuggle\Base\Commands\ICmdGet;
+use Snuggle\Base\Commands\ISingleDoc;
 use Snuggle\Base\Connection\Response\IRawResponse;
 
 use Snuggle\Core\Doc;
 use Snuggle\Commands\Common\TQuery;
 use Snuggle\Commands\Abstraction\AbstractExecutable;
 use Snuggle\Connection\Method;
-use Snuggle\Connection\Parsers\SingleDocParser;
 use Snuggle\Exceptions\FatalSnuggleException;
 use Snuggle\Exceptions\Http\NotFoundException;
+use Snuggle\Connection\Parsers\SingleDocParser;
 
 use Structura\Arrays;
 
@@ -69,13 +70,21 @@ class CmdGet extends AbstractExecutable implements ICmdGet
 	}
 	
 	
-	public function from(string $db): ICmdGet
+	/**
+	 * @param string $db
+	 * @return ISingleDoc|static
+	 */
+	public function from(string $db): ISingleDoc
 	{
 		$this->db = $db;
 		return $this;
 	}
 	
-	public function rev(string $rev): ICmdGet
+	/**
+	 * @param string $rev
+	 * @return ISingleDoc|static
+	 */
+	public function rev(string $rev): ISingleDoc
 	{
 		$this->params['rev'] = $rev;
 		return $this;
@@ -94,9 +103,9 @@ class CmdGet extends AbstractExecutable implements ICmdGet
 	/**
 	 * @param string $target Document ID or Database name
 	 * @param string|null $id If set, the documents ID.
-	 * @return ICmdGet
+	 * @return ISingleDoc|static
 	 */
-	public function doc(string $target, ?string $id = null): ICmdGet
+	public function doc(string $target, ?string $id = null): ISingleDoc
 	{
 		if ($id)
 		{
