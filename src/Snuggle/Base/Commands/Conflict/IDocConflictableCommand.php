@@ -1,5 +1,5 @@
 <?php
-namespace Snuggle\Commands\Conflict;
+namespace Snuggle\Base\Commands\Conflict;
 
 
 use Snuggle\Base\Commands\IDocCommand;

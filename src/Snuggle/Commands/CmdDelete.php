@@ -2,34 +2,39 @@
 namespace Snuggle\Commands;
 
 
-use Snuggle\Core\ConflictBehavior;
 use Snuggle\Base\Commands\ICmdDelete;
 use Snuggle\Base\Commands\IDocCommand;
+use Snuggle\Base\Commands\Conflict\IDeleteResolution;
+use Snuggle\Base\Commands\Conflict\IDocConflictableCommand;
+use Snuggle\Base\Connection\Request\IRawRequest;
 use Snuggle\Base\Connection\Response\IRawResponse;
 
 use Snuggle\Commands\Common\TQuery;
+use Snuggle\Commands\Abstraction\TDocCommand;
 use Snuggle\Commands\Abstraction\TExecuteSafe;
+
 use Snuggle\Connection\Method;
+use Snuggle\Connection\Request\RawRequest;
+
 use Snuggle\Exceptions\FatalSnuggleException;
-use Snuggle\Exceptions\Http\ConflictException;
 use Snuggle\Exceptions\Http\NotFoundException;
 
 
-class CmdDelete implements ICmdDelete
+class CmdDelete implements ICmdDelete, IDocConflictableCommand
 {
 	use TQuery;
+	use TDocCommand;
 	use TExecuteSafe;
 	
 	
 	private $db;
 	private $id;
 	
-	private $params = [];
-	private $conflictBehavior	= ConflictBehavior::OVERRIDE;
+	private $params				= [];
 	private $failOnNotFound		= false;
 	
-	/** @var callable|null */
-	private $resolveCallback	= null;
+	/** @var IDeleteResolution */
+	private $connection;
 	
 	
 	private function validate(): void
@@ -44,6 +49,14 @@ class CmdDelete implements ICmdDelete
 	{
 		return $this->db . '/' . $this->id;
 	}
+	
+	
+	public function __construct(IDeleteResolution $connection)
+	{
+		$this->connection = $connection;
+		$this->connection->overrideConflict();
+	}
+	
 	
 	/**
 	 * @param bool $isAsBatch
@@ -60,12 +73,21 @@ class CmdDelete implements ICmdDelete
 	}
 	
 	/**
+	 * @param string $rev
+	 * @return IDocCommand|static
+	 */
+	public function rev(string $rev): IDocCommand
+	{
+		$this->params['rev'] = $rev;
+		return $this;
+	}
+	
+	/**
 	 * @return ICmdDelete|static
 	 */
 	public function ignoreConflict(): ICmdDelete
 	{
-		$this->conflictBehavior = ConflictBehavior::IGNORE;
-		$this->resolveCallback = null;
+		$this->connection->ignoreConflict();
 		return $this;
 	}
 	
@@ -74,8 +96,7 @@ class CmdDelete implements ICmdDelete
 	 */
 	public function overrideConflict(): ICmdDelete
 	{
-		$this->conflictBehavior = ConflictBehavior::OVERRIDE;
-		$this->resolveCallback = null;
+		$this->connection->overrideConflict();
 		return $this;
 	}
 	
@@ -84,8 +105,7 @@ class CmdDelete implements ICmdDelete
 	 */
 	public function failOnConflict(): ICmdDelete
 	{
-		$this->conflictBehavior = ConflictBehavior::FAIL;
-		$this->resolveCallback = null;
+		$this->connection->failOnConflict();
 		return $this;
 	}
 	
@@ -95,10 +115,9 @@ class CmdDelete implements ICmdDelete
 	 */
 	public function resolveConflict(callable $callback): ICmdDelete
 	{
-		$this->resolveCallback = $callback;
+		$this->connection->resolveConflict($callback);
 		return $this;
 	}
-	
 	
 	/**
 	 * @param bool $fail
@@ -110,69 +129,13 @@ class CmdDelete implements ICmdDelete
 		return $this;
 	}
 	
-	/**
-	 * @param string $db
-	 * @return IDocCommand|static
-	 */
-	public function from(string $db): IDocCommand
-	{
-		$this->db = $db;
-		return $this;
-	}
-	
-	/**
-	 * @param string $rev
-	 * @return IDocCommand|static
-	 */
-	public function rev(string $rev): IDocCommand
-	{
-		$this->params['rev'] = $rev;
-		return $this;
-	}
-	
-	/**
-	 * @param string $target Document ID or Database name
-	 * @param string|null $id If set, the documents ID.
-	 * @return IDocCommand|static
-	 */
-	public function doc(string $target, ?string $id = null): IDocCommand
-	{
-		if ($id)
-		{
-			$this->db = $target;
-			$this->id = $id;
-		}
-		else
-		{
-			$this->id = $target;
-		}
-		
-		return $this;
-	}
-	
-	private function handleConflict(ConflictException $e): IRawResponse
-	{
-		switch ($this->conflictBehavior)
-		{
-			case ConflictBehavior::IGNORE:
-				return $e->getResponse();
-				
-			case ConflictBehavior::FAIL:
-				throw $e;
-			
-			case ConflictBehavior::OVERRIDE:
-				
-		}
-	}
-	
 	public function execute(): IRawResponse
 	{
 		$this->validate();
 		
 		try
 		{
-			$request = $this->createRequest($this->uri(), Method::DELETE, $this->params);
-			return $this->getConnection()->request($request);
+			return $this->connection->execute($this);
 		}
 		catch (NotFoundException $e)
 		{
@@ -181,11 +144,24 @@ class CmdDelete implements ICmdDelete
 			
 			return $e->getResponse();
 		}
-		catch (ConflictException $e)
-		{
-			return $this->handleConflict($e);
-		}
 	}
 	
-	public function __clone() {}
+	public function getDocId(): string
+	{
+		return $this->id;
+	}
+	
+	public function getDB(): string
+	{
+		return $this->db;
+	}
+	
+	public function assemble(): IRawRequest
+	{
+		return RawRequest::create(
+			$this->uri(),
+			Method::DELETE,
+			$this->params
+		);
+	}
 }

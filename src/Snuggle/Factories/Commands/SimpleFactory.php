@@ -12,34 +12,36 @@ use Snuggle\Base\Factories\ICommandFactory;
 
 use Snuggle\Commands\CmdDB;
 use Snuggle\Commands\CmdGet;
+use Snuggle\Commands\CmdDelete;
 use Snuggle\Commands\CmdDirect;
 use Snuggle\Commands\CmdServer;
+use Snuggle\Commands\Conflict\Templates\DeleteResolution;
 
 
 class SimpleFactory implements ICommandFactory
 {
 	public function db(IConnection $connection): ICmdDB
 	{
-		return (new CmdDB())->setConnection($connection);
+		return new CmdDB($connection);
 	}
 	
 	public function direct(IConnection $connection): ICmdDirect
 	{
-		return (new CmdDirect())->setConnection($connection);
+		return new CmdDirect($connection);
 	}
 	
 	public function server(IConnection $connection): ICmdServer
 	{
-		return (new CmdServer())->setConnection($connection);
+		return new CmdServer($connection);
 	}
 	
 	public function get(IConnection $connection): ICmdGet
 	{
-		return (new CmdGet())->setConnection($connection);
+		return new CmdGet($connection);
 	}
 	
 	public function delete(IConnection $connection): ICmdDelete
 	{
-		// TODO: Implement delete() method.
+		return new CmdDelete(new DeleteResolution($connection));
 	}
 }

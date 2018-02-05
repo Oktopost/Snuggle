@@ -142,4 +142,14 @@ class RawRequest implements IRawRequest
 	{
 		return $this->method;
 	}
+	
+	
+	public static function create(string $uri, string $method = Method::GET, array $params = [])
+	{
+		$request = new RawRequest();
+		
+		return $request->setURI($uri)
+			->setQueryParams($params)
+			->setMethod($method);
+	}
 }

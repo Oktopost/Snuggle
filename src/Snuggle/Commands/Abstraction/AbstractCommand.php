@@ -38,12 +38,7 @@ class AbstractCommand implements ICommand
 	}
 	
 	
-	public function __clone()
-	{
-		
-	}
-	
-	public function setConnection(IConnection $connection): void
+	public function __construct(IConnection $connection)
 	{
 		$this->connection = $connection;
 	}

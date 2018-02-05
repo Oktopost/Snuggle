@@ -3,6 +3,7 @@ namespace Snuggle\Commands\Abstraction;
 
 
 use Snuggle\Base\Connection\Response\IRawResponse;
+use Snuggle\Base\IConnection;
 use Snuggle\Connection\Request\RawRequest;
 
 
@@ -23,8 +24,9 @@ abstract class AbstractSingleRequest extends AbstractExecutable
 	}
 	
 	
-	public function __construct()
+	public function __construct(IConnection $connection)
 	{
+		parent::__construct($connection);
 		$this->request = new RawRequest();
 	}
 	
