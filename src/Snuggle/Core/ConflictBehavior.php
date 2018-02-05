@@ -26,6 +26,11 @@ class ConflictBehavior
 	public const RESOLVE	= 'resolve';
 	
 	/**
+	 * Throw exception
+	 */
+	public const FAIL		= 'fail';
+	
+	/**
 	 * Merge only new values into existing object.
 	 */
 	public const MERGE_NEW	= 'merge_new';

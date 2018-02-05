@@ -33,7 +33,7 @@ class DocOverrideStrategy implements IResolutionStrategy
 	
 	public function __construct(ISingleDocCommand $command)
 	{
-		$this->command = 
+		$this->command = $command;
 		
 	}
 	

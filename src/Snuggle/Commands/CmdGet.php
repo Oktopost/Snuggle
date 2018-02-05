@@ -91,16 +91,6 @@ class CmdGet extends AbstractExecutable implements ICmdGet
 	}
 	
 	/**
-	 * @param bool $ignoreMissing If true and document not found, null is returned instead of 404 exception.
-	 * @return ICmdGet
-	 */
-	public function ignoreMissing(bool $ignoreMissing = true): ICmdGet
-	{
-		$this->ignoreMissing = $ignoreMissing;
-		return $this;
-	}
-	
-	/**
 	 * @param string $target Document ID or Database name
 	 * @param string|null $id If set, the documents ID.
 	 * @return ISingleDoc|static
@@ -117,6 +107,16 @@ class CmdGet extends AbstractExecutable implements ICmdGet
 			$this->id = $target;
 		}
 		
+		return $this;
+	}
+	
+	/**
+	 * @param bool $ignoreMissing If true and document not found, null is returned instead of 404 exception.
+	 * @return ICmdGet
+	 */
+	public function ignoreMissing(bool $ignoreMissing = true): ICmdGet
+	{
+		$this->ignoreMissing = $ignoreMissing;
 		return $this;
 	}
 	
@@ -223,6 +223,7 @@ class CmdGet extends AbstractExecutable implements ICmdGet
 	
 	public function execute(): IRawResponse
 	{
+		$this->validate();
 		return $this->executeRequest($this->uri(), Method::GET, $this->params);
 	}
 }

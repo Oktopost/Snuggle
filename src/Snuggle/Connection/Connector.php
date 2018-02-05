@@ -2,11 +2,11 @@
 namespace Snuggle\Connection;
 
 
-use Snuggle\Base\Commands\ICmdGet;
-use Snuggle\Base\ICommand;
 use Snuggle\Base\IConnector;
 use Snuggle\Base\IConnection;
 use Snuggle\Base\Commands\ICmdDB;
+use Snuggle\Base\Commands\ICmdGet;
+use Snuggle\Base\Commands\ICmdDelete;
 use Snuggle\Base\Commands\ICmdDirect;
 use Snuggle\Base\Commands\ICmdServer;
 use Snuggle\Base\Factories\ICommandFactory;
@@ -19,13 +19,6 @@ class Connector implements IConnector
 	
 	/** @var IConnection */
 	private $connection;
-	
-	
-	private function setup(ICommand $command): ICommand
-	{
-		$command->setConnection($this->connection);
-		return $command;
-	}
 	
 	
 	public function __construct(?ICommandFactory $factory = null, ?IConnection $connection = null)
@@ -51,21 +44,26 @@ class Connector implements IConnector
 	
 	public function db(): ICmdDB
 	{
-		return $this->setup($this->factory->db()); 
+		return $this->factory->db($this->connection); 
 	}
 	
 	public function direct(): ICmdDirect
 	{
-		return $this->setup($this->factory->direct()); 
+		return $this->factory->direct($this->connection); 
 	}
 	
 	public function server(): ICmdServer
 	{
-		return $this->setup($this->factory->server());
+		return $this->factory->server($this->connection);
 	}
 	
 	public function get(): ICmdGet
 	{
-		return $this->setup($this->factory->get());
+		return $this->factory->get($this->connection);
+	}
+	
+	public function delete(): ICmdDelete
+	{
+		return $this->factory->delete($this->connection); 
 	}
 }
