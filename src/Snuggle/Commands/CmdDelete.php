@@ -2,21 +2,23 @@
 namespace Snuggle\Commands;
 
 
-use Snuggle\Connection\Method;
 use Snuggle\Core\ConflictBehavior;
 use Snuggle\Base\Commands\ICmdDelete;
-use Snuggle\Base\Commands\ISingleDoc;
+use Snuggle\Base\Commands\IDocCommand;
 use Snuggle\Base\Connection\Response\IRawResponse;
+
 use Snuggle\Commands\Common\TQuery;
-use Snuggle\Commands\Abstraction\AbstractExecutable;
+use Snuggle\Commands\Abstraction\TExecuteSafe;
+use Snuggle\Connection\Method;
 use Snuggle\Exceptions\FatalSnuggleException;
 use Snuggle\Exceptions\Http\ConflictException;
 use Snuggle\Exceptions\Http\NotFoundException;
 
 
-class CmdDelete extends AbstractExecutable implements ICmdDelete
+class CmdDelete implements ICmdDelete
 {
 	use TQuery;
+	use TExecuteSafe;
 	
 	
 	private $db;
@@ -110,9 +112,9 @@ class CmdDelete extends AbstractExecutable implements ICmdDelete
 	
 	/**
 	 * @param string $db
-	 * @return ISingleDoc|static
+	 * @return IDocCommand|static
 	 */
-	public function from(string $db): ISingleDoc
+	public function from(string $db): IDocCommand
 	{
 		$this->db = $db;
 		return $this;
@@ -120,9 +122,9 @@ class CmdDelete extends AbstractExecutable implements ICmdDelete
 	
 	/**
 	 * @param string $rev
-	 * @return ISingleDoc|static
+	 * @return IDocCommand|static
 	 */
-	public function rev(string $rev): ISingleDoc
+	public function rev(string $rev): IDocCommand
 	{
 		$this->params['rev'] = $rev;
 		return $this;
@@ -131,9 +133,9 @@ class CmdDelete extends AbstractExecutable implements ICmdDelete
 	/**
 	 * @param string $target Document ID or Database name
 	 * @param string|null $id If set, the documents ID.
-	 * @return ISingleDoc|static
+	 * @return IDocCommand|static
 	 */
-	public function doc(string $target, ?string $id = null): ISingleDoc
+	public function doc(string $target, ?string $id = null): IDocCommand
 	{
 		if ($id)
 		{
@@ -184,4 +186,6 @@ class CmdDelete extends AbstractExecutable implements ICmdDelete
 			return $this->handleConflict($e);
 		}
 	}
+	
+	public function __clone() {}
 }

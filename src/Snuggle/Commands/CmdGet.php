@@ -3,7 +3,7 @@ namespace Snuggle\Commands;
 
 
 use Snuggle\Base\Commands\ICmdGet;
-use Snuggle\Base\Commands\ISingleDoc;
+use Snuggle\Base\Commands\IDocCommand;
 use Snuggle\Base\Connection\Response\IRawResponse;
 
 use Snuggle\Core\Doc;
@@ -72,9 +72,9 @@ class CmdGet extends AbstractExecutable implements ICmdGet
 	
 	/**
 	 * @param string $db
-	 * @return ISingleDoc|static
+	 * @return IDocCommand|static
 	 */
-	public function from(string $db): ISingleDoc
+	public function from(string $db): IDocCommand
 	{
 		$this->db = $db;
 		return $this;
@@ -82,9 +82,9 @@ class CmdGet extends AbstractExecutable implements ICmdGet
 	
 	/**
 	 * @param string $rev
-	 * @return ISingleDoc|static
+	 * @return IDocCommand|static
 	 */
-	public function rev(string $rev): ISingleDoc
+	public function rev(string $rev): IDocCommand
 	{
 		$this->params['rev'] = $rev;
 		return $this;
@@ -93,9 +93,9 @@ class CmdGet extends AbstractExecutable implements ICmdGet
 	/**
 	 * @param string $target Document ID or Database name
 	 * @param string|null $id If set, the documents ID.
-	 * @return ISingleDoc|static
+	 * @return IDocCommand|static
 	 */
-	public function doc(string $target, ?string $id = null): ISingleDoc
+	public function doc(string $target, ?string $id = null): IDocCommand
 	{
 		if ($id)
 		{
