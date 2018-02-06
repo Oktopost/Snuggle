@@ -8,5 +8,11 @@ use Snuggle\Base\Connection\Response\IRawResponse;
 
 interface IConnection
 {
-	public function request(IRawRequest $request): IRawResponse; 
+	/**
+	 * @param IRawRequest|string $request
+	 * @param string $method
+	 * @param array $params
+	 * @return IRawResponse
+	 */
+	public function request($request, string $method = '', array $params = []): IRawResponse;
 }

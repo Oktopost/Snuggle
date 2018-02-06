@@ -2,17 +2,20 @@
 namespace Snuggle\Connection\Providers;
 
 
-use Httpful\Exception\ConnectionErrorException;
 use Httpful\Request;
 use Httpful\Response;
+use Httpful\Exception\ConnectionErrorException;
 
 use Snuggle\Base\IConnection;
 use Snuggle\Base\Connection\Request\IRawRequest;
 use Snuggle\Base\Connection\Response\IRawResponse;
+
 use Snuggle\Config\ConnectionConfig;
+use Snuggle\Connection\Request\RawRequest;
 use Snuggle\Connection\Response\RawResponse;
-use Snuggle\Exceptions\ServerUnreachableException;
+
 use Snuggle\Exceptions\SnuggleException;
+use Snuggle\Exceptions\ServerUnreachableException;
 
 
 class HttpfullConnection implements IConnection
@@ -72,9 +75,16 @@ class HttpfullConnection implements IConnection
 		$this->config = $config;
 	}
 	
-	
-	public function request(IRawRequest $request): IRawResponse
+	/**
+	 * @param IRawRequest|string $request
+	 * @param string $method
+	 * @param array $params
+	 * @return IRawResponse
+	 */
+	public function request($request, string $method = '', array $params = []): IRawResponse
 	{
+		$request = RawRequest::toRequest($request, $method, $params);
+		
 		try
 		{
 			$response = $this->send($request);

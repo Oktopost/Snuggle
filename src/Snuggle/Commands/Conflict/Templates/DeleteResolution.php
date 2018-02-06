@@ -2,12 +2,13 @@
 namespace Snuggle\Commands\Conflict\Templates;
 
 
-use Snuggle\Commands\Conflict\Generic\DocResolutionTemplate;
-use Snuggle\Core\ConflictBehavior;
 use Snuggle\Base\Commands\Conflict\IDocConflictableCommand;
 use Snuggle\Base\Commands\Conflict\IDeleteResolution;
 use Snuggle\Base\Connection\Response\IRawResponse;
 
+use Snuggle\Core\ConflictBehavior;
+
+use Snuggle\Commands\Conflict\Generic\DocResolutionTemplate;
 use Snuggle\Exceptions\Http\ConflictException;
 
 
@@ -39,12 +40,11 @@ class DeleteResolution extends DocResolutionTemplate implements IDeleteResolutio
 	
 	public function setStrategy(string $strategy): void
 	{
-		parent::setStrategy($strategy);
-		
 		if ($strategy != ConflictBehavior::RESOLVE)
 			$this->callback = null;
+		
+		parent::setStrategy($strategy);
 	}
-	
 	
 	/**
 	 * @param callable $callback Callback in format [(Doc $doc): bool]

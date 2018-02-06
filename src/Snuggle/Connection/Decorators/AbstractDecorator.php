@@ -19,9 +19,9 @@ abstract class AbstractDecorator implements IConnectionDecorator
 		return $this->child;
 	}
 	
-	protected function invokeChild(IRawRequest $request): IRawResponse
+	protected function invokeChild($request, string $method = '', array $params = []): IRawResponse
 	{
-		return $this->child->request($request);
+		return $this->child->request($request, $method, $params);
 	}
 	
 	

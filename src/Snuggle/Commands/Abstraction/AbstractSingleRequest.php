@@ -7,10 +7,10 @@ use Snuggle\Base\IConnection;
 use Snuggle\Connection\Request\RawRequest;
 
 
-abstract class AbstractSingleRequest extends AbstractExecutable
+abstract class AbstractSingleRequest extends AbstractCommand
 {
-	/** @var RawRequest */
-	private $request;
+	
+	
 	
 	
 	protected function request(): RawRequest

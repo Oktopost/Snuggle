@@ -11,12 +11,18 @@ trait TDocCommand
 	private $_id;
 	
 	
+	protected function uri(): string
+	{
+		return $this->_db . '/' . $this->_id;
+	}
+	
+	
 	public function getDB(): string
 	{
 		return $this->_db;
 	}
 	
-	public function getDocId(): string
+	public function getDocID(): string
 	{
 		return $this->_id;
 	}
@@ -28,7 +34,7 @@ trait TDocCommand
 	 */
 	public function from(string $db): IDocCommand
 	{
-		$this->db = $db;
+		$this->_db = $db;
 		return $this;
 	}
 	
@@ -41,12 +47,12 @@ trait TDocCommand
 	{
 		if ($id)
 		{
-			$this->db = $target;
-			$this->id = $id;
+			$this->_db = $target;
+			$this->_id = $id;
 		}
 		else
 		{
-			$this->id = $target;
+			$this->_id = $target;
 		}
 		
 		return $this;

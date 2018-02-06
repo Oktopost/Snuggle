@@ -5,29 +5,37 @@ namespace Snuggle\Commands\Common;
 use Snuggle\Base\Connection\Response\IRawResponse;
 
 
-/**
- * @method IRawResponse execute()
- */
 trait TQuery
 {
+	private function executeRequest(): IRawResponse
+	{
+		return $this->execute();
+	}
+	
+	
 	public function queryCode(): int
 	{
-		return $this->execute()->getCode();
+		return $this->executeRequest()->getCode();
 	}
 	
 	public function queryHeaders(): array
 	{
-		return $this->execute()->getHeaders();
+		return $this->executeRequest()->getHeaders();
 	}
 	
 	public function queryBody(): ?string
 	{
-		$body = $this->execute()->getBody();
+		$body = $this->executeRequest()->getBody();
 		return $body ? $body->getString() : null;
 	}
 	
 	public function queryJson($asArray = true)
 	{
-		return $this->execute()->getJsonBody($asArray);
+		return $this->executeRequest()->getJsonBody($asArray);
+	}
+	
+	public function queryBool(): bool
+	{
+		return $this->executeRequest()->isSuccessful();
 	}
 }

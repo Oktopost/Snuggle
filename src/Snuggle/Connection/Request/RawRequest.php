@@ -144,6 +144,20 @@ class RawRequest implements IRawRequest
 	}
 	
 	
+	/**
+	 * @param string|IRawRequest $target
+	 * @param string $method
+	 * @param array $params
+	 * @return IRawRequest
+	 */
+	public static function toRequest($target, string $method = Method::GET, array $params = []): IRawRequest
+	{
+		if (is_string($target))
+			return self::create($target, $method ?: Method::GET, $params);
+		
+		return $target;
+	}
+	
 	public static function create(string $uri, string $method = Method::GET, array $params = [])
 	{
 		$request = new RawRequest();

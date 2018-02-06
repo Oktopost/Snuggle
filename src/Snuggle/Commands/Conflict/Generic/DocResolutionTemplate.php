@@ -55,7 +55,7 @@ abstract class DocResolutionTemplate implements IDocResolution
 	protected function cmdGet(IDocConflictableCommand $command): ICmdGet
 	{
 		$get = new CmdGet($this->connection);
-		return $get->doc($command->getDB(), $command->getDocId());
+		return $get->doc($command->getDB(), $command->getDocID());
 	}
 	
 	protected function strategy(): string
@@ -75,13 +75,15 @@ abstract class DocResolutionTemplate implements IDocResolution
 	{
 		$headers = $this->cmdGet($command)->queryHeaders();
 		
-		if (!isset($headers['rev']))
+		if (!isset($headers['etag']))
 			throw new NotFoundException($e->getResponse(), 'Could not get revision for conflicting document');
 		
-		$rev = json_decode($headers['rev']);
+		$rev = json_decode($headers['etag']);
 		
 		if (is_null($rev))
-			throw new NotFoundException($e->getResponse(), 'Malformed revision format ' . base64_encode($headers['rev']));
+			throw new NotFoundException(
+				$e->getResponse(), 
+				'Malformed revision format ' . base64_encode($headers['etag']));
 		
 		$command = clone $command;
 		$command->rev($rev);

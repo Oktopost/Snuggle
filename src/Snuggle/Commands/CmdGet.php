@@ -2,13 +2,15 @@
 namespace Snuggle\Commands;
 
 
+use Snuggle\Base\IConnection;
 use Snuggle\Base\Commands\ICmdGet;
 use Snuggle\Base\Commands\IDocCommand;
 use Snuggle\Base\Connection\Response\IRawResponse;
 
 use Snuggle\Core\Doc;
 use Snuggle\Commands\Common\TQuery;
-use Snuggle\Commands\Abstraction\AbstractExecutable;
+use Snuggle\Commands\Abstraction\TDocCommand;
+use Snuggle\Commands\Abstraction\TExecuteSafe;
 use Snuggle\Connection\Method;
 use Snuggle\Exceptions\FatalSnuggleException;
 use Snuggle\Exceptions\Http\NotFoundException;
@@ -17,29 +19,26 @@ use Snuggle\Connection\Parsers\SingleDocParser;
 use Structura\Arrays;
 
 
-class CmdGet extends AbstractExecutable implements ICmdGet
+class CmdGet implements ICmdGet
 {
 	use TQuery;
+	use TDocCommand;
+	use TExecuteSafe;
 	
-	
-	private $db;
-	private $id;
 	
 	private $params = [];
 	private $ignoreMissing = false;
 	
+	/** @var IConnection */
+	private $connection;
+	
 	
 	private function validate(): void
 	{
-		if ($this->db && $this->id)
+		if ($this->getDocID() && $this->getDB())
 			return;
 		
 		throw new FatalSnuggleException('DB name AND document id must be set');
-	}
-	
-	private function uri(): string
-	{
-		return $this->db . '/' . $this->id;
 	}
 	
 	private function setBoolParam(string $name, bool $val): ICmdGet
@@ -70,15 +69,11 @@ class CmdGet extends AbstractExecutable implements ICmdGet
 	}
 	
 	
-	/**
-	 * @param string $db
-	 * @return IDocCommand|static
-	 */
-	public function from(string $db): IDocCommand
+	public function __construct(IConnection $connection)
 	{
-		$this->db = $db;
-		return $this;
+		$this->connection = $connection;
 	}
+	
 	
 	/**
 	 * @param string $rev
@@ -87,26 +82,6 @@ class CmdGet extends AbstractExecutable implements ICmdGet
 	public function rev(string $rev): IDocCommand
 	{
 		$this->params['rev'] = $rev;
-		return $this;
-	}
-	
-	/**
-	 * @param string $target Document ID or Database name
-	 * @param string|null $id If set, the documents ID.
-	 * @return IDocCommand|static
-	 */
-	public function doc(string $target, ?string $id = null): IDocCommand
-	{
-		if ($id)
-		{
-			$this->db = $target;
-			$this->id = $id;
-		}
-		else
-		{
-			$this->id = $target;
-		}
-		
 		return $this;
 	}
 	
@@ -193,10 +168,11 @@ class CmdGet extends AbstractExecutable implements ICmdGet
 		
 		try
 		{
-			$this->executeRequest(
-				$this->uri(),
-				Method::HEAD,
-				$this->params);
+			$this->connection->request(
+				$this->uri(), 
+				Method::HEAD, 
+				$this->params
+			);
 		}
 		catch (NotFoundException $e)
 		{
@@ -224,6 +200,11 @@ class CmdGet extends AbstractExecutable implements ICmdGet
 	public function execute(): IRawResponse
 	{
 		$this->validate();
-		return $this->executeRequest($this->uri(), Method::GET, $this->params);
+		
+		return $this->connection->request(
+			$this->uri(), 
+			Method::GET, 
+			$this->params
+		);
 	}
 }

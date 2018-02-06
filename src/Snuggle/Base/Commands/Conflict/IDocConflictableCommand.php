@@ -8,7 +8,7 @@ use Snuggle\Base\Connection\Request\IRawRequest;
 
 interface IDocConflictableCommand extends IDocCommand 
 {
-	public function getDocId(): string;
+	public function getDocID(): string;
 	public function getDB(): string;
 	public function assemble(): IRawRequest;
 }

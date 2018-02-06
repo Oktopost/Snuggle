@@ -11,7 +11,7 @@ use Objection\LiteObject;
 /**
  * @property string|null		$LocalSeq
  * @property int|null			$RevisionsStart
- * @property Set|null 			$RevisionLocalIds
+ * @property Set|null 			$RevisionLocalIDs
  * @property Map|RevisionInfo[]	$Revisions
  */
 class Meta extends LiteObject
@@ -24,7 +24,7 @@ class Meta extends LiteObject
 		return [
 			'LocalSeq'			=> LiteSetup::createString(null),
 			'RevisionsStart'	=> LiteSetup::createInt(null),
-			'RevisionLocalIds'	=> LiteSetup::createInstanceOf(Set::class),
+			'RevisionLocalIDs'	=> LiteSetup::createInstanceOf(Set::class),
 			'Revisions'			=> LiteSetup::createInstanceOf(Map::class)
 		];
 	}
@@ -33,7 +33,7 @@ class Meta extends LiteObject
 	public function setRevisions(int $start, array $ids): void
 	{
 		$this->RevisionsStart = $start;
-		$this->RevisionLocalIds = new Set($ids);
+		$this->RevisionLocalIDs = new Set($ids);
 	}
 	
 	public function getRevisionsCount(): ?int 

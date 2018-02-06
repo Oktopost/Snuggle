@@ -27,9 +27,6 @@ class CmdDelete implements ICmdDelete, IDocConflictableCommand
 	use TExecuteSafe;
 	
 	
-	private $db;
-	private $id;
-	
 	private $params				= [];
 	private $failOnNotFound		= false;
 	
@@ -39,15 +36,10 @@ class CmdDelete implements ICmdDelete, IDocConflictableCommand
 	
 	private function validate(): void
 	{
-		if ($this->db && $this->id)
+		if ($this->getDB() && $this->getDocID() && isset($this->params['rev']))
 			return;
 		
-		throw new FatalSnuggleException('DB name AND document id must be set');
-	}
-	
-	private function uri(): string
-	{
-		return $this->db . '/' . $this->id;
+		throw new FatalSnuggleException('DB name, document id and revision must be set for the delete command');
 	}
 	
 	
@@ -144,16 +136,6 @@ class CmdDelete implements ICmdDelete, IDocConflictableCommand
 			
 			return $e->getResponse();
 		}
-	}
-	
-	public function getDocId(): string
-	{
-		return $this->id;
-	}
-	
-	public function getDB(): string
-	{
-		return $this->db;
 	}
 	
 	public function assemble(): IRawRequest

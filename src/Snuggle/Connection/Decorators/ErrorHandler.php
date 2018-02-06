@@ -12,11 +12,17 @@ use Snuggle\Exceptions\HttpExceptionFactory;
 
 class ErrorHandler extends AbstractDecorator implements IConnectionDecorator
 {
-	public function request(IRawRequest $request): IRawResponse
+	/**
+	 * @param IRawRequest|string $request
+	 * @param string $method
+	 * @param array $params
+	 * @return IRawResponse
+	 */
+	public function request($request, string $method = '', array $params = []): IRawResponse
 	{
 		try
 		{
-			$response = $this->invokeChild($request);
+			$response = $this->invokeChild($request, $method, $params);
 		}
 		catch (SnuggleException $snuggleException)
 		{

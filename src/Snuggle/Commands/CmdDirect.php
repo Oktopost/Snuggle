@@ -2,68 +2,88 @@
 namespace Snuggle\Commands;
 
 
+use Snuggle\Base\IConnection;
 use Snuggle\Base\Commands\ICmdDirect;
+use Snuggle\Base\Connection\Response\IRawResponse;
+
 use Snuggle\Commands\Common\TQuery;
-use Snuggle\Commands\Abstraction\AbstractSingleRequest;
+use Snuggle\Commands\Abstraction\TExecuteSafe;
+
 use Snuggle\Connection\Method;
+use Snuggle\Connection\Request\RawRequest;
 
 
-class CmdDirect extends AbstractSingleRequest implements ICmdDirect
+class CmdDirect implements ICmdDirect
 {
 	use TQuery;
+	use TExecuteSafe;
+	
+	
+	/** @var RawRequest */
+	private $request;
+	
+	/** @var IConnection */
+	private $connection;
+	
+	
+	public function __construct(IConnection $connection)
+	{
+		$this->connection = $connection;
+		$this->request = new RawRequest();
+	}
 	
 	
 	public function setBody($body): ICmdDirect
 	{
-		$this->request()->setBody($body);
+		$this->request->setBody($body);
 		return $this;
 	}
 	
 	public function setHeader(string $name, string $value): ICmdDirect
 	{
-		$this->request()->setHeader($name, $value);
+		$this->request->setHeader($name, $value);
 		return $this;
 	}
 	
 	public function setHeaders(array $headers): ICmdDirect
 	{
-		$this->request()->setHeaders($headers);
+		$this->request->setHeaders($headers);
 		return $this;
 	}
 	
 	public function setURI(string $uri): ICmdDirect
 	{
-		$this->request()->setURI($uri);
+		$this->request->setURI($uri);
 		return $this;
 	}
 	
 	public function setQueryParam(string $param, $value): ICmdDirect
 	{
-		$this->request()->setQueryParam($param, $value);
+		$this->request->setQueryParam($param, $value);
 		return $this;
 	}
 	
 	public function setJsonQueryParam(string $param, $value): ICmdDirect
 	{
-		$this->request()->setJsonQueryParam($param, $value);
+		$this->request->setJsonQueryParam($param, $value);
 		return $this;
 	}
 	
 	public function setQueryParams(array $params): ICmdDirect
 	{
-		$this->request()->setQueryParams($params);
+		$this->request->setQueryParams($params);
 		return $this;
 	}
 	
 	public function setJsonQueryParams(array $params): ICmdDirect
 	{
-		$this->request()->setJsonQueryParams($params);
+		$this->request->setJsonQueryParams($params);
 		return $this;
 	}
 	
 	public function setMethod(string $method): ICmdDirect
 	{
-		$this->request()->setMethod($method);
+		$this->request->setMethod($method);
 		return $this;
 	}
 	
@@ -90,5 +110,10 @@ class CmdDirect extends AbstractSingleRequest implements ICmdDirect
 	public function setDELETE(): ICmdDirect
 	{
 		return $this->setMethod(Method::DELETE);
+	}
+	
+	public function execute(): IRawResponse
+	{
+		return $this->connection->request($this->request);
 	}
 }
