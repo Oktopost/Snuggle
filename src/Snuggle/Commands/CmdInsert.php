@@ -9,11 +9,12 @@ use Snuggle\Base\Connection\Response\IRawResponse;
 use Snuggle\Commands\Common\TQuery;
 use Snuggle\Commands\Abstraction\TExecuteSafe;
 
-use Snuggle\Connection\Parsers\OkResponse;
 use Snuggle\Core\Doc;
 use Snuggle\Connection\Method;
-use Snuggle\Exceptions\SnuggleException;
+use Snuggle\Connection\Parsers\OkResponse;
 use Snuggle\Connection\Request\RawRequest;
+
+use Snuggle\Exceptions\SnuggleException;
 
 
 class CmdInsert implements ICmdInsert
