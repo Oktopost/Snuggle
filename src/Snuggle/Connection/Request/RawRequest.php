@@ -69,13 +69,13 @@ class RawRequest implements IRawRequest
 		{
 			$this->body = $body;
 		}
-		else if (is_array($body) && $body && $body[0] instanceof LiteObject)
+		else if (is_array($body) && isset($body[0]) && $body[0] instanceof LiteObject)
 		{
 			$this->body = Mapper::getJsonFor($body);
 		}
 		else if (is_array($body) || $body instanceof \stdClass)
 		{
-			$this->body = json_encode($body);
+			$this->body = json_encode($body, JSON_FORCE_OBJECT);
 		}
 		else if ($body instanceof LiteObject)
 		{

@@ -67,12 +67,12 @@ class RawResponse implements IRawResponse
 	
 	public function isSuccessful(): bool
 	{
-		return $this->code / 100 == 2;
+		return floor($this->code / 100) == 2;
 	}
 	
 	public function isFailed(): bool
 	{
-		return $this->code / 100 != 2;
+		return floor($this->code / 100) != 2;
 	}
 	
 	public function isNotFound(): bool
@@ -82,7 +82,7 @@ class RawResponse implements IRawResponse
 	
 	public function isServerError(): bool
 	{
-		return $this->code / 100 == 5;
+		return floor($this->code / 100) == 5;
 	}
 	
 	public function getHeader(string $name): ?string
