@@ -2,16 +2,13 @@
 namespace Snuggle\Base\Commands;
 
 
-use Snuggle\Base\ICommand;
-
-
-interface IDocCommand extends ICommand
+interface IDocCommand
 {
 	/**
 	 * @param string $db
 	 * @return IDocCommand|static
 	 */
-	public function from(string $db): IDocCommand;
+	public function db(string $db): IDocCommand;
 	
 	/**
 	 * @param string $rev

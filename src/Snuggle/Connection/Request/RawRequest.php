@@ -15,7 +15,7 @@ class RawRequest implements IRawRequest
 	private $uri = '';
 	private $method = Method::GET;
 	
-	/** @var string|null */
+	/** @var string|null */	
 	private $body = null;
 	
 	/** @var string[] */
@@ -162,7 +162,8 @@ class RawRequest implements IRawRequest
 	{
 		$request = new RawRequest();
 		
-		return $request->setURI($uri)
+		return $request
+			->setURI($uri)
 			->setQueryParams($params)
 			->setMethod($method);
 	}

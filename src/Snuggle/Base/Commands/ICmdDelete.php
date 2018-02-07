@@ -2,7 +2,7 @@
 namespace Snuggle\Base\Commands;
 
 
-interface ICmdDelete extends IExecutable, IQuery, IDocCommand
+interface ICmdDelete extends IExecute, IQuery, IQueryRevision, IDocCommand
 {
 	/**
 	 * @param bool $isAsBatch

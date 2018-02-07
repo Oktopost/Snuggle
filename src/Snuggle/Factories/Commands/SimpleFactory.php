@@ -2,6 +2,7 @@
 namespace Snuggle\Factories\Commands;
 
 
+use Snuggle\Base\Commands\ICmdStore;
 use Snuggle\Base\IConnection;
 use Snuggle\Base\Commands\ICmdDB;
 use Snuggle\Base\Commands\ICmdGet;
@@ -17,7 +18,7 @@ use Snuggle\Commands\CmdDelete;
 use Snuggle\Commands\CmdDirect;
 use Snuggle\Commands\CmdInsert;
 use Snuggle\Commands\CmdServer;
-use Snuggle\Commands\Conflict\Templates\DeleteResolution;
+use Snuggle\Commands\CmdStore;
 
 
 class SimpleFactory implements ICommandFactory
@@ -44,11 +45,16 @@ class SimpleFactory implements ICommandFactory
 	
 	public function delete(IConnection $connection): ICmdDelete
 	{
-		return new CmdDelete(new DeleteResolution($connection));
+		return new CmdDelete($connection);
 	}
 	
 	public function insert(IConnection $connection): ICmdInsert
 	{
 		return new CmdInsert($connection);
+	}
+	
+	public function store(IConnection $connection): ICmdStore
+	{
+		return new CmdStore($connection);
 	}
 }

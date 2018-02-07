@@ -2,10 +2,7 @@
 namespace Snuggle\Base\Commands;
 
 
-use Snuggle\Base\ICommand;
-
-
-interface IQuery extends ICommand
+interface IQuery
 {
 	public function queryCode(): int;
 	public function queryBool(): bool;

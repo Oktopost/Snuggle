@@ -2,17 +2,20 @@
 namespace Snuggle\Commands;
 
 
+use Snuggle\Base\IConnection;
 use Snuggle\Base\Commands\ICmdDelete;
 use Snuggle\Base\Commands\IDocCommand;
-use Snuggle\Base\Commands\Conflict\IDeleteResolution;
-use Snuggle\Base\Commands\Conflict\IDocConflictableCommand;
+use Snuggle\Base\Conflict\Commands\IDeleteConflictCommand;
+use Snuggle\Base\Conflict\Resolvers\IDeleteDocResolver;
 use Snuggle\Base\Connection\Request\IRawRequest;
 use Snuggle\Base\Connection\Response\IRawResponse;
 
-use Snuggle\Commands\Common\TQuery;
+use Snuggle\Commands\Abstraction\TQuery;
 use Snuggle\Commands\Abstraction\TDocCommand;
 use Snuggle\Commands\Abstraction\TExecuteSafe;
+use Snuggle\Commands\Abstraction\TQueryRevision;
 
+use Snuggle\Conflict\Resolvers\DeleteDocResolver;
 use Snuggle\Connection\Method;
 use Snuggle\Connection\Request\RawRequest;
 
@@ -20,33 +23,39 @@ use Snuggle\Exceptions\FatalSnuggleException;
 use Snuggle\Exceptions\Http\NotFoundException;
 
 
-class CmdDelete implements ICmdDelete, IDocConflictableCommand
+class CmdDelete implements ICmdDelete, IDeleteConflictCommand
 {
 	use TQuery;
 	use TDocCommand;
 	use TExecuteSafe;
+	use TQueryRevision;
 	
 	
 	private $params				= [];
 	private $failOnNotFound		= false;
 	
-	/** @var IDeleteResolution */
+	/** @var IDeleteDocResolver */
+	private $resolver;
+	
+	/** @var IConnection */
 	private $connection;
 	
 	
-	private function validate(): void
+	private function loadRevision(): void
 	{
-		if ($this->getDB() && $this->getDocID() && isset($this->params['rev']))
-			return;
+		$get = new CmdGet($this->connection);
+		$rev = $get->doc($this->getDB(), $this->getDocID())->queryRevision();
 		
-		throw new FatalSnuggleException('DB name, document id and revision must be set for the delete command');
+		$this->rev($rev);
 	}
 	
 	
-	public function __construct(IDeleteResolution $connection)
+	public function __construct(IConnection $connection)
 	{
 		$this->connection = $connection;
-		$this->connection->overrideConflict();
+		
+		$this->resolver = new DeleteDocResolver($this->connection);
+		$this->resolver->overrideConflict();
 	}
 	
 	
@@ -79,7 +88,7 @@ class CmdDelete implements ICmdDelete, IDocConflictableCommand
 	 */
 	public function ignoreConflict(): ICmdDelete
 	{
-		$this->connection->ignoreConflict();
+		$this->resolver->ignoreConflict();
 		return $this;
 	}
 	
@@ -88,7 +97,7 @@ class CmdDelete implements ICmdDelete, IDocConflictableCommand
 	 */
 	public function overrideConflict(): ICmdDelete
 	{
-		$this->connection->overrideConflict();
+		$this->resolver->overrideConflict();
 		return $this;
 	}
 	
@@ -97,7 +106,7 @@ class CmdDelete implements ICmdDelete, IDocConflictableCommand
 	 */
 	public function failOnConflict(): ICmdDelete
 	{
-		$this->connection->failOnConflict();
+		$this->resolver->failOnConflict();
 		return $this;
 	}
 	
@@ -107,7 +116,7 @@ class CmdDelete implements ICmdDelete, IDocConflictableCommand
 	 */
 	public function resolveConflict(callable $callback): ICmdDelete
 	{
-		$this->connection->resolveConflict($callback);
+		$this->resolver->resolveConflict($callback);
 		return $this;
 	}
 	
@@ -123,11 +132,11 @@ class CmdDelete implements ICmdDelete, IDocConflictableCommand
 	
 	public function execute(): IRawResponse
 	{
-		$this->validate();
+		$this->requireDBAndDocID();
 		
 		try
 		{
-			return $this->connection->execute($this);
+			return $this->resolver->execute($this);
 		}
 		catch (NotFoundException $e)
 		{
@@ -140,6 +149,9 @@ class CmdDelete implements ICmdDelete, IDocConflictableCommand
 	
 	public function assemble(): IRawRequest
 	{
+		if (!isset($this->params['rev']))
+			$this->loadRevision();
+		
 		return RawRequest::create(
 			$this->uri(),
 			Method::DELETE,

@@ -4,7 +4,8 @@ namespace Snuggle\Base\Commands;
 
 use Snuggle\Core\Doc;
 
-interface ICmdInsert extends IExecutable, IQuery
+
+interface ICmdInsert extends IExecute, IQuery, IQueryRevision
 {
 	/**
 	 * @param string $db
@@ -31,12 +32,4 @@ interface ICmdInsert extends IExecutable, IQuery
 	 * @return ICmdInsert|static
 	 */
 	public function data($data, $value = null): ICmdInsert;
-	
-	/**
-	 * Return the ETag of the inserted document.
-	 * @return string
-	 */
-	public function queryETag(): string;
-	
-	public function queryDoc(): Doc;
 }

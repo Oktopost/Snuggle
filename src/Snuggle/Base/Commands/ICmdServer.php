@@ -2,11 +2,10 @@
 namespace Snuggle\Base\Commands;
 
 
-use Snuggle\Base\ICommand;
 use Snuggle\Core\Server\Index;
 
 
-interface ICmdServer extends ICommand
+interface ICmdServer
 {
 	public function info(): Index;
 }

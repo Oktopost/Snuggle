@@ -3,17 +3,34 @@ namespace Snuggle\Commands\Abstraction;
 
 
 use Snuggle\Base\Commands\IDocCommand;
+use Snuggle\Exceptions\SnuggleException;
 
 
 trait TDocCommand
 {
-	private $_db;
-	private $_id;
+	private $_db = null;
+	private $_id = null;
+	
+	
+	private function requireDB(): void
+	{
+		if (!$this->_db)
+			throw new SnuggleException('DB name must be set');
+	}
+	
+	private function requireDBAndDocID(): void
+	{
+		if (!$this->_db || !$this->_id)
+			throw new SnuggleException('DB name and document ID must be set');
+	}
 	
 	
 	protected function uri(): string
 	{
-		return $this->_db . '/' . $this->_id;
+		if ($this->_id)
+			return $this->_db . '/' . $this->_id;
+		
+		return $this->_db;
 	}
 	
 	
@@ -32,7 +49,7 @@ trait TDocCommand
 	 * @param string $db
 	 * @return IDocCommand|static
 	 */
-	public function from(string $db): IDocCommand
+	public function db(string $db): IDocCommand
 	{
 		$this->_db = $db;
 		return $this;

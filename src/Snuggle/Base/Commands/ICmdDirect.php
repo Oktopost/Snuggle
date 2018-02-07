@@ -2,7 +2,7 @@
 namespace Snuggle\Base\Commands;
 
 
-interface ICmdDirect extends IExecutable, IQuery
+interface ICmdDirect extends IExecute, IQuery
 {
 	public function setBody($body): ICmdDirect;
 	public function setHeader(string $name, string $value): ICmdDirect;

@@ -3,8 +3,8 @@ namespace Snuggle\Commands;
 
 
 use Snuggle\Base\IConnection;
-use Snuggle\Core\Server\Index;
 use Snuggle\Base\Commands\ICmdServer;
+use Snuggle\Core\Server\Index;
 use Snuggle\Exceptions\SnuggleException;
 
 

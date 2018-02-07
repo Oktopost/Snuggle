@@ -6,6 +6,7 @@ use Snuggle\Base\IConnector;
 use Snuggle\Base\IConnection;
 use Snuggle\Base\Commands\ICmdDB;
 use Snuggle\Base\Commands\ICmdGet;
+use Snuggle\Base\Commands\ICmdStore;
 use Snuggle\Base\Commands\ICmdInsert;
 use Snuggle\Base\Commands\ICmdDelete;
 use Snuggle\Base\Commands\ICmdDirect;
@@ -71,5 +72,10 @@ class Connector implements IConnector
 	public function insert(): ICmdInsert
 	{
 		return $this->factory->insert($this->connection);
+	}
+	
+	public function store(): ICmdStore
+	{
+		return $this->factory->store($this->connection);
 	}
 }

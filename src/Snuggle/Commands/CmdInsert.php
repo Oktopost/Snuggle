@@ -6,12 +6,11 @@ use Snuggle\Base\IConnection;
 use Snuggle\Base\Commands\ICmdInsert;
 use Snuggle\Base\Connection\Response\IRawResponse;
 
-use Snuggle\Commands\Common\TQuery;
+use Snuggle\Commands\Abstraction\TQuery;
 use Snuggle\Commands\Abstraction\TExecuteSafe;
+use Snuggle\Commands\Abstraction\TQueryRevision;
 
-use Snuggle\Core\Doc;
 use Snuggle\Connection\Method;
-use Snuggle\Connection\Parsers\OkResponse;
 use Snuggle\Connection\Request\RawRequest;
 
 use Snuggle\Exceptions\SnuggleException;
@@ -20,6 +19,7 @@ use Snuggle\Exceptions\SnuggleException;
 class CmdInsert implements ICmdInsert
 {
 	use TQuery;
+	use TQueryRevision;
 	use TExecuteSafe;
 	
 	
@@ -89,25 +89,6 @@ class CmdInsert implements ICmdInsert
 		return $this;
 	}
 	
-	/**
-	 * Return the ETag of the inserted document.
-	 * @return string
-	 */
-	public function queryETag(): string
-	{
-		$tag = $this->queryHeaders()['ETag'] ?? null;
-		
-		if (is_null($tag))
-			throw new SnuggleException('No ETag returned for new object');
-		
-		$tag = json_decode($tag);
-		
-		if (is_null($tag))
-			throw new SnuggleException('Malformed ETag for new object');
-		
-		return $tag;
-	}
-	
 	public function execute(): IRawResponse
 	{
 		if (!$this->db)
@@ -132,24 +113,5 @@ class CmdInsert implements ICmdInsert
 			->setBody($this->data);
 		
 		return $this->connection->request($request);
-	}
-	
-	public function queryDoc(): Doc
-	{
-		$result = $this->execute();
-		OkResponse::parse($result);
-		
-		$body = $result->getJsonBody();
-		
-		if (!isset($body['id']) || !isset($body['rev']))
-			throw new SnuggleException('Malformed response for new document');
-		
-		$doc = new Doc();
-		
-		$doc->ID = $body['id'] ?? '';
-		$doc->Rev = $body['rev'] ?? '';
-		$doc->Data = $this->data;
-		
-		return $doc;
 	}
 }

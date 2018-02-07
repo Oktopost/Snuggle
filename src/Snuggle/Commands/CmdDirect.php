@@ -6,7 +6,7 @@ use Snuggle\Base\IConnection;
 use Snuggle\Base\Commands\ICmdDirect;
 use Snuggle\Base\Connection\Response\IRawResponse;
 
-use Snuggle\Commands\Common\TQuery;
+use Snuggle\Commands\Abstraction\TQuery;
 use Snuggle\Commands\Abstraction\TExecuteSafe;
 
 use Snuggle\Connection\Method;

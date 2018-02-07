@@ -2,10 +2,10 @@
 namespace Snuggle\Commands;
 
 
+use Snuggle\Core\DB\DBInfo;
 use Snuggle\Base\IConnection;
 use Snuggle\Base\Commands\ICmdDB;
 
-use Snuggle\Core\DB\DBInfo;
 use Snuggle\Connection\Method;
 use Snuggle\Connection\Parsers\OkResponse;
 use Snuggle\Connection\Parsers\DB\DBInfoParser;

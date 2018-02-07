@@ -2,18 +2,20 @@
 namespace Snuggle\Commands;
 
 
+use Snuggle\Core\Doc;
 use Snuggle\Base\IConnection;
 use Snuggle\Base\Commands\ICmdGet;
 use Snuggle\Base\Commands\IDocCommand;
 use Snuggle\Base\Connection\Response\IRawResponse;
 
-use Snuggle\Core\Doc;
-use Snuggle\Commands\Common\TQuery;
+use Snuggle\Commands\Abstraction\TQuery;
 use Snuggle\Commands\Abstraction\TDocCommand;
 use Snuggle\Commands\Abstraction\TExecuteSafe;
-use Snuggle\Connection\Method;
+use Snuggle\Commands\Abstraction\TQueryRevision;
 use Snuggle\Exceptions\FatalSnuggleException;
 use Snuggle\Exceptions\Http\NotFoundException;
+
+use Snuggle\Connection\Method;
 use Snuggle\Connection\Parsers\SingleDocParser;
 
 use Structura\Arrays;
@@ -24,6 +26,7 @@ class CmdGet implements ICmdGet
 	use TQuery;
 	use TDocCommand;
 	use TExecuteSafe;
+	use TQueryRevision;
 	
 	
 	private $params = [];

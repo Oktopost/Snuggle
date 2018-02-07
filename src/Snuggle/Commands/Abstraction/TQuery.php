@@ -1,5 +1,5 @@
 <?php
-namespace Snuggle\Commands\Common;
+namespace Snuggle\Commands\Abstraction;
 
 
 use Snuggle\Base\Connection\Response\IRawResponse;
