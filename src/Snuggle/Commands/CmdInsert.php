@@ -79,7 +79,7 @@ class CmdInsert implements ICmdInsert
 	 * @param mixed|null $value
 	 * @return ICmdInsert|static
 	 */
-	public function data($data, $value = null): ICmdInsert
+	public function document($data, $value = null): ICmdInsert
 	{
 		if (is_array($data))
 			$this->data = $data;

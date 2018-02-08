@@ -4,6 +4,7 @@ namespace Snuggle\Connection;
 
 use Snuggle\Base\IConnector;
 use Snuggle\Base\IConnection;
+
 use Snuggle\Base\Commands\ICmdDB;
 use Snuggle\Base\Commands\ICmdGet;
 use Snuggle\Base\Commands\ICmdStore;
@@ -11,6 +12,8 @@ use Snuggle\Base\Commands\ICmdInsert;
 use Snuggle\Base\Commands\ICmdDelete;
 use Snuggle\Base\Commands\ICmdDirect;
 use Snuggle\Base\Commands\ICmdServer;
+use Snuggle\Base\Commands\ICmdBulkInsert;
+
 use Snuggle\Base\Factories\ICommandFactory;
 
 
@@ -77,5 +80,10 @@ class Connector implements IConnector
 	public function store(): ICmdStore
 	{
 		return $this->factory->store($this->connection);
+	}
+	
+	public function bulkInsert(): ICmdBulkInsert
+	{
+		return $this->factory->bulkInsert($this->connection);
 	}
 }

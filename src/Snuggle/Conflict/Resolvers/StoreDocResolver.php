@@ -51,7 +51,7 @@ class StoreDocResolver extends AbstractDocResolver implements IStoreDocResolver
 				{
 					if (is_array($value) && !key_exists(0, $value))
 					{
-						$a[$key] = mergeRecursive($a[$key], $arr[$key]);
+						$a[$key] = $this->mergeRecursive($a[$key], $arr[$key]);
 					}
 				}
 				else

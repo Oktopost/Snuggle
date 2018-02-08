@@ -2,9 +2,6 @@
 namespace Snuggle\Base\Commands;
 
 
-use Snuggle\Core\Doc;
-
-
 interface ICmdInsert extends IExecute, IQuery, IQueryRevision
 {
 	/**
@@ -31,5 +28,5 @@ interface ICmdInsert extends IExecute, IQuery, IQueryRevision
 	 * @param mixed|null $value
 	 * @return ICmdInsert|static
 	 */
-	public function data($data, $value = null): ICmdInsert;
+	public function document($data, $value = null): ICmdInsert;
 }

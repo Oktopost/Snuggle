@@ -26,16 +26,13 @@ class SingleDocParser
 	}
 	
 	
-	public static function parse(IRawResponse $response): Doc
+	public static function parseData(array $body): Doc
 	{
-		$body = $response->getJsonBody();
-		$body = is_array($body) ? $body : [];
-		
 		$doc = new Doc();
 		$doc->setSource($body);
 		
 		$doc->ID 	= $body['_id'] ?? '';
-		$doc->Rev	= $body['_rev'];
+		$doc->Rev	= $body['_rev'] ?? null;
 		$doc->Data	= self::getData($body);
 		
 		if (isset($body['_deleted']))
@@ -63,5 +60,13 @@ class SingleDocParser
 		}
 		
 		return $doc;
+	}
+	
+	public static function parse(IRawResponse $response): Doc
+	{
+		$body = $response->getJsonBody();
+		$body = is_array($body) ? $body : [];
+		
+		return self::parseData($body);
 	}
 }

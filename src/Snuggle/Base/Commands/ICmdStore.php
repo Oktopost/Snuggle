@@ -51,5 +51,5 @@ interface ICmdStore extends IExecute, IQuery, IQueryRevision, IDocCommand
 	 * @param mixed|null $value
 	 * @return ICmdStore|static
 	 */
-	public function data($data, $value = null): ICmdStore;
+	public function document($data, $value = null): ICmdStore;
 }

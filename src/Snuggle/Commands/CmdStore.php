@@ -102,7 +102,7 @@ class CmdStore implements ICmdStore, IStoreConflictCommand
 	
 	public function setBody(array $body): void
 	{
-		$this->data($body);
+		$this->document($body);
 	}
 	
 	/**
@@ -120,7 +120,7 @@ class CmdStore implements ICmdStore, IStoreConflictCommand
 	 * @param mixed|null $value
 	 * @return ICmdStore|static
 	 */
-	public function data($data, $value = null): ICmdStore
+	public function document($data, $value = null): ICmdStore
 	{
 		if (is_array($data))
 		{
@@ -158,9 +158,8 @@ class CmdStore implements ICmdStore, IStoreConflictCommand
 		if ($this->rev)
 			$params['rev']= $this->rev;
 		
-		$request = RawRequest::create($uri, $method, $params)
-			->setHeader('Content-Type', 'application/json')
-			->setBody($this->data);
+		$request = RawRequest::create($uri, $method, $params);
+		$request->setBody($this->data);
 		
 		return $request;
 	}

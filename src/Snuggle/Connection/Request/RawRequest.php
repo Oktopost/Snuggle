@@ -5,8 +5,8 @@ namespace Snuggle\Connection\Request;
 use Objection\Mapper;
 use Objection\LiteObject;
 
-use Snuggle\Connection\Method;
 use Snuggle\Base\Connection\Request\IRawRequest;
+use Snuggle\Connection\Method;
 use Snuggle\Exceptions\InvalidBodyException;
 
 
@@ -23,6 +23,15 @@ class RawRequest implements IRawRequest
 	
 	/** @var string[] */
 	private $headers = [];
+	
+	
+	public function __construct(?string $uri = null)
+	{
+		if ($uri)
+			$this->setURI($uri);
+		
+		$this->setHeader('Content-Type', 'application/json');
+	}
 	
 	
 	public function setURI(string $uri = ''): RawRequest
@@ -75,7 +84,10 @@ class RawRequest implements IRawRequest
 		}
 		else if (is_array($body) || $body instanceof \stdClass)
 		{
-			$this->body = json_encode($body, JSON_FORCE_OBJECT);
+			if (!((array)$body))
+				$this->body = '{}';
+			else
+				$this->body = json_encode($body);
 		}
 		else if ($body instanceof LiteObject)
 		{
@@ -141,6 +153,30 @@ class RawRequest implements IRawRequest
 	public function getMethod(): string
 	{
 		return $this->method;
+	}
+	
+	public function setGet(): RawRequest
+	{
+		$this->method = Method::GET;
+		return $this;
+	}
+	
+	public function setPost(): RawRequest
+	{
+		$this->method = Method::POST;
+		return $this;
+	}
+	
+	public function setPut(): RawRequest
+	{
+		$this->method = Method::PUT;
+		return $this;
+	}
+	
+	public function setDelete(): RawRequest
+	{
+		$this->method = Method::DELETE;
+		return $this;
 	}
 	
 	
