@@ -4,7 +4,9 @@ namespace Snuggle\Commands;
 
 use Snuggle\Base\IConnection;
 use Snuggle\Base\Commands\ICmdServer;
+
 use Snuggle\Core\Server\Index;
+
 use Snuggle\Exceptions\SnuggleException;
 
 
@@ -19,6 +21,11 @@ class CmdServer implements ICmdServer
 		$this->connection = $connection;
 	}
 	
+	
+	public function databases(): array
+	{
+		return $this->connection->request('/_all_dbs')->getJsonBody();
+	}
 	
 	public function info(): Index
 	{

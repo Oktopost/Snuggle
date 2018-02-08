@@ -119,6 +119,8 @@ class Config implements IConfig
 				throw new FatalSnuggleException('Provided Item is not a valid connection decorator');
 			}
 		}
+		
+		return $this;
 	}
 	
 	/**

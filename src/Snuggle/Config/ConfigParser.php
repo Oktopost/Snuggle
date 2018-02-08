@@ -10,7 +10,7 @@ class ConfigParser
 	use TStaticClass;
 	
 	
-	private const DEFAULT_PORT		= 5986;
+	private const DEFAULT_PORT		= 5984;
 	private const DEFAULT_HOST		= 'localhost';
 	private const DEFAULT_PROTOCOL	= 'http';
 	

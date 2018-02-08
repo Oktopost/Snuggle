@@ -23,7 +23,7 @@ class ConnectionConfig extends LiteObject
 		return [
 			'Protocol'	=> LiteSetup::createString('http'),
 			'URI'		=> LiteSetup::createString('localhost'),
-			'Port'		=> LiteSetup::createInt(5986),
+			'Port'		=> LiteSetup::createInt(5984),
 			'User'		=> LiteSetup::createString(null),
 			'Password'	=> LiteSetup::createString(null),
 		];
