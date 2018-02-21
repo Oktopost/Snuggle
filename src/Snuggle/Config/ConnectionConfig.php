@@ -33,7 +33,10 @@ class ConnectionConfig extends LiteObject
 	public function __debugInfo()
 	{
 		$result = parent::__debugInfo();
-		unset($result['Password']);
+		
+		if ($result['Password'])
+			$result['Password'] = '********';
+		
 		return $result;
 	}
 	

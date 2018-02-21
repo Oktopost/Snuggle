@@ -26,6 +26,21 @@ class CmdDirect implements ICmdDirect
 	private $connection;
 	
 	
+	private function setData(string $method, ?string $uri = null, array $params = [], string $body = null): CmdDirect
+	{
+		if ($uri)
+			$this->setURI($uri);
+		
+		if ($params)
+			$this->setQueryParams($params);
+		
+		if ($body)
+			$this->setBody($body);
+		
+		return $this->setMethod($method);
+	}
+	
+	
 	public function __construct(IConnection $connection)
 	{
 		$this->connection = $connection;
@@ -87,29 +102,29 @@ class CmdDirect implements ICmdDirect
 		return $this;
 	}
 	
-	public function setGET(): ICmdDirect
+	public function setGET(?string $uri = null, array $params = []): ICmdDirect
 	{
-		return $this->setMethod(Method::GET);
+		return $this->setData(Method::GET, $uri, $params);
 	}
 	
-	public function setHEAD(): ICmdDirect
+	public function setHEAD(?string $uri = null, array $params = []): ICmdDirect
 	{
-		return $this->setMethod(Method::HEAD);
+		return $this->setData(Method::HEAD, $uri, $params);
 	}
 	
-	public function setPUT(): ICmdDirect
+	public function setPUT(?string $uri = null, array $params = [], string $body = null): ICmdDirect
 	{
-		return $this->setMethod(Method::PUT);
+		return $this->setData(Method::PUT, $uri, $params, $body);
 	}
 	
-	public function setPOST(): ICmdDirect
+	public function setPOST(?string $uri = null, array $params = [], string $body = null): ICmdDirect
 	{
-		return $this->setMethod(Method::POST);
+		return $this->setData(Method::POST, $uri, $params, $body);
 	}
 	
-	public function setDELETE(): ICmdDirect
+	public function setDELETE(?string $uri = null, array $params = []): ICmdDirect
 	{
-		return $this->setMethod(Method::DELETE);
+		return $this->setData(Method::DELETE, $uri, $params);
 	}
 	
 	public function execute(): IRawResponse

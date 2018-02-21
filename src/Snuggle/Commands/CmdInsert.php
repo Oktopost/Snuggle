@@ -81,7 +81,9 @@ class CmdInsert implements ICmdInsert
 	 */
 	public function document($data, $value = null): ICmdInsert
 	{
-		if (is_array($data))
+		if ($data instanceof \stdClass)
+			$this->data = (array)$data;
+		else if (is_array($data))
 			$this->data = $data;
 		else
 			$this->data[$data] = $value;

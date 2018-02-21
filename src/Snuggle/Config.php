@@ -13,8 +13,6 @@ use Snuggle\Config\IConfigLoader;
 use Snuggle\Config\ConnectionConfig;
 use Snuggle\Config\ConnectionConfigsManager;
 
-use Snuggle\Connection\ConnectorBuilder;
-
 use Snuggle\Exceptions\FatalSnuggleException;
 use Snuggle\Factories\Commands\SimpleFactory;
 use Snuggle\Factories\Connections\HttpfullFactory;

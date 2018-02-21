@@ -40,7 +40,8 @@ class DBInfo extends LiteObject implements IMappedObject
 			'DeletedDocsCount'	=> LiteSetup::createInt(0),
 			'UpdateSeq'			=> LiteSetup::createString(),
 			'PurgeSeq'			=> LiteSetup::createInt(0),
-			'Sizes'				=> LiteSetup::createInstanceOf(DBSizeInfo::class)
+			'Sizes'				=> LiteSetup::createInstanceOf(DBSizeInfo::class),
+			'Cluster'			=> LiteSetup::createInstanceOf(DBClusterInfo::class)
 		];
 	}
 	
@@ -48,6 +49,8 @@ class DBInfo extends LiteObject implements IMappedObject
 	public function __construct()
 	{
 		parent::__construct();
-		$this->Sizes = new DBSizeInfo();       
+		
+		$this->Sizes	= new DBSizeInfo();
+		$this->Cluster	= new DBClusterInfo();       
 	}
 }

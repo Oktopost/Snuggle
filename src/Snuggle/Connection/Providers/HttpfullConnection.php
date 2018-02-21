@@ -51,6 +51,12 @@ class HttpfullConnection implements IConnection
 			->method($request->getMethod())
 			->addHeaders($request->getHeaders());
 		
+		if ($this->config->hasCredentials())
+		{
+			$httpfullRequest
+				->authenticateWith($this->config->User, $this->config->Password);
+		}
+		
 		if ($request->hasBody())
 		{
 			$httpfullRequest->body($request->getBody());
