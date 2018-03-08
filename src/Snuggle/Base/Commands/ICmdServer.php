@@ -9,4 +9,5 @@ interface ICmdServer
 {
 	public function databases(): array;
 	public function info(): Index;
+	public function UUIDs(int $count = 20): array;
 }
