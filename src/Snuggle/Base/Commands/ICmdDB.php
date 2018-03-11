@@ -11,4 +11,5 @@ interface ICmdDB
 	public function exists(string $name): bool;
 	public function drop(string $name): void;
 	public function info(string $name): DBInfo;
+	public function compact(string $name): void;
 }

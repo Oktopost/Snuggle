@@ -65,4 +65,9 @@ class CmdDB implements ICmdDB
 	{
 		return DBInfoParser::parse($this->connection->request($name));
 	}
+	
+	public function compact(string $name): void
+	{
+		OkResponse::parse($this->connection->request($name . '/_compact', Method::POST));
+	}
 }
