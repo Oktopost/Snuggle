@@ -19,7 +19,6 @@ use Snuggle\Conflict\Resolvers\DeleteDocResolver;
 use Snuggle\Connection\Method;
 use Snuggle\Connection\Request\RawRequest;
 
-use Snuggle\Exceptions\FatalSnuggleException;
 use Snuggle\Exceptions\Http\NotFoundException;
 
 
