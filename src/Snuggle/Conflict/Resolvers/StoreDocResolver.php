@@ -5,7 +5,7 @@ namespace Snuggle\Conflict\Resolvers;
 use Snuggle\Core\Doc;
 
 use Snuggle\Base\Conflict\Commands\IStoreConflictCommand;
-use Snuggle\Base\Conflict\Commands\Generic\IGetDocConflictCommand;
+use Snuggle\Base\Conflict\Commands\Generic\IGetRevConflictCommand;
 use Snuggle\Base\Conflict\Resolvers\IStoreDocResolver;
 use Snuggle\Base\Connection\Response\IRawResponse;
 
@@ -65,7 +65,7 @@ class StoreDocResolver extends AbstractDocResolver implements IStoreDocResolver
 	}
 	
 	
-	protected function getCommand(): IGetDocConflictCommand
+	protected function getCommand(): IGetRevConflictCommand
 	{
 		return $this->command;
 	}

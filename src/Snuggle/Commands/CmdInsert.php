@@ -7,6 +7,7 @@ use Snuggle\Base\Commands\ICmdInsert;
 use Snuggle\Base\Connection\Response\IRawResponse;
 
 use Snuggle\Commands\Abstraction\TQuery;
+use Snuggle\Commands\Abstraction\TDocCommand;
 use Snuggle\Commands\Abstraction\TExecuteSafe;
 use Snuggle\Commands\Abstraction\TQueryRevision;
 
@@ -21,6 +22,7 @@ class CmdInsert implements ICmdInsert
 	use TQuery;
 	use TQueryRevision;
 	use TExecuteSafe;
+	use TDocCommand;
 	
 	
 	private $db	= null;
@@ -65,21 +67,11 @@ class CmdInsert implements ICmdInsert
 	}
 	
 	/**
-	 * @param string $id
-	 * @return ICmdInsert|static
-	 */
-	public function setID(string $id): ICmdInsert
-	{
-		$this->id = $id;
-		return $this;
-	}
-	
-	/**
 	 * @param array|string $data
 	 * @param mixed|null $value
 	 * @return ICmdInsert|static
 	 */
-	public function document($data, $value = null): ICmdInsert
+	public function data($data, $value = null): ICmdInsert
 	{
 		if ($data instanceof \stdClass)
 			$this->data = (array)$data;
@@ -115,5 +107,28 @@ class CmdInsert implements ICmdInsert
 			->setBody($this->data);
 		
 		return $this->connection->request($request);
+	}
+	
+	
+	/**
+	 * @deprecated
+	 * @param array|string $data
+	 * @param mixed|null $value
+	 * @return ICmdInsert|static
+	 */
+	public function document($data, $value = null): ICmdInsert
+	{
+		return $this->data($data, $value);
+	}
+	
+	/**
+	 * @deprecated 
+	 * @param string $id
+	 * @return ICmdInsert
+	 */
+	public function setID(string $id): ICmdInsert
+	{
+		$this->doc($id);
+		return $this;
 	}
 }

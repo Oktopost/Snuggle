@@ -5,7 +5,7 @@ namespace Snuggle\Commands;
 use Snuggle\Core\Doc;
 use Snuggle\Base\IConnection;
 use Snuggle\Base\Commands\ICmdGet;
-use Snuggle\Base\Commands\IDocCommand;
+use Snuggle\Base\Commands\IRevCommand;
 use Snuggle\Base\Connection\Response\IRawResponse;
 
 use Snuggle\Commands\Abstraction\TQuery;
@@ -80,9 +80,9 @@ class CmdGet implements ICmdGet
 	
 	/**
 	 * @param string $rev
-	 * @return IDocCommand|static
+	 * @return IRevCommand|static
 	 */
-	public function rev(string $rev): IDocCommand
+	public function rev(string $rev): IRevCommand
 	{
 		$this->params['rev'] = $rev;
 		return $this;

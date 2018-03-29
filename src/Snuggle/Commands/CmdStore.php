@@ -6,7 +6,8 @@ use Snuggle\Core\Doc;
 
 use Snuggle\Base\IConnection;
 use Snuggle\Base\Commands\ICmdStore;
-use Snuggle\Base\Commands\IDocCommand;
+use Snuggle\Base\Commands\ICmdInsert;
+use Snuggle\Base\Commands\IRevCommand;
 use Snuggle\Base\Conflict\Commands\IStoreConflictCommand;
 use Snuggle\Base\Connection\Request\IRawRequest;
 use Snuggle\Base\Connection\Response\IRawResponse;
@@ -45,10 +46,21 @@ class CmdStore implements ICmdStore, IStoreConflictCommand
 	
 	
 	/**
-	 * @param bool $isAsBatch
-	 * @return ICmdStore|static
+	 * @param string $db
+	 * @param string|null $id
+	 * @return ICmdInsert|static
 	 */
-	public function asBatch($isAsBatch = true): ICmdStore
+	public function into(string $db, string $id = null): ICmdInsert
+	{
+		$this->doc($db, $id);
+		return $this;
+	}
+	
+	/**
+	 * @param bool $isAsBatch
+	 * @return ICmdInsert|static
+	 */
+	public function asBatch($isAsBatch = true): ICmdInsert
 	{
 		$this->asBatch = $isAsBatch;
 		return $this;
@@ -102,14 +114,14 @@ class CmdStore implements ICmdStore, IStoreConflictCommand
 	
 	public function setBody(array $body): void
 	{
-		$this->document($body);
+		$this->data($body);
 	}
 	
 	/**
 	 * @param string $rev
-	 * @return IDocCommand|static
+	 * @return IRevCommand|static
 	 */
-	public function rev(string $rev): IDocCommand
+	public function rev(string $rev): IRevCommand
 	{
 		$this->rev = $rev;
 		return $this;
@@ -118,9 +130,9 @@ class CmdStore implements ICmdStore, IStoreConflictCommand
 	/**
 	 * @param array|string $data
 	 * @param mixed|null $value
-	 * @return ICmdStore|static
+	 * @return ICmdInsert|static
 	 */
-	public function document($data, $value = null): ICmdStore
+	public function data($data, $value = null): ICmdInsert
 	{
 		if (is_array($data))
 		{
@@ -162,5 +174,28 @@ class CmdStore implements ICmdStore, IStoreConflictCommand
 		$request->setBody($this->data);
 		
 		return $request;
+	}
+	
+	
+	/**
+	 * @deprecated
+	 * @param array|string $data
+	 * @param mixed|null $value
+	 * @return ICmdInsert|static
+	 */
+	public function document($data, $value = null): ICmdInsert
+	{
+		return $this->data($data, $value);
+	}
+	
+	/**
+	 * @deprecated 
+	 * @param string $id
+	 * @return ICmdInsert
+	 */
+	public function setID(string $id): ICmdInsert
+	{
+		$this->doc($id);
+		return $this;
 	}
 }

@@ -2,7 +2,7 @@
 namespace Snuggle\Commands\Abstraction;
 
 
-use Snuggle\Base\Commands\IDocCommand;
+use Snuggle\Base\Commands\IRevCommand;
 use Snuggle\Exceptions\SnuggleException;
 
 
@@ -47,9 +47,9 @@ trait TDocCommand
 	
 	/**
 	 * @param string $db
-	 * @return IDocCommand|static
+	 * @return IRevCommand|static
 	 */
-	public function db(string $db): IDocCommand
+	public function db(string $db): IRevCommand
 	{
 		$this->_db = $db;
 		return $this;
@@ -58,9 +58,9 @@ trait TDocCommand
 	/**
 	 * @param string $target Document ID or Database name
 	 * @param string|null $id If set, the documents ID.
-	 * @return IDocCommand|static
+	 * @return IRevCommand|static
 	 */
-	public function doc(string $target, ?string $id = null): IDocCommand
+	public function doc(string $target, ?string $id = null): IRevCommand
 	{
 		if ($id)
 		{

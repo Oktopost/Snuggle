@@ -4,7 +4,7 @@ namespace Snuggle\Commands;
 
 use Snuggle\Base\IConnection;
 use Snuggle\Base\Commands\ICmdDelete;
-use Snuggle\Base\Commands\IDocCommand;
+use Snuggle\Base\Commands\IRevCommand;
 use Snuggle\Base\Conflict\Commands\IDeleteConflictCommand;
 use Snuggle\Base\Conflict\Resolvers\IDeleteDocResolver;
 use Snuggle\Base\Connection\Request\IRawRequest;
@@ -75,9 +75,9 @@ class CmdDelete implements ICmdDelete, IDeleteConflictCommand
 	
 	/**
 	 * @param string $rev
-	 * @return IDocCommand|static
+	 * @return IRevCommand|static
 	 */
-	public function rev(string $rev): IDocCommand
+	public function rev(string $rev): IRevCommand
 	{
 		$this->params['rev'] = $rev;
 		return $this;

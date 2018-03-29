@@ -2,10 +2,10 @@
 namespace Snuggle\Base\Conflict\Commands;
 
 
-use Snuggle\Base\Conflict\Commands\Generic\IGetDocConflictCommand;
+use Snuggle\Base\Conflict\Commands\Generic\IGetRevConflictCommand;
 
 
-interface IDeleteConflictCommand extends IGetDocConflictCommand
+interface IDeleteConflictCommand extends IGetRevConflictCommand
 {
 	
 }

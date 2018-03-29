@@ -2,17 +2,8 @@
 namespace Snuggle\Base\Commands;
 
 
-use Snuggle\Core\Doc;
-
-
-interface ICmdStore extends IExecute, IQuery, IQueryRevision, IDocCommand
+interface ICmdStore extends ICmdInsert, IRevCommand
 {
-	/**
-	 * @param bool $isAsBatch
-	 * @return ICmdStore|static
-	 */
-	public function asBatch($isAsBatch = true): ICmdStore;
-	
 	/**
 	 * @return ICmdStore|static
 	 */
@@ -45,11 +36,4 @@ interface ICmdStore extends IExecute, IQuery, IQueryRevision, IDocCommand
 	 * @return ICmdStore|static
 	 */
 	public function resolveConflict(callable $callback): ICmdStore;
-	
-	/**
-	 * @param array|string|Doc $data
-	 * @param mixed|null $value
-	 * @return ICmdStore|static
-	 */
-	public function document($data, $value = null): ICmdStore;
 }

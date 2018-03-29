@@ -2,7 +2,7 @@
 namespace Snuggle\Base\Commands;
 
 
-interface ICmdInsert extends IExecute, IQuery, IQueryRevision
+interface ICmdInsert extends IExecute, IQuery, IQueryRevision, IDocCommand
 {
 	/**
 	 * @param string $db
@@ -17,16 +17,25 @@ interface ICmdInsert extends IExecute, IQuery, IQueryRevision
 	 */
 	public function asBatch($isAsBatch = true): ICmdInsert;
 	
-	/**
-	 * @param string $id
+	/** 
+	 * @param array|string $data
+	 * @param mixed|null $value
 	 * @return ICmdInsert|static
 	 */
-	public function setID(string $id): ICmdInsert;
+	public function data($data, $value = null): ICmdInsert;
 	
 	/**
+	 * @deprecated 
 	 * @param array|string $data
 	 * @param mixed|null $value
 	 * @return ICmdInsert|static
 	 */
 	public function document($data, $value = null): ICmdInsert;
+	
+	/**
+	 * @deprecated 
+	 * @param string $id
+	 * @return ICmdInsert
+	 */
+	public function setID(string $id): ICmdInsert;
 }

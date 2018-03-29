@@ -8,7 +8,7 @@ use Snuggle\Core\ConflictBehavior;
 use Snuggle\Base\IConnection;
 use Snuggle\Base\Commands\ICmdGet;
 use Snuggle\Base\Conflict\IConflictResolutionTemplate;
-use Snuggle\Base\Conflict\Commands\Generic\IGetDocConflictCommand;
+use Snuggle\Base\Conflict\Commands\Generic\IGetRevConflictCommand;
 use Snuggle\Base\Conflict\Resolvers\Generic\IMergeResolver;
 use Snuggle\Base\Conflict\Resolvers\Generic\ISimpleResolver;
 use Snuggle\Base\Connection\Request\IRawRequest;
@@ -38,7 +38,7 @@ abstract class AbstractDocResolver implements
 	private $connection;
 	
 	
-	protected abstract function getCommand(): IGetDocConflictCommand;
+	protected abstract function getCommand(): IGetRevConflictCommand;
 	
 	
 	protected function callback(): callable 
@@ -46,7 +46,7 @@ abstract class AbstractDocResolver implements
 		return $this->callback;
 	}
 	
-	protected function getGetCommand(IGetDocConflictCommand $command): ICmdGet
+	protected function getGetCommand(IGetRevConflictCommand $command): ICmdGet
 	{
 		$get = new CmdGet($this->connection);
 		return $get->doc($command->getDB(), $command->getDocID());

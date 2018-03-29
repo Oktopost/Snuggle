@@ -6,20 +6,14 @@ interface IDocCommand
 {
 	/**
 	 * @param string $db
-	 * @return IDocCommand|static
+	 * @return IRevCommand|static
 	 */
-	public function db(string $db): IDocCommand;
-	
-	/**
-	 * @param string $rev
-	 * @return IDocCommand|static
-	 */
-	public function rev(string $rev): IDocCommand;
+	public function db(string $db): IRevCommand;
 	
 	/**
 	 * @param string $target Document ID or Database name
 	 * @param string|null $id If set, the documents ID. 
-	 * @return IDocCommand|static
+	 * @return IRevCommand|static
 	 */
-	public function doc(string $target, ?string $id = null): IDocCommand;
+	public function doc(string $target, ?string $id = null): IRevCommand;
 }
