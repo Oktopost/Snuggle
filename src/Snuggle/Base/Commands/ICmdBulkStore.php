@@ -28,12 +28,6 @@ interface ICmdBulkStore extends IStoreConflict
 	
 	public function setMaxRetries(?int $maxRetries = null): ICmdBulkStore;
 	
-	/**
-	 * @param bool $isAsBatch
-	 * @return ICmdBulkStore|static
-	 */
-	public function asBatch($isAsBatch = true): ICmdBulkStore;
-	
 	public function execute(?int $maxRetries = null): IBulkStoreResult;
-	public function executeSafe(\Exception &$e = null, ?int $maxRetries = null): IBulkStoreResult;
+	public function executeSafe(\Exception &$e = null, ?int $maxRetries = null): ?IBulkStoreResult;
 }

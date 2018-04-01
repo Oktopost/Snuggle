@@ -3,12 +3,13 @@ namespace Snuggle\Base\Conflict\Resolvers;
 
 
 use Snuggle\Base\IConnection;
-use Snuggle\Base\Commands\Store\IBulkStoreResult;
 use Snuggle\Base\Connection\Response\IRawResponse;
+use Snuggle\Exceptions\Http\ConflictException;
 
 
 interface IBulkStoreResolution
 {
 	public function setConnection(IConnection $connection): void;
-	public function resolve(IBulkStoreResult $result, IRawResponse $response): ?array;
+	public function setStore(IBulkStoreResolution $store): void;
+	public function resolve(?ConflictException $exception, IRawResponse $response): bool;
 }
