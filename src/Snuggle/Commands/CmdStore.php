@@ -8,6 +8,7 @@ use Snuggle\Base\IConnection;
 use Snuggle\Base\Commands\ICmdStore;
 use Snuggle\Base\Commands\ICmdInsert;
 use Snuggle\Base\Commands\IRevCommand;
+use Snuggle\Base\Commands\IStoreConflict;
 use Snuggle\Base\Conflict\Commands\IStoreConflictCommand;
 use Snuggle\Base\Connection\Request\IRawRequest;
 use Snuggle\Base\Connection\Response\IRawResponse;
@@ -66,37 +67,37 @@ class CmdStore implements ICmdStore, IStoreConflictCommand
 		return $this;
 	}
 	
-	public function ignoreConflict(): ICmdStore
+	public function ignoreConflict(): IStoreConflict
 	{
 		$this->connection->ignoreConflict();
 		return $this;
 	}
 	
-	public function overrideConflict(): ICmdStore
+	public function overrideConflict(): IStoreConflict
 	{
 		$this->connection->overrideConflict();
 		return $this;
 	}
 	
-	public function failOnConflict(): ICmdStore
+	public function failOnConflict(): IStoreConflict
 	{
 		$this->connection->failOnConflict();
 		return $this;
 	}
 	
-	public function mergeNewOnConflict(): ICmdStore
+	public function mergeNewOnConflict(): IStoreConflict
 	{
 		$this->connection->mergeNewOnConflict();
 		return $this;
 	}
 	
-	public function mergeOverOnConflict(): ICmdStore
+	public function mergeOverOnConflict(): IStoreConflict
 	{
 		$this->connection->mergeOverOnConflict();
 		return $this;
 	}
 	
-	public function resolveConflict(callable $callback): ICmdStore
+	public function resolveConflict(callable $callback): IStoreConflict
 	{
 		$this->connection->resolveConflict($callback);
 		return $this;

@@ -96,6 +96,10 @@ class CmdDirect implements ICmdDirect
 		return $this;
 	}
 	
+	/**
+	 * @param string $method
+	 * @return ICmdDirect|static
+	 */
 	public function setMethod(string $method): ICmdDirect
 	{
 		$this->request->setMethod($method);

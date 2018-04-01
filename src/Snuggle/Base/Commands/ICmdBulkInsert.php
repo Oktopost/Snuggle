@@ -17,9 +17,24 @@ interface ICmdBulkInsert extends IExecute, IQuery
 	 * @param array|\stdClass
 	 * @return ICmdBulkInsert|static
 	 */
+	public function data($document): ICmdBulkInsert;
+	
+	/**
+	 * @param array $documents []|\stdClass[]
+	 * @param bool|null $isAssoc
+	 * @return ICmdBulkInsert|static
+	 */
+	public function dataSet(array $documents, bool $isAssoc = null): ICmdBulkInsert;
+	
+	/**
+	 * @deprecated 
+	 * @param array|\stdClass
+	 * @return ICmdBulkInsert|static
+	 */
 	public function document($document): ICmdBulkInsert;
 	
 	/**
+	 * @deprecated 
 	 * @param array[]|\stdClass[]
 	 * @return ICmdBulkInsert|static
 	 */

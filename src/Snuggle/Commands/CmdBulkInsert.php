@@ -51,10 +51,30 @@ class CmdBulkInsert implements ICmdBulkInsert
 	 * @param array|\stdClass
 	 * @return ICmdBulkInsert|static
 	 */
-	public function document($document): ICmdBulkInsert
+	public function data($document): ICmdBulkInsert
 	{
 		$this->payload[] = $document;
 		return $this;
+	}
+	
+	/**
+	 * @param array $documents []|\stdClass[]
+	 * @param bool|null $isAssoc
+	 * @return ICmdBulkInsert|static
+	 */
+	public function dataSet(array $documents, bool $isAssoc = null): ICmdBulkInsert
+	{
+		$this->payload = array_merge($this->payload, $documents);
+		return $this;
+	}
+	
+	/**
+	 * @param array|\stdClass
+	 * @return ICmdBulkInsert|static
+	 */
+	public function document($document): ICmdBulkInsert
+	{
+		return $this->data($document);
 	}
 	
 	/**
@@ -63,8 +83,7 @@ class CmdBulkInsert implements ICmdBulkInsert
 	 */
 	public function documents(array $documents): ICmdBulkInsert
 	{
-		$this->payload = array_merge($this->payload, $documents);
-		return $this;
+		return $this->dataSet($documents);
 	}
 	
 	public function execute(): IRawResponse
