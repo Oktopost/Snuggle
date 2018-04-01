@@ -15,7 +15,13 @@ trait TQuery
 	
 	public function queryCode(): int
 	{
-		return $this->executeRequest()->getCode();
+		/** @var IRawResponse $res */
+		$res = $this->executeSafe($e);
+		
+		if (is_null($res))
+			throw $e;
+			
+		return $res->getCode();
 	}
 	
 	public function queryHeaders(): array
@@ -25,8 +31,7 @@ trait TQuery
 	
 	public function queryBody(): ?string
 	{
-		$body = $this->executeRequest()->getBody();
-		return $body ? $body->getString() : null;
+		return $this->executeRequest()->getRawBody();
 	}
 	
 	public function queryJson($asArray = true)
@@ -36,6 +41,8 @@ trait TQuery
 	
 	public function queryBool(): bool
 	{
-		return $this->executeRequest()->isSuccessful();
+		/** @var IRawResponse $res */
+		$res = $this->executeSafe($e);
+		return $res ? $res->isSuccessful() : false;
 	}
 }

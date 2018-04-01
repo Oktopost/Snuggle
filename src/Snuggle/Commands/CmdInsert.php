@@ -14,7 +14,7 @@ use Snuggle\Commands\Abstraction\TQueryRevision;
 use Snuggle\Connection\Method;
 use Snuggle\Connection\Request\RawRequest;
 
-use Snuggle\Exceptions\SnuggleException;
+use Snuggle\Exceptions\FatalSnuggleException;
 
 
 class CmdInsert implements ICmdInsert
@@ -86,7 +86,7 @@ class CmdInsert implements ICmdInsert
 	public function execute(): IRawResponse
 	{
 		if (!$this->db)
-			throw new SnuggleException('DB name must be set');
+			throw new FatalSnuggleException('DB name must be set');
 		
 		if ($this->id)
 		{
