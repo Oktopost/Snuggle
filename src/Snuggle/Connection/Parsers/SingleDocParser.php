@@ -14,7 +14,7 @@ class SingleDocParser
 	use TStaticClass;
 	
 	
-	private static function getData(array $body): array
+	public static function getData(array $body): array
 	{
 		foreach ($body as $key => $value)
 		{

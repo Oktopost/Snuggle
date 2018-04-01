@@ -2,6 +2,7 @@
 namespace Snuggle\Base;
 
 
+use Snuggle\Base\Commands\ICmdBulkGet;
 use Snuggle\Base\Commands\ICmdBulkInsert;
 use Snuggle\Base\Commands\ICmdDB;
 use Snuggle\Base\Commands\ICmdGet;
@@ -19,8 +20,15 @@ interface IConnector
 	public function store(): ICmdStore;
 	public function insert(): ICmdInsert;
 	public function delete(): ICmdDelete;
-	public function server(): ICmdServer; 
+	public function server(): ICmdServer;
 	public function direct(): ICmdDirect;
 	
+	public function getAll(): ICmdBulkGet;
+	public function insertAll(): ICmdBulkInsert;
+	
+	/**
+	 * @deprecated
+	 * @return ICmdBulkInsert
+	 */
 	public function bulkInsert(): ICmdBulkInsert;
 }

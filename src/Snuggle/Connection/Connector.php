@@ -2,6 +2,7 @@
 namespace Snuggle\Connection;
 
 
+use Snuggle\Base\Commands\ICmdBulkGet;
 use Snuggle\Base\IConnector;
 use Snuggle\Base\IConnection;
 
@@ -82,8 +83,23 @@ class Connector implements IConnector
 		return $this->factory->store($this->connection);
 	}
 	
+	
+	public function getAll(): ICmdBulkGet
+	{
+		return $this->factory->getAll($this->connection);
+	}
+	
+	public function insertAll(): ICmdBulkInsert
+	{
+		return $this->factory->insertAll($this->connection);
+	}
+	
+	/**
+	 * @deprecated 
+	 * @return ICmdBulkInsert
+	 */
 	public function bulkInsert(): ICmdBulkInsert
 	{
-		return $this->factory->bulkInsert($this->connection);
+		return $this->factory->insertAll($this->connection);
 	}
 }

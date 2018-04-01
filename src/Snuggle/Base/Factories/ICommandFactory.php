@@ -2,6 +2,7 @@
 namespace Snuggle\Base\Factories;
 
 
+use Snuggle\Base\Commands\ICmdBulkGet;
 use Snuggle\Base\IConnection;
 
 use Snuggle\Base\Commands\ICmdDB;
@@ -24,5 +25,7 @@ interface ICommandFactory
 	public function delete(IConnection $connection): ICmdDelete;
 	public function server(IConnection $connection): ICmdServer; 
 	public function direct(IConnection $connection): ICmdDirect;
-	public function bulkInsert(IConnection $connection): ICmdBulkInsert;
+	
+	public function getAll(IConnection $connection): ICmdBulkGet;
+	public function insertAll(IConnection $connection): ICmdBulkInsert;
 }
