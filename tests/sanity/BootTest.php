@@ -3,6 +3,7 @@ namespace sanity;
 
 
 use PHPUnit\Framework\TestCase;
+use Snuggle\Core\Server\Index;
 
 
 class CmdServerTest extends TestCase
@@ -18,5 +19,30 @@ class CmdServerTest extends TestCase
 		{
 			self::assertTrue(is_string($id));
 		}
+	}
+	
+	public function test_databases()
+	{
+		$conn = getSanityConnector();
+		
+		$conn->db()->create('test_cmdserver_databases');
+		
+		try
+		{
+			$names = $conn->server()->databases();
+			self::assertTrue(is_array($names));
+		}
+		finally
+		{
+			$conn->db()->drop('test_cmdserver_databases');
+		}
+	}
+	
+	public function test_info()
+	{
+		$conn = getSanityConnector();
+		
+		$info = $conn->server()->info();
+		self::assertInstanceOf(Index::class, $info);
 	}
 }
