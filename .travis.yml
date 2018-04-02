@@ -3,6 +3,9 @@ sudo: required
 language: php
 php:
   - '7.1'
+
+services:
+  - couchdbc
   
 before_script:
   - composer install --prefer-source --no-interaction

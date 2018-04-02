@@ -48,7 +48,7 @@ class CmdServer implements ICmdServer
 	
 	public function UUIDs(int $count = 20): array
 	{
-		$result = $this->connection->request('/_uuids', Method::GET, ['count' => 20]);
+		$result = $this->connection->request('/_uuids', Method::GET, ['count' => $count]);
 		$result = $result->getJsonBody();
 		return $result['uuids'];
 	}
