@@ -2,6 +2,9 @@
 namespace Snuggle\Base\Commands\Store;
 
 
+use Snuggle\Core\Doc;
+
+
 /**
  * @property array	$Original
  * @property array	$Pending
@@ -13,4 +16,11 @@ namespace Snuggle\Base\Commands\Store;
 interface IBulkStoreResult
 {
 	public function hasPending(): bool;
+	public function removePendingAt(int $index): void;
+	
+	/**
+	 * @param int $index
+	 * @param array|Doc $data
+	 */
+	public function addConflict(int $index, $data): void;
 }

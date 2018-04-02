@@ -42,7 +42,7 @@ class ResponseParser
 		}
 		
 		$set->Pending = $newPending;
-		$set->TotalConflicts = $conflicts;
+		$set->TotalConflicts += $conflicts;
 		
 		if ($conflicts)
 		{

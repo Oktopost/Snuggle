@@ -26,6 +26,9 @@ class AllDocsListParser
 		
 		foreach ($data['rows'] ?? [] as $row)
 		{
+			if (!isset($row['id']) || isset($row['error']))
+				continue;
+			
 			$doc = new Doc();
 			
 			$doc->ID	= $row['id'] ?? null;

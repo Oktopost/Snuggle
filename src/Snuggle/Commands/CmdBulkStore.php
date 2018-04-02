@@ -2,9 +2,9 @@
 namespace Snuggle\Commands;
 
 
-use Snuggle\Commands\Store\TCmdBulkResolve;
 use Structura\Arrays;
 
+use Snuggle\Base\IConnector;
 use Snuggle\Base\IConnection;
 use Snuggle\Base\Commands\ICmdBulkStore;
 use Snuggle\Base\Commands\Store\IBulkStoreResult;
@@ -13,6 +13,7 @@ use Snuggle\Base\Connection\Response\IRawResponse;
 
 use Snuggle\Commands\Store\BulkStoreSet;
 use Snuggle\Commands\Store\ResponseParser;
+use Snuggle\Commands\Store\TCmdBulkResolve;
 
 use Snuggle\Connection\Method;
 use Snuggle\Exceptions\HttpException;
@@ -31,6 +32,9 @@ class CmdBulkStore implements ICmdBulkStore
 	
 	/** @var IConnection */
 	private $connection;
+	
+	/** @var IConnector */
+	private $connector;
 	
 	/** @var IBulkStoreResolution */
 	private $resolver;
@@ -65,8 +69,9 @@ class CmdBulkStore implements ICmdBulkStore
 	}
 	
 	
-	public function __construct(IConnection $connection)
+	public function __construct(IConnector $connector, IConnection $connection)
 	{
+		$this->connector	= $connector;
 		$this->connection	= $connection;
 		$this->data			= new BulkStoreSet();
 		
@@ -80,15 +85,21 @@ class CmdBulkStore implements ICmdBulkStore
 	 */
 	public function into(string $db): ICmdBulkStore
 	{
+		$this->resolver->from($db);
 		$this->db = $db;
 		return $this;
 	}
 	
 	public function setCostumeResolver(IBulkStoreResolution $resolver): ICmdBulkStore
 	{
-		$resolver->setConnection($this->connection);
+		$resolver->setConnection($this->connector, $this->connection);
 		$resolver->setStore($this->data);
+		
+		if ($this->db)
+			$resolver->from($this->db);
+				
 		$this->resolver = $resolver;
+		
 		return $this;
 	}
 	
@@ -155,6 +166,7 @@ class CmdBulkStore implements ICmdBulkStore
 			try
 			{
 				ResponseParser::parse($this->data, $response);
+				$doRetry = false;
 			}
 			catch (ConflictException $ce)
 			{

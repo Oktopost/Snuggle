@@ -2,6 +2,7 @@
 namespace Snuggle\Conflict\Resolvers;
 
 
+use Snuggle\Conflict\RecursiveMerge;
 use Snuggle\Core\Doc;
 
 use Snuggle\Base\Conflict\Commands\IStoreConflictCommand;
@@ -41,29 +42,6 @@ class StoreDocResolver extends AbstractDocResolver implements IStoreDocResolver
 		return $this->executeRequest($command->assemble());
 	}
 	
-	private function mergeRecursive(array $a, array ...$b): array
-	{
-		foreach ($b as $arr)
-		{
-			foreach ($arr as $key => $value)
-			{
-				if (key_exists($key, $a))
-				{
-					if (is_array($value) && !key_exists(0, $value))
-					{
-						$a[$key] = $this->mergeRecursive($a[$key], $arr[$key]);
-					}
-				}
-				else
-				{
-					$a[$key] = $value;
-				}
-			}
-		}
-		
-		return $a;
-	}
-	
 	
 	protected function getCommand(): IGetRevConflictCommand
 	{
@@ -98,7 +76,7 @@ class StoreDocResolver extends AbstractDocResolver implements IStoreDocResolver
 		$doc = $this->getGetCommand($this->command)->queryDoc();
 		$data = $this->command->getBody();
 		
-		$data = $this->mergeRecursive($doc->Data, $data);
+		$data = RecursiveMerge::merge($data, $doc->Data);
 		
 		return $this->store($doc->Rev, $data);
 	}
@@ -108,7 +86,7 @@ class StoreDocResolver extends AbstractDocResolver implements IStoreDocResolver
 		$doc = $this->getGetCommand($this->command)->queryDoc();
 		$data = $this->command->getBody();
 		
-		$data = $this->mergeRecursive($data, $doc->Data);
+		$data = RecursiveMerge::merge($data, $doc->Data);
 		
 		return $this->store($doc->Rev, $data);
 	}

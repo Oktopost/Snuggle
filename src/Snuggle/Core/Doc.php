@@ -44,6 +44,22 @@ class Doc extends LiteObject implements IMappedObject
 	}
 	
 	
+	public function toData(): array 
+	{
+		$data = [];
+		
+		if ($this->ID)
+			$data['_id'] = (string)$this->ID;
+		
+		if ($this->Rev)
+			$data['_rev'] = $this->Rev;
+		
+		if ($this->Data)
+			$data = array_merge($data, $this->Data);
+		
+		return $data;
+	}
+	
 	/**
 	 * @param string|array $field
 	 * @param mixed $default

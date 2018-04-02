@@ -98,7 +98,7 @@ class Connector implements IConnector
 	
 	public function storeAll(): ICmdBulkStore
 	{
-		return $this->factory->storeAll($this->connection);
+		return $this->factory->storeAll($this, $this->connection);
 	}
 	
 	/**

@@ -18,6 +18,7 @@ use Snuggle\Base\Commands\ICmdBulkInsert;
 
 use Snuggle\Base\Factories\ICommandFactory;
 
+use Snuggle\Base\IConnector;
 use Snuggle\Commands\CmdDB;
 use Snuggle\Commands\CmdGet;
 use Snuggle\Commands\CmdStore;
@@ -73,9 +74,9 @@ class SimpleFactory implements ICommandFactory
 		return new CmdBulkGet($connection);
 	}
 	
-	public function storeAll(IConnection $connection): ICmdBulkStore
+	public function storeAll(IConnector $connector, IConnection $connection): ICmdBulkStore
 	{
-		return new CmdBulkStore($connection);
+		return new CmdBulkStore($connector, $connection);
 	}
 	
 	public function insertAll(IConnection $connection): ICmdBulkInsert

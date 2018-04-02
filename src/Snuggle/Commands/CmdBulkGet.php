@@ -206,6 +206,31 @@ class CmdBulkGet implements ICmdBulkGet
 	}
 	
 	/**
+	 * @return string[]|Map
+	 */
+	public function queryRevisions(): Map
+	{
+		$map = new Map();
+		
+		$command = clone $this;
+		$command
+			->updateSeq(false)
+			->includeDocs(false);
+		
+		$result = $command->queryJson();
+		
+		foreach ($result['rows'] as $row)
+		{
+			if (!isset($row['id']) || !isset($row['value']['rev']))
+				continue;
+			
+			$map[$row['id']] = $row['value']['rev'];
+		}
+		
+		return $map;
+	}
+	
+	/**
 	 * @return Doc[]|Map
 	 */
 	public function queryMap(): Map

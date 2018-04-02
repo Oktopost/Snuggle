@@ -39,6 +39,11 @@ interface ICmdBulkGet extends IExecute, IQuery
 	public function queryDocs(): array;
 	
 	/**
+	 * @return string[]|Map
+	 */
+	public function queryRevisions(): Map;
+	
+	/**
 	 * @return Doc[]|Map
 	 */
 	public function queryMap(): Map;
