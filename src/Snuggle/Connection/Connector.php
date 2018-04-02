@@ -2,7 +2,6 @@
 namespace Snuggle\Connection;
 
 
-use Snuggle\Base\Commands\ICmdBulkGet;
 use Snuggle\Base\IConnector;
 use Snuggle\Base\IConnection;
 
@@ -13,6 +12,9 @@ use Snuggle\Base\Commands\ICmdInsert;
 use Snuggle\Base\Commands\ICmdDelete;
 use Snuggle\Base\Commands\ICmdDirect;
 use Snuggle\Base\Commands\ICmdServer;
+
+use Snuggle\Base\Commands\ICmdBulkGet;
+use Snuggle\Base\Commands\ICmdBulkStore;
 use Snuggle\Base\Commands\ICmdBulkInsert;
 
 use Snuggle\Base\Factories\ICommandFactory;
@@ -92,6 +94,11 @@ class Connector implements IConnector
 	public function insertAll(): ICmdBulkInsert
 	{
 		return $this->factory->insertAll($this->connection);
+	}
+	
+	public function storeAll(): ICmdBulkStore
+	{
+		return $this->factory->storeAll($this->connection);
 	}
 	
 	/**

@@ -34,6 +34,20 @@ class BulkStoreSet extends LiteObject implements IBulkStoreResult
 	}
 	
 	
+	public function addDocument(array $data): void
+	{
+		$this->Original[]	= $data;
+		$this->Pending[]	= $data;
+	}
+	
+	public function addDocuments(array $set): void
+	{
+		$set = array_values($set);
+		
+		$this->Original	= array_merge($this->Original, $set);
+		$this->Pending	= array_merge($this->Pending, $set);
+	}
+	
 	public function hasPending(): bool
 	{
 		return (bool)$this->Pending;

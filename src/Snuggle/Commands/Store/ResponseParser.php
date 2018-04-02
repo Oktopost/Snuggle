@@ -2,6 +2,8 @@
 namespace Snuggle\Commands\Store;
 
 
+use Snuggle\Base\Connection\Response\IRawResponse;
+use Snuggle\Exceptions\Http\ConflictException;
 use Traitor\TStaticClass;
 
 
@@ -10,15 +12,17 @@ class ResponseParser
 	use TStaticClass;
 	
 	
-	public static function parse(BulkStoreSet $set, array $response): void
+	public static function parse(BulkStoreSet $set, IRawResponse $response): void
 	{
+		$body			= $response->getJsonBody();
 		$pendingObjects = array_values($set->Pending);
 		$pendingIndex	= array_keys($set->Pending);
 		$newPending		= [];
+		$conflicts		= 0;
 		
-		for ($i = 0; $i < count($response); $i++)
+		for ($i = 0; $i < count($body); $i++)
 		{
-			$result = $response[$i];
+			$result = $body[$i];
 			
 			$originIndex	= $pendingIndex[$i];
 			$object			= $pendingObjects[$i];
@@ -33,9 +37,16 @@ class ResponseParser
 			else
 			{
 				$newPending[$originIndex] = $object;
+				$conflicts++;
 			}
 		}
 		
 		$set->Pending = $newPending;
+		$set->TotalConflicts = $conflicts;
+		
+		if ($conflicts)
+		{
+			throw new ConflictException($response);
+		}
 	}
 }

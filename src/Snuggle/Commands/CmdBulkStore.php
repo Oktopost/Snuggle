@@ -2,53 +2,66 @@
 namespace Snuggle\Commands;
 
 
+use Snuggle\Commands\Store\TCmdBulkResolve;
+use Structura\Arrays;
+
 use Snuggle\Base\IConnection;
 use Snuggle\Base\Commands\ICmdBulkStore;
-use Snuggle\Base\Commands\IStoreConflict;
 use Snuggle\Base\Commands\Store\IBulkStoreResult;
 use Snuggle\Base\Conflict\Resolvers\IBulkStoreResolution;
 use Snuggle\Base\Connection\Response\IRawResponse;
 
 use Snuggle\Commands\Store\BulkStoreSet;
-use Snuggle\Conflict\Resolvers\BulkStore;
+use Snuggle\Commands\Store\ResponseParser;
+
 use Snuggle\Connection\Method;
-use Snuggle\Connection\Request\RawRequest;
+use Snuggle\Exceptions\HttpException;
 use Snuggle\Exceptions\FatalSnuggleException;
 use Snuggle\Exceptions\Http\ConflictException;
-use Snuggle\Exceptions\HttpException;
+use Snuggle\Connection\Request\RawRequest;
 
 
 class CmdBulkStore implements ICmdBulkStore
 {
+	use TCmdBulkResolve;
+	
+	
 	private $db;
 	private $retires = null;
 	
 	/** @var IConnection */
 	private $connection;
 	
-	/** @var IBulkStoreResult */
+	/** @var IBulkStoreResolution */
 	private $resolver;
 	
 	/** @var BulkStoreSet */
 	private $data;
 	
 	
-	private function executeRequest(ConflictException $e = null): IRawResponse
+	private function executeRequest(ConflictException &$e = null): IRawResponse
 	{
 		if (!$this->db)
 			throw new FatalSnuggleException('Database name must be set!');
 		
-		$request = RawRequest::create("/{$this->db}/_bulk_docs", Method::POST);
-		$request->setBody(array_values($this->data->Pending));
+		$docs = array_values($this->data->Pending);
+		$body = ['docs' => $docs];
 		
-		try
-		{
-			return $this->connection->request($request);
-		}
-		catch (ConflictException $e)
-		{
-			return $e->getResponse();
-		}
+		$request = RawRequest::create("/{$this->db}/_bulk_docs", Method::POST);
+		$request->setBody($body);
+		
+		return $this->connection->request($request);
+	}
+	
+	private function getRetries(?int $maxRetries): int
+	{
+		if (!is_null($maxRetries))
+			return max($maxRetries, 0);
+		
+		if (!is_null($this->retires))
+			return max($maxRetries, 0);
+		
+		return PHP_INT_MAX;
 	}
 	
 	
@@ -56,6 +69,8 @@ class CmdBulkStore implements ICmdBulkStore
 	{
 		$this->connection	= $connection;
 		$this->data			= new BulkStoreSet();
+		
+		$this->ignoreConflict();
 	}
 	
 	
@@ -72,59 +87,9 @@ class CmdBulkStore implements ICmdBulkStore
 	public function setCostumeResolver(IBulkStoreResolution $resolver): ICmdBulkStore
 	{
 		$resolver->setConnection($this->connection);
+		$resolver->setStore($this->data);
 		$this->resolver = $resolver;
 		return $this;
-	}
-	
-	/**
-	 * @return IStoreConflict|static
-	 */
-	public function ignoreConflict(): IStoreConflict
-	{
-		return $this->setCostumeResolver(new BulkStore\IgnoreResolver());
-	}
-	
-	/**
-	 * @return IStoreConflict|static
-	 */
-	public function overrideConflict(): IStoreConflict
-	{
-		return $this->setCostumeResolver(new BulkStore\OverrideResolver());
-	}
-	
-	/**
-	 * @return IStoreConflict|static
-	 */
-	public function failOnConflict(): IStoreConflict
-	{
-		// TODO: Implement failOnConflict() method.
-	}
-	
-	/**
-	 * Merge only the new values from conflicting document.
-	 * @return IStoreConflict|static
-	 */
-	public function mergeNewOnConflict(): IStoreConflict
-	{
-		// TODO: Implement mergeNewOnConflict() method.
-	}
-	
-	/**
-	 * Override any existing values with new values.
-	 * @return IStoreConflict|static
-	 */
-	public function mergeOverOnConflict(): IStoreConflict
-	{
-		// TODO: Implement mergeOverOnConflict() method.
-	}
-	
-	/**
-	 * @param callable $callback Callback in format [(?Doc $existing, Doc $new): ?Doc]
-	 * @return IStoreConflict|static
-	 */
-	public function resolveConflict(callable $callback): IStoreConflict
-	{
-		// TODO: Implement resolveConflict() method.
 	}
 	
 	/**
@@ -135,12 +100,39 @@ class CmdBulkStore implements ICmdBulkStore
 	 */
 	public function data($id, $rev = null, ?array $data = null): ICmdBulkStore
 	{
-		// TODO: Implement data() method.
+		if (is_array($id))
+			$data = $id;
+		else if (is_array($rev))
+			$data = $rev;
+		else if (!is_array($data))
+			throw new FatalSnuggleException('No document provided');
+		
+		if (is_scalar($id))
+			$data['_id'] = (string)$id;
+		
+		if (is_scalar($rev))
+			$data['_rev'] = (string)$rev;
+		
+		$this->data->addDocument($data);
+		
+		return $this;
 	}
 	
-	public function dataSet(array $data, bool $isAssoc = null): ICmdBulkStore
+	public function dataSet(array $data, bool $isAssoc = false): ICmdBulkStore
 	{
-		// TODO: Implement dataSet() method.
+		if (is_null($isAssoc))
+			$isAssoc = Arrays::isAssoc($data);
+		
+		if ($isAssoc)
+		{
+			foreach ($data as $key => $value)
+			{
+				$value['_id'] = (string)$key;
+			}
+		}
+		
+		$this->data->addDocuments($data);
+		return $this;
 	}
 	
 	public function setMaxRetries(?int $maxRetries = null): ICmdBulkStore
@@ -151,24 +143,44 @@ class CmdBulkStore implements ICmdBulkStore
 	
 	public function execute(?int $maxRetries = null): IBulkStoreResult
 	{
-		// TODO: Implement execute() method.
+		$retires = $this->getRetries($maxRetries);
+		$doRetry = true;
+		
+		while ($retires-- > 0 && $doRetry)
+		{
+			$this->data->TotalRequests++;
+			
+			$response = $this->executeRequest();
+			
+			try
+			{
+				ResponseParser::parse($this->data, $response);
+			}
+			catch (ConflictException $ce)
+			{
+				$doRetry = $this->resolver->resolve($ce, $response);
+			}
+		}
+		
+		return $this->data;
 	}
 	
-	public function executeSafe(\Exception &$e = null, ?int $maxRetries = null): IBulkStoreResult
+	public function executeSafe(\Exception &$e = null, ?int $maxRetries = null): ?IBulkStoreResult
 	{
 		try
 		{
-			return $this->execute($maxRetries);
+			$this->execute($maxRetries);
 		}
 		catch (HttpException $he)
 		{
 			$e = $he;
-			// TODO: Parse: $he->
 		}
 		catch (\Throwable $t)
 		{
 			$e = $t;
-			// TODO
+			return null;
 		}
+		
+		return $this->data;
 	}
 }

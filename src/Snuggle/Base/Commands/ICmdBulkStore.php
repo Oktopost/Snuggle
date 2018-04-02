@@ -24,7 +24,7 @@ interface ICmdBulkStore extends IStoreConflict
 	 */
 	public function data($id, $rev = null, ?array $data = null): ICmdBulkStore;
 	
-	public function dataSet(array $data, bool $isAssoc = null): ICmdBulkStore;
+	public function dataSet(array $data, bool $isAssoc = false): ICmdBulkStore;
 	
 	public function setMaxRetries(?int $maxRetries = null): ICmdBulkStore;
 	
