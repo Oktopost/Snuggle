@@ -20,3 +20,17 @@ function getSanityConnector(): IConnector
 	
 	return $couchDB->connector();
 }
+
+function getInvalidSanityConnector(): IConnector
+{
+	$config = [
+		'host' => '127.0.0.1',
+		'user' => 'invalid_' . rand(PHP_INT_MIN, PHP_INT_MAX),
+		'pass' => 'invalid_' . rand(PHP_INT_MIN, PHP_INT_MAX)
+	];
+	
+	$couchDB = new CouchDB();
+	$couchDB->config()->addConnection($config);
+	
+	return $couchDB->connector();
+}

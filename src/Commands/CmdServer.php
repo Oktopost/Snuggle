@@ -32,9 +32,6 @@ class CmdServer implements ICmdServer
 	{
 		$result = $this->connection->request('/');
 		
-		if ($result->isFailed())
-			throw new SnuggleException('Query Failed');
-		
 		$result = $result->getBody()->getJson(true);
 		$info = new Index();
 		
