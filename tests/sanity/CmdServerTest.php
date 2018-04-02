@@ -25,7 +25,7 @@ class CmdServerTest extends TestCase
 	{
 		$conn = getSanityConnector();
 		
-		$conn->db()->create('test_cmdserver_databases');
+		createTestDB('test_cmdserver_databases');
 		
 		try
 		{

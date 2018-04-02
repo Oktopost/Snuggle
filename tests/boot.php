@@ -5,6 +5,16 @@ use Snuggle\Base\IConnector;
 require_once __DIR__ . '/../vendor/autoload.php';
 
 
+function createTestDB($name): void
+{
+	$conn = getSanityConnector();
+	
+	if ($conn->db()->exists($name))
+		return;
+	
+	getSanityConnector()->db()->create($name);
+}
+
 function getSanityConnector(): IConnector
 {
 	$config = ['host' => '127.0.0.1'];
