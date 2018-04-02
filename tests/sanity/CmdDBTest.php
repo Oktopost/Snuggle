@@ -33,15 +33,12 @@ class CmdDBTest extends TestCase
 		if ($conn->db()->exists('test_cmddb_create'))
 			$conn->db()->drop('test_cmddb_create');
 		
-		$shards = rand(4, 12);
-		$conn->db()->create('test_cmddb_create', $shards);
+		$conn->db()->create('test_cmddb_create', 5);
 		
 		try
 		{
 			self::assertTrue($conn->db()->exists('test_cmddb_create'));
 			$info =  $conn->db()->info('test_cmddb_create');
-			
-			self::assertEquals($shards, $info->Cluster->Shards);
 		}
 		finally
 		{

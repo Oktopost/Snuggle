@@ -33,7 +33,7 @@ class DBInfoParser
 		$data->Sizes->Active	= $body['sizes']['active'] ?? 0;
 		$data->Sizes->External	= $body['sizes']['external'] ?? 0;
 		
-		if ($body['cluster'])
+		if ($body['cluster'] ?? false)
 		{
 			$data->Cluster->IsClustered = true;
 			
