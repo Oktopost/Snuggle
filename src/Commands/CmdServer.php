@@ -9,7 +9,6 @@ use Snuggle\Connection\Method;
 use Snuggle\Core\Server\Index;
 
 use Snuggle\Exceptions\SnuggleException;
-use Snuggle\Exceptions\UnexpectedResponseException;
 
 
 class CmdServer implements ICmdServer

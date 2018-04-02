@@ -4,7 +4,6 @@ namespace Snuggle\Connection\Decorators;
 
 use Snuggle\Base\IConnection;
 use Snuggle\Base\Connection\IConnectionDecorator;
-use Snuggle\Base\Connection\Request\IRawRequest;
 use Snuggle\Base\Connection\Response\IRawResponse;
 
 

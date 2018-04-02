@@ -12,12 +12,6 @@ trait TDocCommand
 	private $_id = null;
 	
 	
-	private function requireDB(): void
-	{
-		if (!$this->_db)
-			throw new SnuggleException('DB name must be set');
-	}
-	
 	private function requireDBAndDocID(): void
 	{
 		if (!$this->_db || !$this->_id)

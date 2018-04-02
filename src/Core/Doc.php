@@ -63,6 +63,7 @@ class Doc extends LiteObject implements IMappedObject
 	/**
 	 * @param string|array $field
 	 * @param mixed $default
+	 * @param bool $scalarOnly
 	 * @return mixed
 	 */
 	public function getKey($field, $default = null, bool $scalarOnly = true)

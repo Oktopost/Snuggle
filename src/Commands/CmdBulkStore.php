@@ -43,7 +43,7 @@ class CmdBulkStore implements ICmdBulkStore
 	private $data;
 	
 	
-	private function executeRequest(ConflictException &$e = null): IRawResponse
+	private function executeRequest(): IRawResponse
 	{
 		if (!$this->db)
 			throw new FatalSnuggleException('Database name must be set!');
