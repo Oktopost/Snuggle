@@ -3,11 +3,12 @@ namespace sanity;
 
 
 use PHPUnit\Framework\TestCase;
+
+use Structura\Map;
 use Structura\Arrays;
 
 use Snuggle\Core\Doc;
 use Snuggle\Commands\CmdBulkGet;
-use Structura\Map;
 
 
 /**
