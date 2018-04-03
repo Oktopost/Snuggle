@@ -32,6 +32,10 @@
 	},
     "scripts": {
         "test": "./vendor/phpunit/phpunit/phpunit --dont-report-useless-tests",
-        "test-cover": "./vendor/phpunit/phpunit/phpunit --dont-report-useless-tests --coverage-html ./build/cover"
+        "unit-test": "./vendor/phpunit/phpunit/phpunit --dont-report-useless-tests --group unit",
+        "integration-test": "./vendor/phpunit/phpunit/phpunit --dont-report-useless-tests --group integration",
+        "test-cover": "./vendor/phpunit/phpunit/phpunit --dont-report-useless-tests --coverage-html ./build/cover",
+        "unit-test-cover": "./vendor/phpunit/phpunit/phpunit --dont-report-useless-tests --coverage-html ./build/cover --group unit",
+        "integration-test-cover": "./vendor/phpunit/phpunit/phpunit --dont-report-useless-tests --coverage-html ./build/cover --group integration"
     }
 }

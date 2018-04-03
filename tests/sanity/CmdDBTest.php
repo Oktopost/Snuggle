@@ -6,6 +6,9 @@ use PHPUnit\Framework\TestCase;
 use Snuggle\Core\DB\DBInfo;
 
 
+/**
+ * @group integration
+ */
 class CmdDBTest extends TestCase
 {
 	public function test_exists()

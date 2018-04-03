@@ -10,6 +10,9 @@ use Snuggle\Commands\CmdBulkGet;
 use Structura\Map;
 
 
+/**
+ * @group integration
+ */
 class CmdBulkGetTest extends TestCase
 {
 	private const TABLE_NAME = 'test_snuggle_cmdbulkget';

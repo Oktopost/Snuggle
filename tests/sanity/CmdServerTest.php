@@ -6,6 +6,9 @@ use PHPUnit\Framework\TestCase;
 use Snuggle\Core\Server\Index;
 
 
+/**
+ * @group integration
+ */
 class CmdServerTest extends TestCase
 {
 	public function test_uuids()
