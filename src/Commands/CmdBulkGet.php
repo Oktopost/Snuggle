@@ -247,6 +247,20 @@ class CmdBulkGet implements ICmdBulkGet
 	}
 	
 	/**
+	 * @return Doc|null
+	 */
+	public function queryFirst(): ?Doc
+	{
+		$command = clone $this;
+		
+		$docs = $command
+			->limit(1)
+			->queryDocs();
+		
+		return $docs ? $docs[0] : null;
+	}
+	
+	/**
 	 * @param string $field
 	 * @return Doc[]|Map
 	 */
