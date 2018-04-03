@@ -40,7 +40,7 @@ class CmdBulkGet implements ICmdBulkGet
 		if ($value === $unsetValue)
 			unset($this->params[$key]);
 		else
-			$this->params[$key] = json_encode($value);
+			$this->params[$key] = jsonencode($value);
 		
 		return $this;
 	}
@@ -101,7 +101,7 @@ class CmdBulkGet implements ICmdBulkGet
 	
 	public function key(?string $key): ICmdBulkGet
 	{
-		return $this->setKeysParameter($key ? ['key' => json_encode($key)] : null);
+		return $this->setKeysParameter($key ? ['key' => jsonencode($key)] : null);
 	}
 	
 	public function keys(?array $keys): ICmdBulkGet

@@ -116,7 +116,7 @@ class CmdGet implements ICmdGet
 			
 			if ($since)
 			{
-				$this->params['atts_since'] = json_encode(Arrays::toArray($since));
+				$this->params['atts_since'] = jsonencode(Arrays::toArray($since));
 			}
 		}
 		

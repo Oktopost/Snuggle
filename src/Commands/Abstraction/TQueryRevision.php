@@ -18,7 +18,7 @@ trait TQueryRevision
 		if (is_null($tag))
 			throw new SnuggleException('No ETag returned for new object');
 		
-		$tag = json_decode($tag);
+		$tag = jsondecode($tag);
 		
 		if (is_null($tag))
 			throw new SnuggleException('Malformed ETag for new object');

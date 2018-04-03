@@ -48,7 +48,7 @@ class RawRequest implements IRawRequest
 	
 	public function setJsonQueryParam(string $name, $value): RawRequest
 	{
-		$this->queryParams[$name] = json_encode($value);
+		$this->queryParams[$name] = jsonencode($value);
 		return $this;
 	}
 	
@@ -87,7 +87,7 @@ class RawRequest implements IRawRequest
 			if (!((array)$body))
 				$this->body = '{}';
 			else
-				$this->body = json_encode($body);
+				$this->body = jsonencode($body);
 		}
 		else if ($body instanceof LiteObject)
 		{

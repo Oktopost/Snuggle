@@ -88,7 +88,7 @@ abstract class AbstractDocResolver implements
 		if (!isset($headers['etag']))
 			throw new NotFoundException($response, 'Could not get revision for conflicting document');
 		
-		$rev = json_decode($headers['etag']);
+		$rev = jsondecode($headers['etag']);
 		
 		if (is_null($rev))
 			throw new NotFoundException(

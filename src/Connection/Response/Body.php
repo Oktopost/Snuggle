@@ -46,7 +46,7 @@ class Body implements IBody
 		if ($asArray && $this->decodedAsArrayBody)
 			return $this->decodedAsArrayBody;
 		
-		$result = json_decode($this->body, $asArray);
+		$result = jsondecode($this->body, $asArray);
 		
 		if (is_null($result) && strtolower(trim($this->body)) != 'null')
 			throw new UnexpectedResponseException('Failed to parse body as json response.');
