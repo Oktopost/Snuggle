@@ -2,11 +2,8 @@
 namespace Snuggle\Commands;
 
 
-use Structura\Map;
-
-use Snuggle\Core\Doc;
 use Snuggle\Core\StaleBehavior;
-use Snuggle\Core\Lists\AllDocsList;
+use Snuggle\Core\Lists\ViewList;
 
 use Snuggle\Base\IConnection;
 use Snuggle\Base\Commands\ICmdBulkGet;
@@ -21,11 +18,15 @@ use Snuggle\Connection\Parsers\Lists\AllDocsListParser;
 
 use Snuggle\Exceptions\FatalSnuggleException;
 
+use Snuggle\Commands\BulkGet\TQueryDocs;
+
 
 class CmdBulkGet implements ICmdBulkGet
 {
 	use TQuery;
 	use TExecuteSafe;
+	
+	use TQueryDocs;
 	
 	
 	private $db		= null;
@@ -192,118 +193,8 @@ class CmdBulkGet implements ICmdBulkGet
 	}
 	
 	
-	public function queryList(): AllDocsList
+	public function queryList(): ViewList
 	{
 		return AllDocsListParser::parseResponse($this->execute());
-	}
-	
-	/**
-	 * @return Doc[]
-	 */
-	public function queryDocs(): array
-	{
-		return AllDocsListParser::getDocuments($this->queryJson());
-	}
-	
-	/**
-	 * @return string[]|Map
-	 */
-	public function queryRevisions(): Map
-	{
-		$map = new Map();
-		
-		$command = clone $this;
-		$command
-			->updateSeq(false)
-			->includeDocs(false);
-		
-		$result = $command->queryJson();
-		
-		foreach ($result['rows'] as $row)
-		{
-			if (!isset($row['id']) || !isset($row['value']['rev']))
-				continue;
-			
-			$map[$row['id']] = $row['value']['rev'];
-		}
-		
-		return $map;
-	}
-	
-	/**
-	 * @return Doc[]|Map
-	 */
-	public function queryMap(): Map
-	{
-		$docs = $this->queryDocs();
-		$map = new Map();
-		
-		foreach ($docs as $doc)
-		{
-			$map->add($doc->ID, $doc);
-		}
-		
-		return $map;
-	}
-	
-	/**
-	 * @return Doc|null
-	 */
-	public function queryFirst(): ?Doc
-	{
-		$command = clone $this;
-		
-		$docs = $command
-			->limit(1)
-			->queryDocs();
-		
-		return $docs ? $docs[0] : null;
-	}
-	
-	/**
-	 * @param string $field
-	 * @return Doc[]|Map
-	 */
-	public function queryMapBy(string $field): Map
-	{
-		$docs = $this->queryDocs();
-		$map = new Map();
-		
-		$fields = explode('.', $field);
-		
-		foreach ($docs as $doc)
-		{
-			$map->add($doc->getKey($fields, ''), $doc);
-		}
-		
-		return $map;
-	}
-	
-	/**
-	 * @param string $field
-	 * @return Doc[][]|Map
-	 */
-	public function queryGroupBy(string $field): Map
-	{
-		$docs = $this->queryDocs();
-		$map = new Map();
-		
-		$fields = explode('.', $field);
-		
-		foreach ($docs as $doc)
-		{
-			$key = $doc->getKey($fields, '');
-			
-			if (!$map->has($key))
-			{
-				$map->add($key, [$doc]);
-			}
-			else
-			{
-				$map->add($key, array_merge($map->get($key), [$doc]));
-			}
-		}
-		
-		return $map;
 	}
 }

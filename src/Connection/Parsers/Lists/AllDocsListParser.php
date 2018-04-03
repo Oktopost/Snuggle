@@ -3,7 +3,7 @@ namespace Snuggle\Connection\Parsers\Lists;
 
 
 use Snuggle\Core\Doc;
-use Snuggle\Core\Lists\AllDocsList;
+use Snuggle\Core\Lists\ViewList;
 use Snuggle\Base\Connection\Response\IRawResponse;
 
 use Snuggle\Connection\Parsers\SingleDocParser;
@@ -45,9 +45,9 @@ class AllDocsListParser
 		return $res;
 	}
 	
-	public static function parseArray(array $data): AllDocsList
+	public static function parseArray(array $data): ViewList
 	{
-		$list = new AllDocsList();
+		$list = new ViewList();
 		
 		$list->Offset		= (isset($data['offset']) ? $data['offset'] - 1 : 0);
 		$list->Total 		= $data['total_rows'] ?? null;
@@ -57,7 +57,7 @@ class AllDocsListParser
 		return $list;
 	}
 	
-	public static function parseResponse(IRawResponse $response): AllDocsList
+	public static function parseResponse(IRawResponse $response): ViewList
 	{
 		return self::parseArray($response->getJsonBody());
 	}

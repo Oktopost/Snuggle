@@ -14,7 +14,7 @@ use Snuggle\Core\Doc;
  * @property string|null	$UpdateSeq
  * @property Doc[]			$Docs
  */
-class AllDocsList extends LiteObject
+class ViewList extends LiteObject
 {
 	/**
 	 * @return array

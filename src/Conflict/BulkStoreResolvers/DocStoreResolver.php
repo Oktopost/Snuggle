@@ -17,7 +17,7 @@ abstract class DocStoreResolver extends BaseStoreResolver
 			->keys($this->getPendingIds())
 			->includeDocs()
 			->limit()
-			->queryMap();
+			->queryDocsMap();
 		
 		foreach ($store->Pending as $index => $item)
 		{

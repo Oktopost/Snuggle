@@ -4,7 +4,7 @@ namespace Snuggle\Base\Commands;
 
 use Snuggle\Core\Doc;
 use Snuggle\Core\StaleBehavior;
-use Snuggle\Core\Lists\AllDocsList;
+use Snuggle\Core\Lists\ViewList;
 
 use Structura\Map;
 
@@ -31,12 +31,7 @@ interface ICmdBulkGet extends IExecute, IQuery
 	public function page(int $page, int $perPage = 100): ICmdBulkGet;
 	public function descending(bool $isDesc = true): ICmdBulkGet;
 	
-	public function queryList(): AllDocsList;
-	
-	/**
-	 * @return Doc[]
-	 */
-	public function queryDocs(): array;
+	public function queryList(): ViewList;
 	
 	/**
 	 * @return string[]|Map
@@ -44,24 +39,29 @@ interface ICmdBulkGet extends IExecute, IQuery
 	public function queryRevisions(): Map;
 	
 	/**
+	 * @return Doc[]
+	 */
+	public function queryDocs(): array;
+	
+	/**
 	 * @return Doc[]|Map
 	 */
-	public function queryMap(): Map;
+	public function queryDocsMap(): Map;
 	
 	/**
 	 * @return Doc|null
 	 */
-	public function queryFirst(): ?Doc;
+	public function queryFirstDoc(): ?Doc;
 	
 	/**
 	 * @param string $field
 	 * @return Doc[]|Map
 	 */
-	public function queryMapBy(string $field): Map;
+	public function queryDocsMapBy(string $field): Map;
 	
 	/**
 	 * @param string $field
 	 * @return Doc[][]|Map
 	 */
-	public function queryGroupBy(string $field): Map;
+	public function queryDocsGroupBy(string $field): Map;
 }
