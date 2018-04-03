@@ -9,7 +9,7 @@ use Snuggle\Core\Doc;
 
 
 /**
- * @property string	$ID
+ * @property string	$DocID
  * @property mixed	$Key
  * @property mixed	$Value
  * @property Doc	$Doc
@@ -22,7 +22,7 @@ class ViewRow extends LiteObject
 	protected function _setup()
 	{
 		return [
-			'ID'	=> LiteSetup::createString(),
+			'DocID'	=> LiteSetup::createString(),
 			'Key'	=> LiteSetup::createMixed(),
 			'Value'	=> LiteSetup::createMixed(),
 			'Doc'	=> LiteSetup::createInstanceOf(Doc::class)

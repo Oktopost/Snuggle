@@ -14,7 +14,7 @@ use Snuggle\Commands\Abstraction\TExecuteSafe;
 
 use Snuggle\Connection\Method;
 use Snuggle\Connection\Request\RawRequest;
-use Snuggle\Connection\Parsers\Lists\AllDocsListParser;
+use Snuggle\Connection\Parsers\Lists\ViewListParser;
 
 use Snuggle\Exceptions\FatalSnuggleException;
 
@@ -195,6 +195,6 @@ class CmdBulkGet implements ICmdBulkGet
 	
 	public function queryList(): ViewList
 	{
-		return AllDocsListParser::parseResponse($this->execute());
+		return ViewListParser::parseResponse($this->execute());
 	}
 }

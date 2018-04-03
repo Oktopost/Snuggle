@@ -12,7 +12,7 @@ use Snuggle\Core\Doc;
  * @property int|null		$Total
  * @property int			$Offset
  * @property string|null	$UpdateSeq
- * @property Doc[]			$Docs
+ * @property ViewRow[]		$Rows
  */
 class ViewList extends LiteObject
 {
@@ -25,13 +25,13 @@ class ViewList extends LiteObject
 			'Total'		=> LiteSetup::createInt(),
 			'Offset'	=> LiteSetup::createInt(),
 			'UpdateSeq'	=> LiteSetup::createString(null),
-			'Docs'		=> LiteSetup::createInstanceArray(Doc::class)
+			'Rows'		=> LiteSetup::createInstanceArray(ViewRow::class)
 		];
 	}
 	
 	
 	public function count(): int
 	{
-		return count($this->Docs);
+		return count($this->Rows);
 	}
 }

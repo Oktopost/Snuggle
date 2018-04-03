@@ -2,8 +2,9 @@
 namespace Snuggle\Commands\BulkGet;
 
 
+use Snuggle\Connection\Parsers\SingleDocParser;
 use Snuggle\Core\Doc;
-use Snuggle\Connection\Parsers\Lists\AllDocsListParser;
+use Snuggle\Connection\Parsers\Lists\ViewListParser;
 
 use Structura\Map;
 
@@ -18,10 +19,21 @@ trait TQueryDocs
 	 */
 	public function queryDocs(): array
 	{
-		return AllDocsListParser::getDocuments(
-			(clone $this)
-				->includeDocs()
-				->queryJson());
+		$res = (clone $this)
+			->includeDocs()
+			->queryJson();
+		
+		$result = [];
+		
+		foreach ($res['rows'] as $row)
+		{
+			if (!isset($row['id']) || isset($row['error']) || !isset($row['doc']))
+				continue;
+			
+			$result[] = SingleDocParser::parseData($row['doc']);
+		}
+		
+		return $result;
 	}
 	
 	/**
