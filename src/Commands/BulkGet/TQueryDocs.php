@@ -2,9 +2,8 @@
 namespace Snuggle\Commands\BulkGet;
 
 
-use Snuggle\Connection\Parsers\SingleDocParser;
 use Snuggle\Core\Doc;
-use Snuggle\Connection\Parsers\Lists\ViewListParser;
+use Snuggle\Connection\Parsers\SingleDocParser;
 
 use Structura\Map;
 
@@ -14,6 +13,20 @@ use Structura\Map;
  */
 trait TQueryDocs
 {
+	/**
+	 * @return Doc|null
+	 */
+	public function queryFirstDoc(): ?Doc
+	{
+		$command = clone $this;
+		
+		$docs = $command
+			->limit(1)
+			->queryDocs();
+		
+		return $docs ? $docs[0] : null;
+	}
+	
 	/**
 	 * @return Doc[]
 	 */
@@ -37,32 +50,6 @@ trait TQueryDocs
 	}
 	
 	/**
-	 * @return string[]|Map
-	 */
-	public function queryRevisions(): Map
-	{
-		$map = new Map();
-		
-		$command = clone $this;
-		$command
-			->from($this->db)
-			->updateSeq(false)
-			->includeDocs(false);
-		
-		$result = $command->queryJson();
-		
-		foreach ($result['rows'] as $row)
-		{
-			if (!isset($row['id']) || !isset($row['value']['rev']))
-				continue;
-			
-			$map[$row['id']] = $row['value']['rev'];
-		}
-		
-		return $map;
-	}
-	
-	/**
 	 * @return Doc[]|Map
 	 */
 	public function queryDocsMap(): Map
@@ -76,20 +63,6 @@ trait TQueryDocs
 		}
 		
 		return $map;
-	}
-	
-	/**
-	 * @return Doc|null
-	 */
-	public function queryFirstDoc(): ?Doc
-	{
-		$command = clone $this;
-		
-		$docs = $command
-			->limit(1)
-			->queryDocs();
-		
-		return $docs ? $docs[0] : null;
 	}
 	
 	/**

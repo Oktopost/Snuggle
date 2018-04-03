@@ -4,6 +4,7 @@ namespace Snuggle\Base\Commands;
 
 use Snuggle\Core\Doc;
 use Snuggle\Core\StaleBehavior;
+use Snuggle\Core\Lists\ViewRow;
 use Snuggle\Core\Lists\ViewList;
 
 use Structura\Map;
@@ -11,7 +12,8 @@ use Structura\Map;
 
 interface ICmdBulkGet extends IExecute, IQuery
 {
-	public function from(string $db): ICmdBulkGet;
+	public function from(string $db, ?string $design = null, ?string $view = null): ICmdBulkGet;
+	public function view(string $design, string $view): ICmdBulkGet;
 	
 	public function includeConflicts(bool $include = true): ICmdBulkGet;
 	public function includeDocs(bool $include = true): ICmdBulkGet;
@@ -32,6 +34,43 @@ interface ICmdBulkGet extends IExecute, IQuery
 	public function descending(bool $isDesc = true): ICmdBulkGet;
 	
 	public function queryList(): ViewList;
+	public function queryValues(): array;
+	
+	/**
+	 * @return bool
+	 */
+	public function queryExists(): bool;
+	
+	
+	/**
+	 * @return ViewRow[]
+	 */
+	public function queryRows(): array;
+	
+	/**
+	 * @return ViewRow[]|Map
+	 */
+	public function queryRowsByKey(): Map;
+	
+	/**
+	 * @return ViewRow[][]|Map
+	 */
+	public function queryRowsGroupByKey(): Map;
+	
+	/**
+	 * @return ViewRow[]|Map
+	 */
+	public function queryRowsByDocID(): Map;
+	
+	/**
+	 * @return ViewRow[][]|Map
+	 */
+	public function queryRowsGroupByDocID(): Map;
+	
+	/**
+	 * @return ViewRow|null
+	 */
+	public function queryFirstRow(): ?ViewRow;
 	
 	/**
 	 * @return string[]|Map
@@ -49,11 +88,6 @@ interface ICmdBulkGet extends IExecute, IQuery
 	public function queryDocsMap(): Map;
 	
 	/**
-	 * @return Doc|null
-	 */
-	public function queryFirstDoc(): ?Doc;
-	
-	/**
 	 * @param string $field
 	 * @return Doc[]|Map
 	 */
@@ -64,4 +98,9 @@ interface ICmdBulkGet extends IExecute, IQuery
 	 * @return Doc[][]|Map
 	 */
 	public function queryDocsGroupBy(string $field): Map;
+	
+	/**
+	 * @return Doc|null
+	 */
+	public function queryFirstDoc(): ?Doc;
 }

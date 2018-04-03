@@ -9,6 +9,8 @@ use Snuggle\Base\IConnection;
 use Snuggle\Base\Commands\ICmdBulkGet;
 use Snuggle\Base\Connection\Response\IRawResponse;
 
+use Snuggle\Commands\BulkGet\TQueryRows;
+use Snuggle\Commands\BulkGet\TQueryDocs;
 use Snuggle\Commands\Abstraction\TQuery;
 use Snuggle\Commands\Abstraction\TExecuteSafe;
 
@@ -18,7 +20,7 @@ use Snuggle\Connection\Parsers\Lists\ViewListParser;
 
 use Snuggle\Exceptions\FatalSnuggleException;
 
-use Snuggle\Commands\BulkGet\TQueryDocs;
+use Structura\Map;
 
 
 class CmdBulkGet implements ICmdBulkGet
@@ -26,10 +28,13 @@ class CmdBulkGet implements ICmdBulkGet
 	use TQuery;
 	use TExecuteSafe;
 	
+	use TQueryRows;
 	use TQueryDocs;
 	
 	
 	private $db		= null;
+	private $design	= null;
+	private $view	= null;
 	private $params	= [];
 	
 	/** @var IConnection */
@@ -76,9 +81,19 @@ class CmdBulkGet implements ICmdBulkGet
 	}
 	
 	
-	public function from(string $db): ICmdBulkGet
+	public function from(string $db, ?string $design = null, ?string $view = null): ICmdBulkGet
 	{
 		$this->db = $db;
+		$this->design = $design;
+		$this->view = $view;
+		
+		return $this;
+	}
+	
+	public function view(string $design, string $view): ICmdBulkGet
+	{
+		$this->design = $design;
+		$this->view = $view;
 		return $this;
 	}
 	
@@ -170,6 +185,15 @@ class CmdBulkGet implements ICmdBulkGet
 				'Method `from` must be called before executing the query');
 		}
 		
+		if ($this->view)
+		{
+			$uri = "/{$this->db}/_design/{$this->design}/_view/{$this->view}";
+		}
+		else
+		{
+			$uri = "/{$this->db}/_all_docs";
+		}
+		
 		$keys	= null;
 		$method = Method::GET;
 		$params = $this->params;
@@ -182,7 +206,7 @@ class CmdBulkGet implements ICmdBulkGet
 			unset($params['keys']);
 		}
 		
-		$request = RawRequest::create("/{$this->db}/_all_docs", $method, $params);
+		$request = RawRequest::create($uri, $method, $params);
 		
 		if ($keys)
 		{
@@ -196,5 +220,43 @@ class CmdBulkGet implements ICmdBulkGet
 	public function queryList(): ViewList
 	{
 		return ViewListParser::parseResponse($this->execute());
+	}
+	
+	/**
+	 * @return bool
+	 */
+	public function queryExists(): bool
+	{
+		$res = (clone $this)
+			->limit(1)
+			->queryList();
+		
+		return $res->count() > 0; 
+	}
+	
+	/**
+	 * @return string[]|Map
+	 */
+	public function queryRevisions(): Map
+	{
+		$map = new Map();
+		
+		$command = clone $this;
+		$command
+			->from($this->db)
+			->updateSeq(false)
+			->includeDocs(false);
+		
+		$result = $command->queryJson();
+		
+		foreach ($result['rows'] as $row)
+		{
+			if (!isset($row['id']) || !isset($row['value']['rev']))
+				continue;
+			
+			$map[$row['id']] = $row['value']['rev'];
+		}
+		
+		return $map;
 	}
 }
