@@ -26,7 +26,7 @@ trait TQueryRows
 				$group = [];
 			
 			$group[] = $row;
-			$map[$row->$field] = $row;
+			$map[$row->$field] = $group;
 		}
 		
 		return $map;

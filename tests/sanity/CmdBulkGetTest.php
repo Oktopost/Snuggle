@@ -4,6 +4,7 @@ namespace sanity;
 
 use PHPUnit\Framework\TestCase;
 
+use Snuggle\Core\Lists\ViewRow;
 use Structura\Map;
 use Structura\Arrays;
 
@@ -28,6 +29,9 @@ function (doc)
 	if (doc.skip === true) return;
 	
 	emit(doc.index_key, doc.index_value)
+	
+	if (doc.index_key_2)
+		emit(doc.index_key_2, doc.index_value)
 }
 EOF;
 	
@@ -40,6 +44,12 @@ EOF;
 			$cmd->keys($keys);
 		
 		return $cmd;
+	}
+	
+	private function getCmdFromView(array $keys = null): CmdBulkGet
+	{
+		return $this->getCmd($keys, self::VIEW_DB)
+			->view(self::DESIGN_NAME, self::VIEW_NAME);
 	}
 	
 	/**
@@ -272,5 +282,136 @@ EOF;
 		]);
 		
 		self::assertTrue($this->getCmd(['item_a'])->queryExists());
+	}
+	
+	
+	public function test_queryRows_NoRowsFound_ReturnEmptyArray(): void
+	{
+		self::assertEmpty($this->getCmd(['notfound_a', 'notfound_b'])->queryRows());
+	}
+	
+	public function test_queryRows_RowsFound_ArrayOfRowsReturned(): void
+	{
+		$this->insertData(
+			[
+				['_id' => 'ind_a', 'index_key' => 'a', 'index_value' => 'a'],
+				['_id' => 'ind_b', 'index_key' => 'n', 'index_value' => 'b']
+			],
+			self::VIEW_DB);
+		
+		$rows = $this->getCmdFromView(['a', 'n'])->queryRows();
+		
+		self::assertCount(2, $rows);
+		self::assertInstanceOf(ViewRow::class, $rows[0]);
+		self::assertInstanceOf(ViewRow::class, $rows[1]);
+	}
+	
+	
+	public function test_queryRowsByKey_RowsReturnedByKey(): void
+	{
+		$this->insertData(
+			[
+				['_id' => 'ind_a', 'index_key' => 'a', 'index_value' => 'a'],
+				['_id' => 'ind_b', 'index_key' => 'n', 'index_value' => 'b']
+			],
+			self::VIEW_DB);
+		
+		$res = $this->getCmdFromView(['a', 'n'])->queryRowsByKey();
+		
+		self::assertTrue($res->has('a'));
+		self::assertTrue($res->has('n'));
+	}
+	
+	
+	public function test_queryRowsByDocID_RowsReturnedByDocID(): void
+	{
+		$this->insertData(
+			[
+				['_id' => 'ind_a', 'index_key' => 'a', 'index_value' => 'a'],
+				['_id' => 'ind_b', 'index_key' => 'n', 'index_value' => 'b']
+			],
+			self::VIEW_DB);
+		
+		$res = $this->getCmdFromView(['a', 'n'])->queryRowsByDocID();
+		
+		self::assertTrue($res->has('ind_a'));
+		self::assertTrue($res->has('ind_b'));
+	}
+	
+	
+	public function test_queryRowsGroupByKey_GroupsReturned(): void
+	{
+		$this->insertData(
+			[
+				['_id' => 'ind_a', 'index_key' => 'a', 'index_value' => 'a'],
+				['_id' => 'ind_b', 'index_key' => 'a', 'index_value' => 'b'],
+				['_id' => 'ind_c', 'index_key' => 'c', 'index_value' => 'c'],
+				['_id' => 'ind_e', 'index_key' => 'e', 'index_value' => 'c']
+			],
+			self::VIEW_DB);
+		
+		$res = $this->getCmdFromView(['a', 'c'])->queryRowsGroupByKey();
+		
+		self::assertCount(2, $res);
+		self::assertTrue($res->has('a'));
+		self::assertCount(2, $res->get('a'));
+		self::assertTrue($res->has('c'));
+	}
+	
+	
+	public function test_queryRowsGroupByDocID_GroupsReturned(): void
+	{
+		$this->insertData(
+			[
+				['_id' => 'ind_a', 'index_key' => 'a', 'index_key_2' => 'b', 'index_value' => 'a'],
+				['_id' => 'ind_b', 'index_key' => 'b', 'index_value' => 'b'],
+				['_id' => 'ind_e', 'index_key' => 'e', 'index_value' => 'c']
+			],
+			self::VIEW_DB);
+		
+		$res = $this->getCmdFromView(['a', 'b'])->queryRowsGroupByDocID();
+		
+		self::assertCount(2, $res);
+		self::assertTrue($res->has('ind_a'));
+		self::assertCount(2, $res->get('ind_a'));
+		self::assertTrue($res->has('ind_b'));
+	}
+	
+	
+	public function test_queryFirstRow_NothingFound_ReturnNull(): void
+	{
+		self::assertNull($this->getCmdFromView(['not_found'])->queryFirstRow());
+	}
+	
+	public function test_queryFirstRow_RowFound_ReturnRow(): void
+	{
+		$this->insertData(
+			[
+				['_id' => 'ind_a', 'index_key' => 'a', 'index_value' => 'a'],
+				['_id' => 'ind_b', 'index_key' => 'a', 'index_value' => 'b']
+			],
+			self::VIEW_DB);
+		
+		self::assertNotNull($this->getCmdFromView(['a'])->queryFirstRow());
+	}
+	
+	
+	public function test_queryValues_RowFound_ReturnValues(): void
+	{
+		$this->insertData(
+			[
+				['_id' => 'ind_a', 'index_key' => 'a', 'index_value' => 'a'],
+				['_id' => 'ind_b', 'index_key' => 'a', 'index_value' => ['b']],
+				['_id' => 'ind_c', 'index_key' => 'a', 'index_value' => null]
+			],
+			self::VIEW_DB);
+		
+		$actual = $this->getCmdFromView(['a'])->queryValues();
+		$expected = ['a', null, ['b']];
+		
+		sort($actual);
+		sort($expected);
+		
+		self::assertEquals($expected, $actual);
 	}
 }
