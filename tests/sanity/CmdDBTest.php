@@ -56,10 +56,18 @@ class CmdDBTest extends TestCase
 		if ($conn->db()->exists('test_snuggle_cmddb_createifnotexists'))
 			$conn->db()->drop('test_snuggle_cmddb_createifnotexists');
 		
-		self::assertTrue($conn->db()->createIfNotExists('test_snuggle_cmddb_createifnotexists', 2));
-		self::assertTrue($conn->db()->exists('test_snuggle_cmddb_createifnotexists'));
-		
-		self::assertFalse($conn->db()->createIfNotExists('test_snuggle_cmddb_createifnotexists'));
+		try
+		{
+			self::assertTrue($conn->db()->createIfNotExists('test_snuggle_cmddb_createifnotexists', 2));
+			self::assertTrue($conn->db()->exists('test_snuggle_cmddb_createifnotexists'));
+			
+			self::assertFalse($conn->db()->createIfNotExists('test_snuggle_cmddb_createifnotexists'));
+		}
+		finally
+		{
+			// Clean up
+			$conn->db()->drop('test_snuggle_cmddb_createifnotexists');
+		}
 	}
 	
 	public function test_drop()
