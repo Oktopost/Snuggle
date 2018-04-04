@@ -49,7 +49,7 @@ class ViewListParser
 	{
 		$list = new ViewList();
 		
-		$list->Offset		= (isset($data['offset']) ? $data['offset'] - 1 : 0);
+		$list->Offset		= $data['offset'] ?? 0;
 		$list->Total 		= $data['total_rows'] ?? null;
 		$list->UpdateSeq	= $data['update_seq'] ?? null;
 		$list->Rows			= self::getRows($data);

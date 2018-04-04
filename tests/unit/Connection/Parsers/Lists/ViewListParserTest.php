@@ -28,7 +28,7 @@ class ViewListParserTest extends TestCase
 			'update_seq'	=> 'abc'
 		]);
 		
-		self::assertEquals(1023, $res->Offset);
+		self::assertEquals(1024, $res->Offset);
 		self::assertEquals(127, $res->Total);
 		self::assertEquals('abc', $res->UpdateSeq);
 		self::assertEquals([], $res->Rows);
@@ -37,7 +37,7 @@ class ViewListParserTest extends TestCase
 	public function test_parseArray_OffsetFixed()
 	{
 		$res = ViewListParser::parseArray([
-			'offset' => 1
+			'offset' => 0
 		]);
 		
 		self::assertEquals(0, $res->Offset);
