@@ -165,8 +165,11 @@ class CmdGet implements ICmdGet
 	}
 	
 	
-	public function queryExists(): bool
+	public function queryExists(?string $target = null, ?string $id = null): bool
 	{
+		if ($target)
+			$this->doc($target, $id);
+		
 		$this->validate();
 		
 		try
@@ -194,6 +197,8 @@ class CmdGet implements ICmdGet
 	{
 		if ($target)
 			$this->doc($target, $id);
+		
+		$this->validate();
 		
 		return ($this->ignoreMissing ?
 			$this->queryDocumentSafe() : 

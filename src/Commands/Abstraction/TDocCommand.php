@@ -38,8 +38,18 @@ trait TDocCommand
 		return $this->_id;
 	}
 	
+	/**
+	 * @param string $db
+	 * @return IRevCommand|static
+	 */
+	public function from(string $db): IRevCommand
+	{
+		$this->_db = $db;
+		return $this;
+	}
 	
 	/**
+	 * @deprecated 
 	 * @param string $db
 	 * @return IRevCommand|static
 	 */

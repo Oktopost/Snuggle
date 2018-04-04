@@ -7,7 +7,9 @@ use Objection\LiteObject;
 
 use Snuggle\Base\Core\IMappedObject;
 use Snuggle\Core\Document\Meta;
+
 use Structura\Arrays;
+use Structura\IIdentified;
 
 
 /**
@@ -17,7 +19,7 @@ use Structura\Arrays;
  * @property array|null		$Data
  * @property Meta			$Meta
  */
-class Doc extends LiteObject implements IMappedObject
+class Doc extends LiteObject implements IMappedObject, IIdentified
 {
 	use TMappedObject;
 	
@@ -94,5 +96,13 @@ class Doc extends LiteObject implements IMappedObject
 			
 			return $value;
 		}
+	}
+	
+	/**
+	 * @return string|int
+	 */
+	public function getHashCode()
+	{
+		return $this->ID;
 	}
 }

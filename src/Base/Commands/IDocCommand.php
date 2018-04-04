@@ -8,6 +8,13 @@ interface IDocCommand
 	 * @param string $db
 	 * @return IRevCommand|static
 	 */
+	public function from(string $db): IRevCommand;
+	
+	/**
+	 * @deprecated 
+	 * @param string $db
+	 * @return IRevCommand|static
+	 */
 	public function db(string $db): IRevCommand;
 	
 	/**

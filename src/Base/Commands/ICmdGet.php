@@ -33,7 +33,7 @@ interface ICmdGet extends IExecute, IQuery, IQueryRevision, IRevCommand
 	public function forceLatest(bool $force = true): ICmdGet;
 	
 	
-	public function queryExists(): bool;
+	public function queryExists(?string $target = null, ?string $id = null): bool;
 	
 	/**
 	 * @param string|null $target Document ID or Database name
