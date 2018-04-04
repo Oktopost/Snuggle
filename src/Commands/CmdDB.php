@@ -11,6 +11,7 @@ use Snuggle\Connection\Parsers\OkResponse;
 use Snuggle\Connection\Parsers\DB\DBInfoParser;
 
 use Snuggle\Exceptions\Http\NotFoundException;
+use Snuggle\Exceptions\Http\PreconditionFailedException;
 
 
 class CmdDB implements ICmdDB
@@ -41,10 +42,48 @@ class CmdDB implements ICmdDB
 		OkResponse::parse($result);
 	}
 	
+	public function createIfNotExists(string $name, ?int $shards = null): bool
+	{
+		$params = [];
+		
+		if ($shards)
+			$params['q'] = $shards;
+		
+		try
+		{
+			$result = $this->connection->request(
+				$name, 
+				Method::PUT, 
+				$params
+			);
+			
+			OkResponse::parse($result);
+			return true;
+		}
+		catch (PreconditionFailedException $p)
+		{
+			return false;
+		}
+	}
+	
 	public function drop(string $name): void
 	{
 		$result = $this->connection->request($name, Method::DELETE);
 		OkResponse::parse($result);
+	}
+	
+	public function dropIfExists(string $name): bool
+	{
+		try
+		{
+			$result = $this->connection->request($name, Method::DELETE);
+			OkResponse::parse($result);
+			return true;
+		}
+		catch (NotFoundException $e) 
+		{
+			return false;
+		}
 	}
 	
 	public function exists(string $name): bool

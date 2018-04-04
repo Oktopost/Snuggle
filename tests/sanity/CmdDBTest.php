@@ -49,6 +49,19 @@ class CmdDBTest extends TestCase
 		}
 	}
 	
+	public function test_createIfNotEixsts()
+	{
+		$conn = getSanityConnector();
+		
+		if ($conn->db()->exists('test_snuggle_cmddb_createifnotexists'))
+			$conn->db()->drop('test_snuggle_cmddb_createifnotexists');
+		
+		self::assertTrue($conn->db()->createIfNotExists('test_snuggle_cmddb_createifnotexists'));
+		self::assertTrue($conn->db()->exists('test_snuggle_cmddb_createifnotexists'));
+		
+		self::assertFalse($conn->db()->createIfNotExists('test_snuggle_cmddb_createifnotexists'));
+	}
+	
 	public function test_drop()
 	{
 		$conn = getSanityConnector();
@@ -57,6 +70,16 @@ class CmdDBTest extends TestCase
 		$conn->db()->drop('test_cmddb_drop');
 		
 		self::assertFalse($conn->db()->exists('test_cmddb_not_exists'));
+	}
+	
+	public function test_dropIfExists()
+	{
+		$conn = getSanityConnector();
+		
+		self::assertFalse($conn->db()->dropIfExists('test_snuggle_database_doesnot_exists'));
+		
+		$conn->db()->create('test_snuggle_db_to_drop');
+		self::assertTrue($conn->db()->dropIfExists('test_snuggle_db_to_drop'));
 	}
 	
 	public function test_info()
@@ -86,7 +109,7 @@ class CmdDBTest extends TestCase
 		
 		try
 		{
-			$info = $conn->db()->compact('test_cmddb_compcat');
+			$conn->db()->compact('test_cmddb_compcat');
 		}
 		finally
 		{
