@@ -76,7 +76,7 @@ abstract class BaseStoreResolver implements IBulkStoreResolution
 		
 		foreach ($store->Pending as $index => $data)
 		{
-			if (!($data['_id'] ?? false))
+			if (!key_exists('_id', $data))
 				$store->removePendingAt($index);
 		}
 		

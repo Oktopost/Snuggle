@@ -11,6 +11,7 @@ use Snuggle\Base\Commands\ICmdBulkStore;
 use Snuggle\Base\Commands\ICmdDB;
 use Snuggle\Base\Commands\ICmdGet;
 use Snuggle\Base\Commands\ICmdStore;
+use Snuggle\Base\Commands\ICmdDesign;
 use Snuggle\Base\Commands\ICmdDelete;
 use Snuggle\Base\Commands\ICmdDirect;
 use Snuggle\Base\Commands\ICmdInsert;
@@ -26,8 +27,9 @@ interface ICommandFactory
 	public function store(IConnection $connection): ICmdStore;
 	public function insert(IConnection $connection): ICmdInsert;
 	public function delete(IConnection $connection): ICmdDelete;
-	public function server(IConnection $connection): ICmdServer; 
+	public function server(IConnection $connection): ICmdServer;
 	public function direct(IConnection $connection): ICmdDirect;
+	public function design(IConnection $connection): ICmdDesign;
 	
 	public function getAll(IConnection $connection): ICmdBulkGet;
 	public function storeAll(IConnector $connector, IConnection $connection): ICmdBulkStore;

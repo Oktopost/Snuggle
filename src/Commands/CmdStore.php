@@ -53,7 +53,11 @@ class CmdStore implements ICmdStore, IStoreConflictCommand
 	 */
 	public function into(string $db, string $id = null): ICmdInsert
 	{
-		$this->doc($db, $id);
+		$this->from($db);
+		
+		if ($id)
+			$this->doc($id);
+		
 		return $this;
 	}
 	
@@ -138,6 +142,9 @@ class CmdStore implements ICmdStore, IStoreConflictCommand
 		if (is_array($data))
 		{
 			$this->data = $data;
+			
+			if (isset($data['_id']))
+				$this->doc($data['_id']);
 		}
 		else if (is_string($data))
 		{

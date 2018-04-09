@@ -2,7 +2,6 @@
 namespace Snuggle\Conflict\Resolvers;
 
 
-use Snuggle\Conflict\RecursiveMerge;
 use Snuggle\Core\Doc;
 
 use Snuggle\Base\Conflict\Commands\IStoreConflictCommand;
@@ -10,6 +9,7 @@ use Snuggle\Base\Conflict\Commands\Generic\IGetRevConflictCommand;
 use Snuggle\Base\Conflict\Resolvers\IStoreDocResolver;
 use Snuggle\Base\Connection\Response\IRawResponse;
 
+use Snuggle\Conflict\RecursiveMerge;
 use Snuggle\Conflict\Generic\AbstractDocResolver;
 use Snuggle\Exceptions\Http\ConflictException;
 use Snuggle\Connection\Parsers\SingleDocParser;
@@ -86,7 +86,7 @@ class StoreDocResolver extends AbstractDocResolver implements IStoreDocResolver
 		$doc = $this->getGetCommand($this->command)->queryDoc();
 		$data = $this->command->getBody();
 		
-		$data = RecursiveMerge::merge($data, $doc->Data);
+		$data = RecursiveMerge::merge($doc->Data, $data);
 		
 		return $this->store($doc->Rev, $data);
 	}

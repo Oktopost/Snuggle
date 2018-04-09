@@ -8,6 +8,7 @@ use Snuggle\Base\IConnection;
 use Snuggle\Base\Commands\ICmdDB;
 use Snuggle\Base\Commands\ICmdGet;
 use Snuggle\Base\Commands\ICmdStore;
+use Snuggle\Base\Commands\ICmdDesign;
 use Snuggle\Base\Commands\ICmdInsert;
 use Snuggle\Base\Commands\ICmdDelete;
 use Snuggle\Base\Commands\ICmdDirect;
@@ -58,6 +59,11 @@ class Connector implements IConnector
 	public function direct(): ICmdDirect
 	{
 		return $this->factory->direct($this->connection); 
+	}
+	
+	public function design(): ICmdDesign
+	{
+		return $this->factory->design($this->connection); 
 	}
 	
 	public function server(): ICmdServer

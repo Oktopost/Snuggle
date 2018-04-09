@@ -2,11 +2,13 @@
 namespace Snuggle\Factories\Commands;
 
 
+use Snuggle\Base\IConnector;
 use Snuggle\Base\IConnection;
 
 use Snuggle\Base\Commands\ICmdDB;
 use Snuggle\Base\Commands\ICmdGet;
 use Snuggle\Base\Commands\ICmdStore;
+use Snuggle\Base\Commands\ICmdDesign;
 use Snuggle\Base\Commands\ICmdDelete;
 use Snuggle\Base\Commands\ICmdInsert;
 use Snuggle\Base\Commands\ICmdDirect;
@@ -18,10 +20,10 @@ use Snuggle\Base\Commands\ICmdBulkInsert;
 
 use Snuggle\Base\Factories\ICommandFactory;
 
-use Snuggle\Base\IConnector;
 use Snuggle\Commands\CmdDB;
 use Snuggle\Commands\CmdGet;
 use Snuggle\Commands\CmdStore;
+use Snuggle\Commands\CmdDesign;
 use Snuggle\Commands\CmdDelete;
 use Snuggle\Commands\CmdDirect;
 use Snuggle\Commands\CmdInsert;
@@ -82,5 +84,10 @@ class SimpleFactory implements ICommandFactory
 	public function insertAll(IConnection $connection): ICmdBulkInsert
 	{
 		return new CmdBulkInsert($connection);
+	}
+	
+	public function design(IConnection $connection): ICmdDesign
+	{
+		return new CmdDesign($this->store($connection));
 	}
 }

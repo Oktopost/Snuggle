@@ -22,6 +22,10 @@ class RecursiveMerge
 					{
 						$a[$key] = RecursiveMerge::merge($a[$key], $arr[$key]);
 					}
+					else
+					{
+						$a[$key] = $value;
+					}
 				}
 				else
 				{
