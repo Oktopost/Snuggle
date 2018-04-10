@@ -25,12 +25,12 @@ class ViewListParser
 		
 		foreach ($data['rows'] ?? [] as $row)
 		{
-			if (!isset($row['id']) || isset($row['error']))
+			if (isset($row['error']))
 				continue;
 			
 			$viewRow = new ViewRow();
 			
-			$viewRow->DocID = $row['id'];
+			$viewRow->DocID = $row['id'] ?? null;
 			$viewRow->Key	= $row['key'] ?? null;
 			$viewRow->Value	= $row['value'] ?? null;
 			

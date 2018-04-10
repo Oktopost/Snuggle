@@ -9,6 +9,9 @@ use Snuggle\Base\Connection\Response\IRawResponse;
 use Snuggle\Commands\Abstraction\TQuery;
 use Snuggle\Commands\Abstraction\TExecuteSafe;
 use Snuggle\Commands\Abstraction\TQueryRevision;
+
+use Snuggle\Design\DirectoryScanner;
+use Snuggle\Conflict\RecursiveMerge;
 use Snuggle\Exceptions\FatalSnuggleException;
 
 
@@ -64,7 +67,7 @@ class CmdDesign implements ICmdDesign
 	
 	public function data(array $data): ICmdDesign
 	{
-		$this->body = array_merge($this->body, $data);
+		$this->body = RecursiveMerge::merge($this->body, $data);
 		return $this;
 	}
 	
@@ -129,6 +132,15 @@ class CmdDesign implements ICmdDesign
 		return $this;
 	}
 	
+	public function fromDir(string $path, string $fileFilter = '*'): ICmdDesign
+	{
+		return $this->data(DirectoryScanner::scanDir($path, $fileFilter));
+	}
+	
+	public function viewsFromDir(string $path, string $fileFilter = '*'): ICmdDesign
+	{
+		return $this->data(DirectoryScanner::scanViewsDir($path, $fileFilter));
+	}
 	
 	public function create(): void
 	{

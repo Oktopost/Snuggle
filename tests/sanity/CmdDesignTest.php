@@ -5,6 +5,8 @@ namespace sanity;
 use PHPUnit\Framework\TestCase;
 use Snuggle\Base\Commands\ICmdBulkGet;
 use Snuggle\Commands\CmdDesign;
+use Snuggle\Design\DirectoryScanner;
+use Snuggle\Exceptions\Http\NotFoundException;
 
 
 /**
@@ -204,5 +206,43 @@ class CmdDesignTest extends TestCase
 		self::assertCount(1, $this->getCmd(__FUNCTION__, 'view_a')->key('a')->queryValues());
 		self::assertCount(1, $this->getCmd(__FUNCTION__, 'view_b')->key('b_correct')->queryValues());
 		self::assertCount(1, $this->getCmd(__FUNCTION__, 'view_c')->key('c')->queryValues());
+	}
+	
+	
+	public function test_ReadIndexes_FromDir()
+	{
+		$this->designCmd(__FUNCTION__)
+			->fromDir(__DIR__ . '/design/from_dir/rec', '*.js')
+			->viewsFromDir(__DIR__ . '/design/from_dir/view_dir')
+			->overrideConflict()
+			->create();
+		
+		$this->store([
+			[
+				'index_b' => 'b',
+				'index_wrong' => 'wrong',
+				'index_c' => 'c',
+				'index_d' => 'd',
+				'index_e' => 'e'			
+			],
+			[
+				'index_b' => 'b',
+				'index_wrong' => 'wrong',
+				'index_c' => 'c',
+				'index_d' => 'd_2',
+				'index_e' => 'e'			
+			]
+		]);
+		
+		self::assertCount(2, $this->getCmd(__FUNCTION__, 'b')->key('b')->queryValues());
+		self::assertCount(1, $this->getCmd(__FUNCTION__, 'd')->key('d')->queryValues());
+		self::assertCount(2, $this->getCmd(__FUNCTION__, 'e')->key('e')->queryValues());
+		
+		// Has '_sum' reducer
+		self::assertEquals([2], $this->getCmd(__FUNCTION__, 'c')->key('c')->queryValues());
+		
+		$this->getCmd(__FUNCTION__, 'wrong')->executeSafe($e);
+		self::assertInstanceOf(NotFoundException::class, $e);
+		
 	}
 }

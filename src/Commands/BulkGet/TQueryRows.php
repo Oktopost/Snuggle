@@ -3,6 +3,7 @@ namespace Snuggle\Commands\BulkGet;
 
 
 use Snuggle\Core\Lists\ViewRow;
+use Snuggle\Exceptions\SnuggleException;
 use Structura\Map;
 
 
@@ -64,15 +65,31 @@ trait TQueryRows
 	
 	public function queryValues(): array
 	{
-		$rows	= $this->queryList()->Rows;
+		$body	= $this->queryJson();
 		$values	= [];
+		
+		$rows = $body['rows'] ?? []; 
 		
 		foreach ($rows as $row)
 		{
-			$values[] = $row->Value;
+			if (key_exists('value', $row))
+				$values[] = $row['value'];
 		}
 		
 		return $values;
+	}
+	
+	public function queryValue($default = null)
+	{
+		$body	= $this->queryJson();
+		$row	= ($body['rows'][0] ?? []);
+		
+		if (func_num_args() == 1)
+			return $row['value'] ?? $default;
+		else if (!key_exists('value', $row))
+			throw new SnuggleException('No value selected. Body (base64) ' . base64_encode(jsonencode($body)));
+		
+		return $row['value'];
 	}
 	
 	/**

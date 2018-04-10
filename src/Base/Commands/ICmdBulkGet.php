@@ -37,6 +37,12 @@ interface ICmdBulkGet extends IExecute, IQuery
 	public function queryValues(): array;
 	
 	/**
+	 * @param mixed $default
+	 * @return mixed
+	 */
+	public function queryValue($default = null);
+	
+	/**
 	 * @return bool
 	 */
 	public function queryExists(): bool;

@@ -19,5 +19,8 @@ interface ICmdDesign extends IExecute, IQueryRevision, IQuery
 	public function mergeNewOnConflict(): ICmdDesign;
 	public function mergeOverOnConflict(): ICmdDesign;
 	
+	public function fromDir(string $path, string $fileFilter = '*'): ICmdDesign;
+	public function viewsFromDir(string $path, string $fileFilter = '*'): ICmdDesign;
+	
 	public function create(): void;
 }

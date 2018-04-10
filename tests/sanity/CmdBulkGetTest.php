@@ -5,6 +5,7 @@ namespace sanity;
 use PHPUnit\Framework\TestCase;
 
 use Snuggle\Core\Lists\ViewRow;
+use Snuggle\Exceptions\SnuggleException;
 use Structura\Map;
 use Structura\Arrays;
 
@@ -413,5 +414,30 @@ EOF;
 		sort($expected);
 		
 		self::assertEquals($expected, $actual);
+	}
+	
+	
+	public function test_queryValue(): void
+	{
+		$this->insertData(
+			[
+				['_id' => 'ind_a', 'index_key' => 'a', 'index_value' => 'a'],
+				['_id' => 'ind_b', 'index_key' => 'b', 'index_value' => ['b']],
+				['_id' => 'ind_c', 'index_key' => 'c', 'index_value' => null]
+			],
+			self::VIEW_DB);
+		
+		self::assertEquals($this->getCmdFromView(['a'])->queryValue(), 'a');
+		self::assertEquals($this->getCmdFromView(['b'])->queryValue(), ['b']);
+		self::assertEquals($this->getCmdFromView(['c'])->queryValue(), null);
+		
+		self::assertEquals($this->getCmdFromView(['d'])->queryValue(null), null);
+		
+		try
+		{
+			$this->getCmdFromView(['d'])->queryValue();
+			self::fail();
+		}
+		catch (SnuggleException $e) {}
 	}
 }
