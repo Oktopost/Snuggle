@@ -19,10 +19,10 @@ interface ICmdBulkGet extends IExecute, IQuery
 	public function includeDocs(bool $include = true): ICmdBulkGet;
 	public function stale(?string $behavior = StaleBehavior::OK): ICmdBulkGet;
 	
-	public function key(?string $key): ICmdBulkGet;
+	public function key($key): ICmdBulkGet;
 	public function keys(?array $keys): ICmdBulkGet;
-	public function startKey(?string $endKey): ICmdBulkGet;
-	public function endKey(?string $endKey): ICmdBulkGet;
+	public function startKey($endKey): ICmdBulkGet;
+	public function endKey($endKey): ICmdBulkGet;
 	
 	public function inclusiveEndKey(bool $isInclusive = true): ICmdBulkGet;
 	

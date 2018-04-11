@@ -115,7 +115,7 @@ class CmdBulkGet implements ICmdBulkGet
 		return $this->setParam('stale', $behavior);
 	}
 	
-	public function key(?string $key): ICmdBulkGet
+	public function key($key): ICmdBulkGet
 	{
 		return $this->setKeysParameter($key ? ['key' => jsonencode($key)] : null);
 	}
@@ -126,7 +126,7 @@ class CmdBulkGet implements ICmdBulkGet
 		return $this->setKeysParameter($keys ? ['keys' => $keys] : null);
 	}
 	
-	public function startKey(?string $startKey): ICmdBulkGet
+	public function startKey($startKey): ICmdBulkGet
 	{
 		unset($this->params['key']);
 		unset($this->params['keys']);
@@ -134,7 +134,7 @@ class CmdBulkGet implements ICmdBulkGet
 		return $this->setJsonParam('startkey', $startKey);
 	}
 	
-	public function endKey(?string $endKey): ICmdBulkGet
+	public function endKey($endKey): ICmdBulkGet
 	{
 		unset($this->params['key']);
 		unset($this->params['keys']);
