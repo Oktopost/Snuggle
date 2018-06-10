@@ -23,7 +23,7 @@ abstract class DocStoreResolver extends BaseStoreResolver
 		{
 			if (!$docs->tryGet($item['_id'], $doc))
 			{
-				$store->removePendingAt($item);
+				$store->removePendingAt($index);
 				continue;
 			}
 			
@@ -33,7 +33,7 @@ abstract class DocStoreResolver extends BaseStoreResolver
 			
 			if (!$result)
 			{
-				$store->removePendingAt($item);
+				$store->removePendingAt($index);
 			}
 			else
 			{
