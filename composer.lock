@@ -58,16 +58,16 @@
         },
         {
             "name": "oktopost/jsonencode",
-            "version": "1.0.0",
+            "version": "1.0.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Oktopost/jsonencode.git",
-                "reference": "fc47a7c0a4e0cafbcdc59903aa7a8f8d614360f5"
+                "reference": "2ff092f0554f5b6c02762e3987e165d3912e423f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Oktopost/jsonencode/zipball/fc47a7c0a4e0cafbcdc59903aa7a8f8d614360f5",
-                "reference": "fc47a7c0a4e0cafbcdc59903aa7a8f8d614360f5",
+                "url": "https://api.github.com/repos/Oktopost/jsonencode/zipball/2ff092f0554f5b6c02762e3987e165d3912e423f",
+                "reference": "2ff092f0554f5b6c02762e3987e165d3912e423f",
                 "shasum": ""
             },
             "require": {
@@ -99,7 +99,7 @@
                 }
             ],
             "description": "Fix the behavior of json_encode and json_decode",
-            "time": "2018-04-03T08:14:43+00:00"
+            "time": "2018-06-17T12:16:38+00:00"
         },
         {
             "name": "oktopost/objection",
