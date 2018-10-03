@@ -7,6 +7,7 @@ use Snuggle\Base\IConnection;
 use Snuggle\Base\Commands\ICmdDB;
 
 use Snuggle\Connection\Method;
+use Snuggle\Connection\Request\RawRequest;
 use Snuggle\Connection\Parsers\OkResponse;
 use Snuggle\Connection\Parsers\DB\DBInfoParser;
 
@@ -108,5 +109,11 @@ class CmdDB implements ICmdDB
 	public function compact(string $name): void
 	{
 		OkResponse::parse($this->connection->request($name . '/_compact', Method::POST));
+	}
+	
+	public function setRevisionsLimit(string $name, int $limit): void
+	{
+		$request = RawRequest::create($name . '/_revs_limit', Method::PUT)->setBody($limit);
+		OkResponse::parse($this->connection->request($request));
 	}
 }

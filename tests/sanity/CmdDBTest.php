@@ -109,7 +109,7 @@ class CmdDBTest extends TestCase
 		}
 	}
 	
-	public function test_compact_snity_test()
+	public function test_compact_sanity_test()
 	{
 		$conn = getSanityConnector();
 		
@@ -122,6 +122,22 @@ class CmdDBTest extends TestCase
 		finally
 		{
 			$conn->db()->drop('test_cmddb_compcat');
+		}
+	}
+	
+	public function test_setRevisionsLimit_sanity_test()
+	{
+		$conn = getSanityConnector();
+		
+		createTestDB('test_cmddb_rev_limit');
+		
+		try
+		{
+			$conn->db()->setRevisionsLimit('test_cmddb_rev_limit', 10);
+		}
+		finally
+		{
+			$conn->db()->drop('test_cmddb_rev_limit');
 		}
 	}
 }

@@ -74,7 +74,7 @@ class RawRequest implements IRawRequest
 	
 	public function setBody($body): RawRequest
 	{
-		if (is_null($body) || is_string($body))
+		if (is_null($body) || is_scalar($body))
 		{
 			$this->body = $body;
 		}
