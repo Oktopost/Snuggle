@@ -6,7 +6,7 @@ use Snuggle\Base\Commands\Store\IBulkStoreResult;
 use Snuggle\Base\Conflict\Resolvers\IBulkStoreResolution;
 
 
-interface ICmdBulkStore extends IStoreConflict
+interface ICmdBulkStore extends IStoreConflict, IRefreshView
 {
 	public function setCostumeResolver(IBulkStoreResolution $resolver): ICmdBulkStore;
 	

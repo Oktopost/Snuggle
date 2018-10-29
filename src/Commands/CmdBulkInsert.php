@@ -9,6 +9,7 @@ use Snuggle\Base\Commands\ICmdBulkInsert;
 use Snuggle\Base\Connection\Response\IRawResponse;
 
 use Snuggle\Commands\Abstraction\TQuery;
+use Snuggle\Commands\Abstraction\TRefreshView;
 use Snuggle\Commands\Abstraction\TExecuteSafe;
 
 use Snuggle\Connection\Request\RawRequest;
@@ -22,6 +23,7 @@ class CmdBulkInsert implements ICmdBulkInsert
 {
 	use TQuery;
 	use TExecuteSafe;
+	use TRefreshView;
 	
 	
 	private $db;
@@ -34,6 +36,7 @@ class CmdBulkInsert implements ICmdBulkInsert
 	public function __construct(IConnection $connection)
 	{
 		$this->connection = $connection;
+		$this->setRefreshConnection($connection);
 	}
 	
 	
@@ -44,6 +47,7 @@ class CmdBulkInsert implements ICmdBulkInsert
 	public function into(string $db): ICmdBulkInsert
 	{
 		$this->db = $db;
+		$this->setRefreshDB($db);
 		return $this;
 	}
 	
@@ -98,7 +102,14 @@ class CmdBulkInsert implements ICmdBulkInsert
 				'docs' => $this->payload
 			]);
 		
-		return $this->connection->request($request);
+		$result = $this->connection->request($request);
+		
+		if ($result->isSuccessful())
+		{
+			$this->refreshViews(count($this->payload));
+		}
+		
+		return $result;
 	}
 	
 	/**

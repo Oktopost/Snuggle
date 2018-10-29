@@ -16,6 +16,7 @@ use Snuggle\Base\Connection\Response\IRawResponse;
 use Snuggle\Commands\Abstraction\TQuery;
 use Snuggle\Commands\Abstraction\TDocCommand;
 use Snuggle\Commands\Abstraction\TExecuteSafe;
+use Snuggle\Commands\Abstraction\TRefreshView;
 use Snuggle\Commands\Abstraction\TQueryRevision;
 
 use Snuggle\Conflict\Resolvers\StoreDocResolver;
@@ -29,6 +30,7 @@ class CmdStore implements ICmdStore, IStoreConflictCommand
 	use TQueryRevision;
 	use TDocCommand;
 	use TExecuteSafe;
+	use TRefreshView;
 	
 	
 	private $data		= [];
@@ -43,6 +45,7 @@ class CmdStore implements ICmdStore, IStoreConflictCommand
 	{
 		$this->connection = new StoreDocResolver($connection);
 		$this->connection->overrideConflict();
+		$this->setRefreshConnection($connection);
 	}
 	
 	
@@ -54,6 +57,7 @@ class CmdStore implements ICmdStore, IStoreConflictCommand
 	public function into(string $db, string $id = null): ICmdInsert
 	{
 		$this->from($db);
+		$this->setRefreshDB($db);
 		
 		if ($id)
 			$this->doc($id);
@@ -161,7 +165,14 @@ class CmdStore implements ICmdStore, IStoreConflictCommand
 	
 	public function execute(): IRawResponse
 	{
-		return $this->connection->execute($this);
+		$result = $this->connection->execute($this);
+		
+		if ($result->isSuccessful())
+		{
+			$this->refreshViews();
+		}
+		
+		return $result;
 	}
 	
 	public function assemble(): IRawRequest

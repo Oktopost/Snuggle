@@ -9,6 +9,7 @@ use Snuggle\Base\Connection\Response\IRawResponse;
 use Snuggle\Commands\Abstraction\TQuery;
 use Snuggle\Commands\Abstraction\TDocCommand;
 use Snuggle\Commands\Abstraction\TExecuteSafe;
+use Snuggle\Commands\Abstraction\TRefreshView;
 use Snuggle\Commands\Abstraction\TQueryRevision;
 
 use Snuggle\Connection\Method;
@@ -23,6 +24,7 @@ class CmdInsert implements ICmdInsert
 	use TQueryRevision;
 	use TExecuteSafe;
 	use TDocCommand;
+	use TRefreshView;
 	
 	
 	private $db	= null;
@@ -38,6 +40,7 @@ class CmdInsert implements ICmdInsert
 	public function __construct(IConnection $connection)
 	{
 		$this->connection = $connection;
+		$this->setRefreshConnection($connection);
 	}
 	
 	
@@ -49,6 +52,7 @@ class CmdInsert implements ICmdInsert
 	public function into(string $db, string $id = null): ICmdInsert
 	{
 		$this->db = $db;
+		$this->setRefreshDB($db);
 		
 		if ($id)
 			$this->id = $id;
@@ -106,7 +110,14 @@ class CmdInsert implements ICmdInsert
 			->setHeader('Content-Type', 'application/json')
 			->setBody($this->data);
 		
-		return $this->connection->request($request);
+		$result = $this->connection->request($request);
+		
+		if ($result->isSuccessful())
+		{
+			$this->refreshViews();
+		}
+		
+		return $result;
 	}
 	
 	

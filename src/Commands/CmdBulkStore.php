@@ -14,6 +14,7 @@ use Snuggle\Base\Connection\Response\IRawResponse;
 use Snuggle\Commands\Store\BulkStoreSet;
 use Snuggle\Commands\Store\ResponseParser;
 use Snuggle\Commands\Store\TCmdBulkResolve;
+use Snuggle\Commands\Abstraction\TRefreshView;
 
 use Snuggle\Connection\Method;
 use Snuggle\Exceptions\HttpException;
@@ -25,6 +26,7 @@ use Snuggle\Connection\Request\RawRequest;
 class CmdBulkStore implements ICmdBulkStore
 {
 	use TCmdBulkResolve;
+	use TRefreshView;
 	
 	
 	private $db;
@@ -75,6 +77,7 @@ class CmdBulkStore implements ICmdBulkStore
 		$this->connection	= $connection;
 		$this->data			= new BulkStoreSet();
 		
+		$this->setRefreshConnection($connection);
 		$this->ignoreConflict();
 	}
 	
@@ -87,6 +90,7 @@ class CmdBulkStore implements ICmdBulkStore
 	{
 		$this->resolver->from($db);
 		$this->db = $db;
+		$this->setRefreshDB($db);
 		return $this;
 	}
 	
@@ -172,6 +176,11 @@ class CmdBulkStore implements ICmdBulkStore
 			{
 				$doRetry = $this->resolver->resolve($ce, $response);
 			}
+		}
+		
+		if ($this->data->Final)
+		{
+			$this->refreshViews(count($this->data->Final));
 		}
 		
 		return $this->data;
