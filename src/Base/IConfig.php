@@ -16,7 +16,7 @@ interface IConfig
 	 * @param array|null $data
 	 * @return IConfig|static
 	 */
-	public function addConnection($item, ?array $data = null): IConfig;
+	public function addConnection($item = null, ?array $data = null): IConfig;
 	
 	/**
 	 * @param IConfigLoader|string|array $loader IConfigLoader instance or class name.

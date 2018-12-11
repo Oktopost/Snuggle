@@ -45,6 +45,9 @@ class ConnectionConfigsManager
 	
 	public function get(string $name = 'main'): ConnectionConfig
 	{
+		if (!$this->loaders && !$this->configs && $name == 'main')
+			$this->configs['main'] = ConnectionConfig::create([]);
+		
 		if (!isset($this->configs[$name]) && !$this->tryLoad($name))
 			throw new Exceptions\ConfigurationNotFoundException($name);
 		

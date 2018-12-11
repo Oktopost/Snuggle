@@ -77,7 +77,7 @@ class Config implements IConfig
 	 * @param array|null $data
 	 * @return IConfig|static
 	 */
-	public function addConnection($item, ?array $data = null): IConfig
+	public function addConnection($item = null, ?array $data = null): IConfig
 	{
 		$this->connectionsManager->add($item, $data);
 		return $this;
