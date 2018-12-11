@@ -73,7 +73,7 @@ class Config implements IConfig
 	
 	
 	/**
-	 * @param string|array $item Name of the connection. If set to array, name will be 'main'
+	 * @param string|array|null $item Name of the connection. If set to array, name will be 'main'
 	 * @param array|null $data
 	 * @return IConfig|static
 	 */

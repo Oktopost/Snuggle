@@ -60,12 +60,18 @@ class ConnectionConfigsManager
 	}
 	
 	/**
-	 * @param string|array $item
+	 * @param string|array|null $item
 	 * @param array|null $data
 	 */
 	public function add($item, $data = null): void
 	{
-		if (!$data)
+		$data = $data ?? [];
+		
+		if (is_null($item))
+		{
+			$item = 'main';
+		}
+		else if (is_array($item))
 		{
 			$data = $item;
 			$item = 'main';
