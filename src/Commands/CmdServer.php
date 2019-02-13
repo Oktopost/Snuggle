@@ -6,6 +6,7 @@ use Snuggle\Base\IConnection;
 use Snuggle\Base\Commands\ICmdServer;
 
 use Snuggle\Connection\Method;
+use Snuggle\Core\Server\ActiveTask;
 use Snuggle\Core\Server\Index;
 
 use Snuggle\Exceptions\SnuggleException;
@@ -26,6 +27,41 @@ class CmdServer implements ICmdServer
 	public function databases(): array
 	{
 		return $this->connection->request('/_all_dbs')->getJsonBody();
+	}
+	
+	/**
+	 * @param string|null $type
+	 * @return ActiveTask[]
+	 */
+	public function activeTasks(?string $type = null): array
+	{
+		$result = $this->connection->request('/_active_tasks')->getJsonBody();
+		$data = [];
+		
+		foreach ($result as $record)
+		{
+			$activityType = $record['type'] ?? null;
+			
+			if ($type && $type != $activityType)
+			{
+				continue;
+			}
+			
+			$activity = new ActiveTask();
+			
+			$activity->Database			= $record['database'] ?? null;
+			$activity->DesignDocument	= $record['design_document'] ?? null;
+			$activity->PID				= $record['pid'] ?? null;
+			$activity->UpdatedOn		= isset($record['pid']) ? date('Y-m-d H:i:s', $record['updated_on']) : null;
+			$activity->StartedOn		= isset($record['pid']) ? date('Y-m-d H:i:s', $record['started_on']) : null; 
+			$activity->Type				= $record['type'] ?? null;
+			$activity->Progress			= isset($record['progress']) ? (((float)($record['progress'])) / 100.0) : null;  
+			$activity->OriginalRecord	= $record;
+			
+			$data[] = $activity;
+		}
+		
+		return $data;
 	}
 	
 	public function info(): Index
