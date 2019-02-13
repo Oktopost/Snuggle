@@ -106,9 +106,14 @@ class CmdDB implements ICmdDB
 		return DBInfoParser::parse($this->connection->request($name));
 	}
 	
-	public function compact(string $name): void
+	public function compact(string $name, ?string $design = null): void
 	{
-		OkResponse::parse($this->connection->request($name . '/_compact', Method::POST));
+		$endPoint = $name . '/_compact';
+		
+		if ($design)
+			$endPoint .= "/$design";
+		
+		OkResponse::parse($this->connection->request($endPoint, Method::POST));
 	}
 	
 	public function setRevisionsLimit(string $name, int $limit): void

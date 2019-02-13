@@ -125,6 +125,28 @@ class CmdDBTest extends TestCase
 		}
 	}
 	
+	public function test_compact_sanityForDesign_test()
+	{
+		$conn = getSanityConnector();
+		
+		createTestDB('test_cmddb_compcat_2');
+		
+		try
+		{
+			$conn->design()
+				->db('test_cmddb_compcat_2')
+				->name('des')
+				->viewsFromDir(__DIR__ . '/design/db')
+				->execute();
+				
+			$conn->db()->compact('test_cmddb_compcat_2', 'des');
+		}
+		finally
+		{
+			$conn->db()->drop('test_cmddb_compcat_2');
+		}
+	}
+	
 	public function test_setRevisionsLimit_sanity_test()
 	{
 		$conn = getSanityConnector();

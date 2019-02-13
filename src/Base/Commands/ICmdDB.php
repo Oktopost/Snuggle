@@ -13,6 +13,6 @@ interface ICmdDB
 	public function drop(string $name): void;
 	public function dropIfExists(string $name): bool;
 	public function info(string $name): DBInfo;
-	public function compact(string $name): void;
+	public function compact(string $name, ?string $design = null): void;
 	public function setRevisionsLimit(string $name, int $limit): void;
 }

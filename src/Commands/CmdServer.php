@@ -6,10 +6,8 @@ use Snuggle\Base\IConnection;
 use Snuggle\Base\Commands\ICmdServer;
 
 use Snuggle\Connection\Method;
-use Snuggle\Core\Server\ActiveTask;
 use Snuggle\Core\Server\Index;
-
-use Snuggle\Exceptions\SnuggleException;
+use Snuggle\Core\Server\ActiveTask;
 
 
 class CmdServer implements ICmdServer
