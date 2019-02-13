@@ -171,6 +171,11 @@ class CmdBulkGet implements ICmdBulkGet
 			->skip($skip);
 	}
 	
+	public function groupLevel(?int $level): ICmdBulkGet
+	{
+		return $this->setParam('group_level', $level);
+	}
+	
 	public function descending(bool $isDesc = true): ICmdBulkGet
 	{
 		return $this->setJsonParam('descending', $isDesc, false);

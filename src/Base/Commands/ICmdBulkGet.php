@@ -31,6 +31,7 @@ interface ICmdBulkGet extends IExecute, IQuery
 	public function limit(?int $limit = 100): ICmdBulkGet;
 	public function skip(?int $skip = 100): ICmdBulkGet;
 	public function page(int $page, int $perPage = 100): ICmdBulkGet;
+	public function groupLevel(?int $level): ICmdBulkGet;
 	public function descending(bool $isDesc = true): ICmdBulkGet;
 	
 	public function queryList(): ViewList;
