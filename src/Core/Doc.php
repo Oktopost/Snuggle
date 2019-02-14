@@ -105,4 +105,12 @@ class Doc extends LiteObject implements IMappedObject, IIdentified
 	{
 		return $this->ID;
 	}
+	
+	/**
+	 * @return string|int
+	 */
+	public function id()
+	{
+		return $this->ID;
+	}
 }

@@ -162,4 +162,80 @@ class CmdDBTest extends TestCase
 			$conn->db()->drop('test_cmddb_rev_limit');
 		}
 	}
+	
+	
+	public function test_designDocs_NoDesignDocs_ReturnEmptyArray()
+	{
+		$conn = getSanityConnector();
+		
+		createTestDB('test_cmddb_designdocs_empty');
+		
+		try
+		{
+			self::assertEmpty($conn->db()->designDocs('test_cmddb_designdocs_empty'));
+		}
+		finally
+		{
+			$conn->db()->drop('test_cmddb_designdocs_empty');
+		}
+	}
+	
+	
+	public function test_designDocs_HaveDesignDocs_NamesReturned()
+	{
+		$conn = getSanityConnector();
+		
+		createTestDB('test_cmddb_designdocs_have');
+		
+		try
+		{
+			$conn->design()
+				->db('test_cmddb_designdocs_have')
+				->name('a')
+				->viewsFromDir(__DIR__ . '/design/db/designdoc/a')
+				->execute();
+			
+			$conn->design()
+				->db('test_cmddb_designdocs_have')
+				->name('c')
+				->viewsFromDir(__DIR__ . '/design/db/designdoc/c')
+				->execute();
+			
+			$ddocs = $conn->db()->designDocs('test_cmddb_designdocs_have');
+			sort($ddocs);
+			
+			self::assertEquals(['a', 'c'], $ddocs);
+		}
+		finally
+		{
+			$conn->db()->drop('test_cmddb_designdocs_have');
+		}
+	}
+	
+	
+	public function test_designDocInfo()
+	{
+		$conn = getSanityConnector();
+		
+		createTestDB('test_cmddb_ddoc_info');
+		
+		try
+		{
+			$conn->design()
+				->db('test_cmddb_ddoc_info')
+				->name('my_design_doc')
+				->viewsFromDir(__DIR__ . '/design/db/designdoc/a')
+				->execute();
+			
+			$info = $conn->db()->designDocInfo('test_cmddb_ddoc_info', 'my_design_doc');
+			
+			self::assertEquals('my_design_doc', $info->Name);
+			self::assertEquals('javascript', $info->Language);
+			self::assertNotEquals(0, $info->DiskSize);
+		}
+		finally
+		{
+			$conn->db()->drop('test_cmddb_ddoc_info');
+		}
+	}
 }

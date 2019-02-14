@@ -3,6 +3,7 @@ namespace Snuggle\Commands;
 
 
 use Snuggle\Core\DB\DBInfo;
+use Snuggle\Core\DB\DDocInfo;
 use Snuggle\Base\IConnection;
 use Snuggle\Base\Commands\ICmdDB;
 
@@ -10,9 +11,13 @@ use Snuggle\Connection\Method;
 use Snuggle\Connection\Request\RawRequest;
 use Snuggle\Connection\Parsers\OkResponse;
 use Snuggle\Connection\Parsers\DB\DBInfoParser;
+use Snuggle\Connection\Parsers\DB\DDocInfoParser;
 
 use Snuggle\Exceptions\Http\NotFoundException;
 use Snuggle\Exceptions\Http\PreconditionFailedException;
+use Snuggle\Exceptions\Http\UnexpectedHttpResponseException;
+
+use Structura\Strings;
 
 
 class CmdDB implements ICmdDB
@@ -104,6 +109,28 @@ class CmdDB implements ICmdDB
 	public function info(string $name): DBInfo
 	{
 		return DBInfoParser::parse($this->connection->request($name));
+	}
+	
+	public function designDocInfo(string $dbName, string $dDocName): DDocInfo
+	{
+		return DDocInfoParser::parse($this->connection->request("/$dbName/_design/$dDocName/_info"));
+	}
+	
+	public function designDocs(string $dbName): array
+	{
+		$data	= $this->connection->request("$dbName/_design_docs");
+		$body	= $data->getJsonBody();
+		$ids	= [];
+		
+		if (!isset($body['rows']))
+			throw new UnexpectedHttpResponseException($data, 'Expecting rows `key` in response body');
+		
+		foreach ($body['rows'] as $row)
+		{
+			$ids[] = Strings::shouldNotStartWith($row['id'], '_design/');
+		}
+		
+		return $ids;
 	}
 	
 	public function compact(string $name, ?string $design = null): void
