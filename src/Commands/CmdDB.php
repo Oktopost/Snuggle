@@ -116,6 +116,10 @@ class CmdDB implements ICmdDB
 		return DDocInfoParser::parse($this->connection->request("/$dbName/_design/$dDocName/_info"));
 	}
 	
+	/**
+	 * @param string $dbName
+	 * @return string[]
+	 */
 	public function designDocs(string $dbName): array
 	{
 		$data	= $this->connection->request("$dbName/_design_docs");

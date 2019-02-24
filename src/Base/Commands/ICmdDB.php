@@ -15,7 +15,12 @@ interface ICmdDB
 	public function dropIfExists(string $name): bool;
 	public function info(string $name): DBInfo;
 	public function designDocInfo(string $dbName, string $dDocName): DDocInfo;
-	public function designDocs(string $dbName): array;
 	public function compact(string $name, ?string $design = null): void;
 	public function setRevisionsLimit(string $name, int $limit): void;
+	
+	/**
+	 * @param string $dbName
+	 * @return string[]
+	 */
+	public function designDocs(string $dbName): array;
 }

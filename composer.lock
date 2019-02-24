@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "5201ee1850837b64a692e1a90f8394f4",
+    "content-hash": "792204d2678a306e5989a91dc73f5e9b",
     "packages": [
         {
             "name": "nategood/httpful",
@@ -55,6 +55,91 @@
                 "restful"
             ],
             "time": "2015-10-26T16:11:30+00:00"
+        },
+        {
+            "name": "oktopost/annotation",
+            "version": "1.0.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/Oktopost/Annotation.git",
+                "reference": "01126b906730c39c633c4a4a7da9c4222c31ae34"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/Oktopost/Annotation/zipball/01126b906730c39c633c4a4a7da9c4222c31ae34",
+                "reference": "01126b906730c39c633c4a4a7da9c4222c31ae34",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=7.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^6.1"
+            },
+            "type": "lib",
+            "autoload": {
+                "psr-0": {
+                    "Annotation": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Alexey Puchkov",
+                    "email": "alexey@oktopost.com"
+                }
+            ],
+            "description": "Annotations library (yes, another one)",
+            "time": "2017-07-23T11:14:02+00:00"
+        },
+        {
+            "name": "oktopost/cartograph",
+            "version": "1.1.5",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/Oktopost/Cartograph.git",
+                "reference": "2ac4d0492b7dcee7cd93b5a3069710a4e96b5950"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/Oktopost/Cartograph/zipball/2ac4d0492b7dcee7cd93b5a3069710a4e96b5950",
+                "reference": "2ac4d0492b7dcee7cd93b5a3069710a4e96b5950",
+                "shasum": ""
+            },
+            "require": {
+                "oktopost/annotation": "^1.0",
+                "php": ">=7.1",
+                "unstable-cacao/itarator": "^1.0",
+                "unstable-cacao/structura": "^2.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^6.2",
+                "satooshi/php-coveralls": "^1.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Cartograph\\": "src/Cartograph"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Alexey Puchkov",
+                    "email": "alexey@oktopost.com"
+                },
+                {
+                    "name": "Maksym Laktionov",
+                    "email": "maksym@oktopost.com"
+                }
+            ],
+            "time": "2019-02-06T15:40:56+00:00"
         },
         {
             "name": "oktopost/jsonencode",
@@ -192,6 +277,41 @@
             "description": "Inversion of Control library",
             "homepage": "https://github.com/Oktopost/Skeleton",
             "time": "2017-08-02T07:37:39+00:00"
+        },
+        {
+            "name": "unstable-cacao/itarator",
+            "version": "1.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/unstable-cacao/Itarator.git",
+                "reference": "3b9307443136d09025d52435fc8295bfdff92978"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/unstable-cacao/Itarator/zipball/3b9307443136d09025d52435fc8295bfdff92978",
+                "reference": "3b9307443136d09025d52435fc8295bfdff92978",
+                "shasum": ""
+            },
+            "require": {
+                "oktopost/objection": "^1.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "Itarator": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Alexey Puchkov",
+                    "email": "alexey@oktopost.com"
+                }
+            ],
+            "time": "2017-08-02T08:53:12+00:00"
         },
         {
             "name": "unstable-cacao/structura",
