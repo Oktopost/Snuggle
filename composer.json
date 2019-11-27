@@ -28,15 +28,15 @@
     },
 	"autoload": {
 		"psr-4": {
-			"Snuggle\\": "src/"
+			"Snuggle\\": "Source/"
 		}
 	},
     "scripts": {
         "test": "./vendor/phpunit/phpunit/phpunit --dont-report-useless-tests",
         "unit-test": "./vendor/phpunit/phpunit/phpunit --dont-report-useless-tests --group unit",
         "integration-test": "./vendor/phpunit/phpunit/phpunit --dont-report-useless-tests --group integration",
-        "test-cover": "./vendor/phpunit/phpunit/phpunit --dont-report-useless-tests --coverage-html ./build/cover",
-        "unit-test-cover": "./vendor/phpunit/phpunit/phpunit --dont-report-useless-tests --coverage-html ./build/cover --group unit",
-        "integration-test-cover": "./vendor/phpunit/phpunit/phpunit --dont-report-useless-tests --coverage-html ./build/cover --group integration"
+        "test-cover": "./vendor/phpunit/phpunit/phpunit --dont-report-useless-tests --coverage-html ./Build/Cover",
+        "unit-test-cover": "./vendor/phpunit/phpunit/phpunit --dont-report-useless-tests --coverage-html ./Build/Cover --group unit",
+        "integration-test-cover": "./vendor/phpunit/phpunit/phpunit --dont-report-useless-tests --coverage-html ./Build/Cover --group integration"
     }
 }
