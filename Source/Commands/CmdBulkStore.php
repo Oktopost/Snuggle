@@ -2,6 +2,7 @@
 namespace Snuggle\Commands;
 
 
+use Snuggle\Base\Commands\IStoreConflict;
 use Structura\Arrays;
 
 use Snuggle\Base\IConnector;
@@ -153,6 +154,12 @@ class CmdBulkStore implements ICmdBulkStore
 	public function setMaxRetries(?int $maxRetries = null): ICmdBulkStore
 	{
 		$this->retires = $maxRetries;
+		return $this;
+	}
+	
+	public function forceResolveUnmodified(bool $force = true): IStoreConflict
+	{
+		
 		return $this;
 	}
 	

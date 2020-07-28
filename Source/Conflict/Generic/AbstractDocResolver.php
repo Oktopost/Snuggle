@@ -41,6 +41,33 @@ abstract class AbstractDocResolver implements
 	protected abstract function getCommand(): IGetRevConflictCommand;
 	
 	
+	protected function getRevision(IRawResponse $response): string 
+	{
+		$headers = $this->getGetCommand($this->getCommand())->queryHeaders();
+		
+		if (!isset($headers['etag']))
+			throw new NotFoundException($response, 'Could not get revision for conflicting document');
+		
+		$rev = jsondecode($headers['etag']);
+		
+		if (!is_string($rev))
+		{
+			throw new NotFoundException(
+				$response, 
+				'Malformed revision format ' . base64_encode($headers['etag']));
+		}
+		
+		return $rev;
+	}
+	
+	protected function reRunForRevision(string $revision): IRawResponse
+	{
+		$command = clone $this->getCommand();
+		$command->rev($revision);
+		
+		return $this->executeRequest($command->assemble());
+	}
+	
 	protected function callback(): callable 
 	{
 		return $this->callback;
@@ -80,27 +107,6 @@ abstract class AbstractDocResolver implements
 	{
 		throw new FatalSnuggleException('This strategy is not supported by this command');
 	}
-	
-	public function override(IRawResponse $response, ConflictException $e): IRawResponse
-	{
-		$headers = $this->getGetCommand($this->getCommand())->queryHeaders();
-		
-		if (!isset($headers['etag']))
-			throw new NotFoundException($response, 'Could not get revision for conflicting document');
-		
-		$rev = jsondecode($headers['etag']);
-		
-		if (is_null($rev))
-			throw new NotFoundException(
-				$response, 
-				'Malformed revision format ' . base64_encode($headers['etag']));
-		
-		$command = clone $this->getCommand();
-		$command->rev($rev);
-		
-		return $this->executeRequest($command->assemble());
-	}
-	
 	
 	public function ignoreConflict(): void
 	{

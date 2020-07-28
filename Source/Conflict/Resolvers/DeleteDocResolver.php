@@ -42,6 +42,11 @@ class DeleteDocResolver extends AbstractDocResolver implements IDeleteDocResolve
 		}
 	}
 	
+	public function override(IRawResponse $response, ConflictException $e): IRawResponse
+	{
+		$revision = $this->getRevision($response);
+		return $this->reRunForRevision($revision);
+	}
 	
 	public function execute(IDeleteConflictCommand $command): IRawResponse
 	{

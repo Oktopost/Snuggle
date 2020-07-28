@@ -17,9 +17,27 @@ use Snuggle\Connection\Parsers\SingleDocParser;
 
 class StoreDocResolver extends AbstractDocResolver implements IStoreDocResolver
 {
+	private $forceResolveUnmodified = false;
+	
 	/** @var IStoreConflictCommand */
 	private $command;
 	
+	
+	private function merge(IRawResponse $response, callable $mergeCallback): IRawResponse
+	{
+		$doc = $this->getGetCommand($this->command)->queryDoc();
+		$new = $this->command->getBody();
+		$existing = $doc->Data;
+		
+		$merged = $mergeCallback($existing, $new);
+		
+		if (!$this->forceResolveUnmodified && $merged === $new)
+		{
+			return $response;
+		}
+		
+		return $this->store($doc->Rev, $merged);
+	}
 	
 	private function getNewDocument(): Doc
 	{
@@ -73,28 +91,51 @@ class StoreDocResolver extends AbstractDocResolver implements IStoreDocResolver
 	
 	public function mergeNew(IRawResponse $response, ConflictException $e): IRawResponse
 	{
-		$doc = $this->getGetCommand($this->command)->queryDoc();
-		$data = $this->command->getBody();
-		
-		$data = RecursiveMerge::merge($data, $doc->Data);
-		
-		return $this->store($doc->Rev, $data);
+		return $this->merge($response, function (array $existing, array $new): array
+		{
+			return RecursiveMerge::merge($new, $existing); 
+		});
 	}
 	
 	public function mergeOver(IRawResponse $response, ConflictException $e): IRawResponse
 	{
-		$doc = $this->getGetCommand($this->command)->queryDoc();
-		$data = $this->command->getBody();
-		
-		$data = RecursiveMerge::merge($doc->Data, $data);
-		
-		return $this->store($doc->Rev, $data);
+		return $this->merge($response, function (array $existing, array $new): array
+		{
+			return RecursiveMerge::merge($existing, $new); 
+		});
 	}
 	
+	public function override(IRawResponse $response, ConflictException $e): IRawResponse
+	{
+		$existingCommand = $this->getGetCommand($this->getCommand());
+		
+		if (!$this->forceResolveUnmodified)
+		{
+			$existing = $existingCommand->queryDoc();
+			
+			if ($existing->Data == [/* TODO: Modify */])
+			{
+				return $response;
+			}
+			
+			$revision = $existing->Rev;
+		}
+		else
+		{
+			$revision = $this->getRevision($response);
+		}
+		
+		return $this->reRunForRevision($revision);
+	}
 	
 	public function execute(IStoreConflictCommand $command): IRawResponse
 	{
 		$this->command = $command;
 		return $this->executeRequest($command->assemble());
+	}
+	
+	public function forceResolveUnmodified(bool $force = true): void
+	{
+		$this->forceResolveUnmodified = $force;
 	}
 }

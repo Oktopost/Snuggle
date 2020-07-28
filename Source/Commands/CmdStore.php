@@ -111,6 +111,12 @@ class CmdStore implements ICmdStore, IStoreConflictCommand
 		return $this;
 	}
 	
+	public function forceResolveUnmodified(bool $force = true): IStoreConflict
+	{
+		$this->connection->forceResolveUnmodified($force);
+		return $this;
+	}
+	
 	public function getRev(): ?string
 	{
 		return $this->rev;

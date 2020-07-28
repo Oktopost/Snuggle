@@ -36,4 +36,11 @@ interface IStoreConflict
 	 * @return IStoreConflict|static
 	 */
 	public function resolveConflict(callable $callback): IStoreConflict;
+	
+	/**
+	 * Update the stored document even if after resolution the new item is identical to the stored one. 
+	 * @param bool $force
+	 * @return IStoreConflict
+	 */
+	public function forceResolveUnmodified(bool $force = true): IStoreConflict;
 }
