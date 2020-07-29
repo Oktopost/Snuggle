@@ -9,6 +9,7 @@ use Snuggle\Base\Commands\Store\IBulkStoreResult;
 
 abstract class AbstractBulkStoreResolver implements IBulkStoreResolution
 {
+	public function forceUpdateUnmodified(bool $force = false): void {}
 	public function setConnection(IConnector $connector, IConnection $connection): void {}
 	public function setStore(IBulkStoreResult $store): void {}
 	public function from(string $db): void {}

@@ -34,15 +34,6 @@ class CmdStoreTest extends TestCase
 		return getSanityConnector()->get()->from(self::DB)->doc($id)->queryRevision();
 	}
 	
-	private function insertData(array $data): void
-	{
-		getSanityConnector()->storeAll()
-			->into(self::DB)
-			->overrideConflict()
-			->data($data)
-			->execute();
-	}
-	
 	
 	private function assertObjectRevisionChange(bool $isExpectedToChange, callable $operation)
 	{

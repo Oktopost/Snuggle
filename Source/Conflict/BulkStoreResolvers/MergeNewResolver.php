@@ -10,7 +10,7 @@ class MergeNewResolver extends DocStoreResolver
 {
 	protected function resolveDocs(Doc $new, Doc $current): ?Doc
 	{
-		$new->Data = RecursiveMerge::merge($new->Data, $current->Data);
+		$new->Data = RecursiveMerge::mergeNew($current->Data, $new->Data);
 		return $new;
 	}
 }

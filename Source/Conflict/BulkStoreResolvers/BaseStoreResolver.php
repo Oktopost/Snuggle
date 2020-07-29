@@ -14,6 +14,7 @@ use Snuggle\Exceptions\Http\ConflictException;
 abstract class BaseStoreResolver implements IBulkStoreResolution
 {
 	private $from;
+	private $forceUpdateUnmodified = false;
 	
 	/** @var IConnection */
 	private $connection;
@@ -24,6 +25,11 @@ abstract class BaseStoreResolver implements IBulkStoreResolution
 	/** @var IConnector */
 	private $connector;
 	
+	
+	protected function isForceUpdateUnmodified(): bool
+	{
+		return $this->forceUpdateUnmodified;
+	}
 	
 	protected function getConnection(): IConnection
 	{
@@ -53,6 +59,11 @@ abstract class BaseStoreResolver implements IBulkStoreResolution
 	
 	protected abstract function doResolve(): void;
 	
+	
+	public function forceUpdateUnmodified(bool $force = false): void
+	{
+		$this->forceUpdateUnmodified = $force;
+	}
 	
 	public function setConnection(IConnector $connector, IConnection $connection): void
 	{

@@ -32,6 +32,7 @@ class CmdBulkStore implements ICmdBulkStore
 	
 	private $db;
 	private $retires = null;
+	private $forceUpdateUnmodified = false;
 	
 	/** @var IConnection */
 	private $connection;
@@ -104,6 +105,7 @@ class CmdBulkStore implements ICmdBulkStore
 			$resolver->from($this->db);
 				
 		$this->resolver = $resolver;
+		$this->resolver->forceUpdateUnmodified($this->forceUpdateUnmodified);
 		
 		return $this;
 	}
@@ -159,6 +161,10 @@ class CmdBulkStore implements ICmdBulkStore
 	
 	public function forceUpdateUnmodified(bool $force = true): IStoreConflict
 	{
+		$this->forceUpdateUnmodified = $force;
+		
+		if ($this->resolver)
+			$this->resolver->forceUpdateUnmodified($this->forceUpdateUnmodified);
 		
 		return $this;
 	}
