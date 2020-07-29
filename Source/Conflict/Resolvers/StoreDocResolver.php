@@ -112,8 +112,9 @@ class StoreDocResolver extends AbstractDocResolver implements IStoreDocResolver
 		if (!$this->forceResolveUnmodified)
 		{
 			$existing = $existingCommand->queryDoc();
+			$new = $this->command->getBody();
 			
-			if ($existing->Data == [/* TODO: Modify */])
+			if ($existing->Data == $new)
 			{
 				return $response;
 			}
