@@ -113,4 +113,16 @@ class Doc extends LiteObject implements IMappedObject, IIdentified
 	{
 		return $this->ID;
 	}
+	
+	public function isDataEqualsTo(array $data)
+	{
+		$self = $this->Data;
+		
+		if (key_exists('_id', $data))
+		{
+			unset($data['_id']);
+		}
+		
+		return $self === $data;
+	}
 }

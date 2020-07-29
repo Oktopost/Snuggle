@@ -45,6 +45,7 @@ class CmdStore implements ICmdStore, IStoreConflictCommand
 	{
 		$this->connection = new StoreDocResolver($connection);
 		$this->connection->overrideConflict();
+		$this->connection->forceUpdateUnmodified(false);
 		$this->setRefreshConnection($connection);
 	}
 	
@@ -111,9 +112,9 @@ class CmdStore implements ICmdStore, IStoreConflictCommand
 		return $this;
 	}
 	
-	public function forceResolveUnmodified(bool $force = true): IStoreConflict
+	public function forceUpdateUnmodified(bool $force = true): IStoreConflict
 	{
-		$this->connection->forceResolveUnmodified($force);
+		$this->connection->forceUpdateUnmodified($force);
 		return $this;
 	}
 	

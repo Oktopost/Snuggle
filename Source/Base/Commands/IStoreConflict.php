@@ -42,5 +42,5 @@ interface IStoreConflict
 	 * @param bool $force
 	 * @return IStoreConflict
 	 */
-	public function forceResolveUnmodified(bool $force = true): IStoreConflict;
+	public function forceUpdateUnmodified(bool $force = true): IStoreConflict;
 }

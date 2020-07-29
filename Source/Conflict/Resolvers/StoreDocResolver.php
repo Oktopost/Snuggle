@@ -17,23 +17,29 @@ use Snuggle\Connection\Parsers\SingleDocParser;
 
 class StoreDocResolver extends AbstractDocResolver implements IStoreDocResolver
 {
-	private $forceResolveUnmodified = false;
+	private $forceUpdateUnmodified = false;
 	
 	/** @var IStoreConflictCommand */
 	private $command;
 	
 	
-	private function merge(IRawResponse $response, callable $mergeCallback): IRawResponse
+	private function getExistingDoc(?IRawResponse &$response): ?Doc
 	{
-		$doc = $this->getGetCommand($this->command)->queryDoc();
+		$response = $this->getGetCommand($this->command)->execute();
+		return SingleDocParser::parse($response);
+	}
+	
+	private function merge(callable $mergeCallback): IRawResponse
+	{
+		$doc = $this->getExistingDoc($exisitngResponse);
 		$new = $this->command->getBody();
 		$existing = $doc->Data;
 		
 		$merged = $mergeCallback($existing, $new);
 		
-		if (!$this->forceResolveUnmodified && $merged === $new)
+		if (!$this->forceUpdateUnmodified && $doc->isDataEqualsTo($merged))
 		{
-			return $response;
+			return $exisitngResponse;
 		}
 		
 		return $this->store($doc->Rev, $merged);
@@ -69,9 +75,8 @@ class StoreDocResolver extends AbstractDocResolver implements IStoreDocResolver
 	
 	public function resolve(IRawResponse $response, ConflictException $e): IRawResponse
 	{
-		$response = $this->getGetCommand($this->command)->execute();
-		
-		$existingDoc = SingleDocParser::parse($response);
+		$existingDoc = $this->getExistingDoc($existingResponse);
+		$existingData = $existingDoc->Data;
 		$targetDoc = $this->getNewDocument();
 		
 		$callback = $this->callback();
@@ -81,17 +86,22 @@ class StoreDocResolver extends AbstractDocResolver implements IStoreDocResolver
 		
 		if ($doc)
 		{
+			if (!$this->forceUpdateUnmodified && $doc->isDataEqualsTo($existingData))
+			{
+				return $existingResponse;
+			}
+			
 			return $this->store($doc->Rev, $doc->Data);
 		}
 		else
 		{
-			return $response;
+			return $existingResponse;
 		}
 	}
 	
 	public function mergeNew(IRawResponse $response, ConflictException $e): IRawResponse
 	{
-		return $this->merge($response, function (array $existing, array $new): array
+		return $this->merge(function (array $existing, array $new): array
 		{
 			return RecursiveMerge::merge($new, $existing); 
 		});
@@ -99,7 +109,7 @@ class StoreDocResolver extends AbstractDocResolver implements IStoreDocResolver
 	
 	public function mergeOver(IRawResponse $response, ConflictException $e): IRawResponse
 	{
-		return $this->merge($response, function (array $existing, array $new): array
+		return $this->merge(function (array $existing, array $new): array
 		{
 			return RecursiveMerge::merge($existing, $new); 
 		});
@@ -107,16 +117,14 @@ class StoreDocResolver extends AbstractDocResolver implements IStoreDocResolver
 	
 	public function override(IRawResponse $response, ConflictException $e): IRawResponse
 	{
-		$existingCommand = $this->getGetCommand($this->getCommand());
-		
-		if (!$this->forceResolveUnmodified)
+		if (!$this->forceUpdateUnmodified)
 		{
-			$existing = $existingCommand->queryDoc();
+			$existing = $this->getExistingDoc($existingResponse);
 			$new = $this->command->getBody();
 			
-			if ($existing->Data == $new)
+			if ($existing->isDataEqualsTo($new))
 			{
-				return $response;
+				return $existingResponse;
 			}
 			
 			$revision = $existing->Rev;
@@ -135,8 +143,8 @@ class StoreDocResolver extends AbstractDocResolver implements IStoreDocResolver
 		return $this->executeRequest($command->assemble());
 	}
 	
-	public function forceResolveUnmodified(bool $force = true): void
+	public function forceUpdateUnmodified(bool $force = true): void
 	{
-		$this->forceResolveUnmodified = $force;
+		$this->forceUpdateUnmodified = $force;
 	}
 }

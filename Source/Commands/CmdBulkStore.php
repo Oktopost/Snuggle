@@ -157,7 +157,7 @@ class CmdBulkStore implements ICmdBulkStore
 		return $this;
 	}
 	
-	public function forceResolveUnmodified(bool $force = true): IStoreConflict
+	public function forceUpdateUnmodified(bool $force = true): IStoreConflict
 	{
 		
 		return $this;
