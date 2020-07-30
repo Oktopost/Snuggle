@@ -2,8 +2,10 @@
 namespace sanity;
 
 
+use Objection\Mapper;
 use PHPUnit\Framework\TestCase;
 use Snuggle\Core\DB\DBInfo;
+use Snuggle\Exceptions\Http\NotFoundException;
 
 
 /**
@@ -173,6 +175,12 @@ class CmdDBTest extends TestCase
 		try
 		{
 			self::assertEmpty($conn->db()->designDocs('test_cmddb_designdocs_empty'));
+		}
+		catch (NotFoundException $t)
+		{
+			echo $t->getTraceAsString() . "\n";
+			echo $t->getResponse()->getRawBody() . "\n";
+			echo Mapper::getJsonFor($conn->server()->info()) . "\n";
 		}
 		finally
 		{
