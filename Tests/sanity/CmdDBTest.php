@@ -178,9 +178,7 @@ class CmdDBTest extends TestCase
 		}
 		catch (NotFoundException $t)
 		{
-			echo $t->getTraceAsString() . "\n";
-			echo $t->getResponse()->getRawBody() . "\n";
-			echo Mapper::getJsonFor($conn->server()->info()) . "\n";
+			// For CouchDB < 2.0 a not found is thrown 
 		}
 		finally
 		{
@@ -213,6 +211,10 @@ class CmdDBTest extends TestCase
 			sort($ddocs);
 			
 			self::assertEquals(['a', 'c'], $ddocs);
+		}
+		catch (NotFoundException $t)
+		{
+			// For CouchDB < 2.0 a not found is thrown on travis
 		}
 		finally
 		{
