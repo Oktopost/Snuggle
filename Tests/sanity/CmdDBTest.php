@@ -176,10 +176,6 @@ class CmdDBTest extends TestCase
 		{
 			self::assertEmpty($conn->db()->designDocs('test_cmddb_designdocs_empty'));
 		}
-		catch (NotFoundException $t)
-		{
-			// For CouchDB < 2.0 a not found is thrown 
-		}
 		finally
 		{
 			$conn->db()->drop('test_cmddb_designdocs_empty');
@@ -211,10 +207,6 @@ class CmdDBTest extends TestCase
 			sort($ddocs);
 			
 			self::assertEquals(['a', 'c'], $ddocs);
-		}
-		catch (NotFoundException $t)
-		{
-			// For CouchDB < 2.0 a not found is thrown on travis
 		}
 		finally
 		{
