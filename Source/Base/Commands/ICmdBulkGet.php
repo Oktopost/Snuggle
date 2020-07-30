@@ -24,6 +24,8 @@ interface ICmdBulkGet extends IExecute, IQuery
 	public function startKey($endKey): ICmdBulkGet;
 	public function endKey($endKey): ICmdBulkGet;
 	
+	public function group($value): ICmdBulkGet;
+	
 	public function inclusiveEndKey(bool $isInclusive = true): ICmdBulkGet;
 	
 	public function updateSeq(bool $seq = true): ICmdBulkGet;

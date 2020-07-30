@@ -8,6 +8,7 @@ use Snuggle\Scripts\Compact\CompactDAO;
 use Snuggle\Scripts\Compact\DBNameFilter;
 use Snuggle\Scripts\Compact\DesignData;
 use Snuggle\Scripts\Compact\InstanceData;
+use Snuggle\Exceptions\Http\NotFoundException;
 
 
 class Compactor
@@ -98,7 +99,13 @@ class Compactor
 		if ($tasks)
 			return;
 		
-		$this->couchDB->connector()->db()->compact($design->DB, $design->Name);
+		try
+		{
+			$this->couchDB->connector()->db()->compact($design->DB, $design->Name);
+		}
+		// Skip deleted views.
+		catch (NotFoundException $e) {}
+		
 		$design->IsCompacted = true;
 	}
 	

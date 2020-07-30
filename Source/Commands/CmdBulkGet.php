@@ -142,6 +142,12 @@ class CmdBulkGet implements ICmdBulkGet
 		return $this->setJsonParam('endkey', $endKey);
 	}
 	
+	public function group($value): ICmdBulkGet
+	{
+		$this->groupLevel(null);
+		return $this->setJsonParam('group', $value);
+	}
+	
 	public function inclusiveEndKey(bool $isInclusive = true): ICmdBulkGet
 	{
 		return $this->setJsonParam('inclusive_end', $isInclusive, true);
