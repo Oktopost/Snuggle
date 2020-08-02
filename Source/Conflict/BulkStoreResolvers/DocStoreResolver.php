@@ -30,25 +30,23 @@ abstract class DocStoreResolver extends BaseStoreResolver
 			$existingData = $doc->Data;
 			$result = $this->resolveDocs(SingleDocParser::parseData($item), $doc);
 			
-			if (!$this->isForceUpdateUnmodified() && 
+			if (!$result)
+			{
+				$store->removePendingAt($index);
+				continue;
+			}
+			else if (
+				!$this->isForceUpdateUnmodified() &&
 				$result->isDataEqualsTo($existingData))
 			{
 				$store->removePendingAt($index);
 				continue;
 			}
 			
-			/** @var Doc $doc */
 			$store->addConflict($index, $doc);
 			
-			if (!$result)
-			{
-				$store->removePendingAt($index);
-			}
-			else
-			{
-				$result->Rev = $doc->Rev;
-				$store->Pending[$index] = $result->toData();
-			}
+			$result->Rev = $doc->Rev;
+			$store->Pending[$index] = $result->toData();
 		}
 	}
 	
