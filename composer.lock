@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "abbbb782789cdbda01155b09419be8f4",
+    "content-hash": "0dcbdcd808c84ac52d0871ddcb7dd952",
     "packages": [
         {
             "name": "nategood/httpful",
@@ -140,6 +140,51 @@
                 }
             ],
             "time": "2019-02-06T15:40:56+00:00"
+        },
+        {
+            "name": "oktopost/gazelle",
+            "version": "0.2.6",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/Oktopost/Gazelle.git",
+                "reference": "6dc583cf6600d5775921880a770880006bbccecf"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/Oktopost/Gazelle/zipball/6dc583cf6600d5775921880a770880006bbccecf",
+                "reference": "6dc583cf6600d5775921880a770880006bbccecf",
+                "shasum": ""
+            },
+            "require": {
+                "oktopost/jsonencode": "^1.0",
+                "unstable-cacao/structura": "^2.0",
+                "unstable-cacao/traitor": "^1.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^7.2",
+                "unstable-cacao/web-core": "^0.1.24"
+            },
+            "type": "lib",
+            "autoload": {
+                "psr-4": {
+                    "Gazelle\\": "Source/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Alexey Puchkov",
+                    "email": "alexey.pkv@gmail.com"
+                }
+            ],
+            "support": {
+                "issues": "https://github.com/Oktopost/Gazelle/issues",
+                "source": "https://github.com/Oktopost/Gazelle/tree/master"
+            },
+            "time": "2020-03-05T07:37:27+00:00"
         },
         {
             "name": "oktopost/jsonencode",
@@ -2077,5 +2122,6 @@
     "platform": {
         "php": ">=7.1"
     },
-    "platform-dev": []
+    "platform-dev": [],
+    "plugin-api-version": "2.0.0"
 }
