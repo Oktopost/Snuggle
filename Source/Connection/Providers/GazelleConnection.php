@@ -26,9 +26,13 @@ class GazelleConnection implements IConnection
 	{
 		$gazelleRequest = $this->gazelle->request()
 			->addPath($request->getURI())
-			->setQueryParams($request->getQueryParams())
 			->setMethod($request->getMethod())
 			->setHeaders($request->getHeaders());
+		
+		foreach ($request->getQueryParams() as $key => $value)
+		{
+			$gazelleRequest->setQueryParam($key, urlencode($value));
+		}
 		
 		if ($request->hasBody())
 		{

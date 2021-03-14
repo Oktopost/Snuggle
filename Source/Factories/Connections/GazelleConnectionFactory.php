@@ -41,9 +41,13 @@ class GazelleConnectionFactory implements IConnectionFactory
 	
 	protected function configGazelle(Gazelle $gazelle, ConnectionConfig $config): void
 	{
-		$template = $gazelle
-			->template()
-			->setURL($config->getURL());
+		$template = $gazelle->template();
+		
+		$template
+			->setURL($config->getURL())
+			->setMaxRedirects(0)
+			->setURL($config->getURL())
+			->setExecutionTimeout(30, 30);
 			
 		if ($config->hasCredentials())
 		{
