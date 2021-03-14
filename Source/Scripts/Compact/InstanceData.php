@@ -73,4 +73,19 @@ class InstanceData extends LiteObject
 		
 		return $data;
 	}
+	
+	public function getUncompactedDBs(): array
+	{
+		$data = [];
+		
+		foreach ($this->DBs as $db)
+		{
+			if (!$db->IsCompacted)
+			{
+				$data[] = $db;
+			}
+		}
+		
+		return $data;
+	}
 }

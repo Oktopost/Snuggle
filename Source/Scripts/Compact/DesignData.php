@@ -34,6 +34,9 @@ class DesignData extends LiteObject
 	
 	public function getDiskToDataRatio(): float
 	{
+		if ($this->Data == 0)
+			return 1;
+		
 		return ($this->Disk == 0 ? 0.0 : $this->Disk / $this->Data);
 	}
 }

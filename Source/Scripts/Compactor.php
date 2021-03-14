@@ -14,6 +14,7 @@ use Snuggle\Exceptions\Http\NotFoundException;
 class Compactor
 {
 	private $connectionSet = false;
+	private $compactDBs = false;
 	private $filters = ['*', '!_*'];
 	
 	private $settingsDB;
@@ -52,10 +53,15 @@ class Compactor
 	{
 		$db = $dbs[array_rand($dbs)];
 		
+		$info = $this->couchDB->connector()
+			->db()
+			->info($db->Name);
+		
 		$designDocs = $this->couchDB->connector()
 			->db()
 			->designDocs($db->Name);
 		
+		$db->Size = $info->Sizes->File ?? null;
 		$db->IsLoaded = true;
 		
 		foreach ($designDocs as $ddoc)
@@ -109,6 +115,30 @@ class Compactor
 		$design->IsCompacted = true;
 	}
 	
+	/**
+	 * @param DBData[] $dbs
+	 */
+	private function compactDB(array $dbs): void
+	{
+		$db = $dbs[array_rand($dbs)];
+		
+		$tasks = $this->couchDB->connector()
+			->server()
+			->activeTasks('database_compaction');
+		
+		if ($tasks)
+			return;
+		
+		try
+		{
+			$this->couchDB->connector()->db()->compact($db->Name);
+		}
+		// Skip deleted dbs.
+		catch (NotFoundException $e) {}
+		
+		$db->IsCompacted = true;
+	}
+	
 	
 	public function __construct()
 	{
@@ -124,6 +154,10 @@ class Compactor
 		return $this;
 	}
 	
+	public function compactDBs(): void
+	{
+		$this->compactDBs = true;
+	}
 	
 	public function setDBFilters($filters): Compactor
 	{
@@ -151,8 +185,9 @@ class Compactor
 		$unloadedDBs = $data->getUnloadedDBs();
 		$unloadedDesigns = $data->getUnloadedDesigns();
 		$uncompactedDesigns = $data->getUncompactedDesigns($minRatio);
+		$uncompactedDBs = ($this->compactDBs ? $data->getUncompactedDBs() : []);
 		
-		if (!$unloadedDBs && !$unloadedDesigns && !$uncompactedDesigns)
+		if (!$unloadedDBs && !$unloadedDesigns && !$uncompactedDesigns && !$uncompactedDBs)
 		{
 			return false;
 		}
@@ -170,6 +205,11 @@ class Compactor
 		if ($uncompactedDesigns)
 		{
 			$this->compactDesign($uncompactedDesigns);
+		}
+		
+		if ($uncompactedDBs && $this->compactDBs)
+		{
+			$this->compactDB($uncompactedDBs);
 		}
 		
 		$dao->saveDataObject($data);

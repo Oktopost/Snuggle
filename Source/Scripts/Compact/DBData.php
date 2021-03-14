@@ -8,7 +8,9 @@ use Objection\LiteSetup;
 
 /**
  * @property string 		$Name
+ * @property bool			$IsCompacted
  * @property bool			$IsLoaded
+ * @property int|null		$Size
  * @property DesignData[]	$Designs
  */
 class DBData extends LiteObject
@@ -19,9 +21,11 @@ class DBData extends LiteObject
 	protected function _setup()
 	{
 		return [
-			'Name'		=> LiteSetup::createString(),
-			'IsLoaded'	=> LiteSetup::createBool(false),
-			'Designs'	=> LiteSetup::createInstanceArray(DesignData::class)
+			'Name'			=> LiteSetup::createString(),
+			'IsLoaded'		=> LiteSetup::createBool(false),
+			'IsCompacted'	=> LiteSetup::createBool(false),
+			'Size'			=> LiteSetup::createInt(null),
+			'Designs'		=> LiteSetup::createInstanceArray(DesignData::class)
 		];
 	}
 	
