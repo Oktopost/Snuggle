@@ -18,7 +18,6 @@
 		"unstable-cacao/structura": "^2.0",
 		"unstable-cacao/traitor": "^1.0",
 		"oktopost/skeleton": "^1.1",
-		"nategood/httpful": "^0.2.20",
 		"oktopost/jsonencode": "^1.0.1",
 		"oktopost/cartograph": "^1.1",
 		"oktopost/gazelle": "^0.2.6"
