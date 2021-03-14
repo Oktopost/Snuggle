@@ -15,7 +15,7 @@ use Snuggle\Config\ConnectionConfigsManager;
 
 use Snuggle\Exceptions\FatalSnuggleException;
 use Snuggle\Factories\Commands\SimpleFactory;
-use Snuggle\Factories\Connections\HttpfullFactory;
+use Snuggle\Factories\Connections\GazelleConnectionFactory;
 
 
 class Config implements IConfig
@@ -55,7 +55,7 @@ class Config implements IConfig
 	public function getConnectionFactory(): IConnectionFactory
 	{
 		if (!$this->connectionFactory)
-			$this->connectionFactory = new HttpfullFactory();
+			$this->connectionFactory = new GazelleConnectionFactory();
 		
 		return $this->connectionFactory;
 	}
