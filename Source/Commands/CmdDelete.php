@@ -128,6 +128,22 @@ class CmdDelete implements ICmdDelete, IDeleteConflictCommand
 		$this->failOnNotFound = $fail;
 		return $this;
 	}
+
+	public function readQuorum(int $quorum)
+	{
+		// TODO: Implement readQuorum() method.
+	}
+
+	public function writeQuorum(int $quorum)
+	{
+		// TODO: Implement writeQuorum() method.
+	}
+
+	public function quorum(int $read, int $write)
+	{
+		// TODO: Implement quorum() method.
+	}
+	
 	
 	public function execute(): IRawResponse
 	{

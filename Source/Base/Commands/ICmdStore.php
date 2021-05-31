@@ -2,7 +2,7 @@
 namespace Snuggle\Base\Commands;
 
 
-interface ICmdStore extends ICmdInsert, IRevCommand, IStoreConflict
+interface ICmdStore extends ICmdInsert, IRevCommand, IStoreConflict, IReadWriteOperation
 {
 	
 }

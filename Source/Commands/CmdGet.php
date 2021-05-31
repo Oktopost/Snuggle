@@ -163,6 +163,16 @@ class CmdGet implements ICmdGet
 	{
 		return $this->setBoolParam('latest', $force);
 	}
+
+	/**
+	 * @param int $quorum
+	 * @return static
+	 */
+	public function readQuorum(int $quorum)
+	{
+		$this->params['r'] = $quorum;
+		return $this;
+	}
 	
 	
 	public function queryExists(?string $target = null, ?string $id = null): bool

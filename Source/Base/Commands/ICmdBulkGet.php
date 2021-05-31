@@ -10,7 +10,7 @@ use Snuggle\Core\Lists\ViewList;
 use Structura\Map;
 
 
-interface ICmdBulkGet extends IExecute, IQuery
+interface ICmdBulkGet extends IExecute, IQuery, IReadOperation
 {
 	public function from(string $db, ?string $design = null, ?string $view = null): ICmdBulkGet;
 	public function view(string $design, string $view): ICmdBulkGet;

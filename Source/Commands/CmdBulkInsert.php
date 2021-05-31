@@ -27,6 +27,7 @@ class CmdBulkInsert implements ICmdBulkInsert
 	
 	
 	private $db;
+	private $params = [];
 	private $payload = [];
 	
 	/** @var IConnection */
@@ -37,6 +38,16 @@ class CmdBulkInsert implements ICmdBulkInsert
 	{
 		$this->connection = $connection;
 		$this->setRefreshConnection($connection);
+	}
+	
+	/**
+	 * @param int $quorum
+	 * @return static
+	 */
+	public function writeQuorum(int $quorum)
+	{
+		$this->params['w'] = $quorum;
+		return $this;
 	}
 	
 	
@@ -101,6 +112,11 @@ class CmdBulkInsert implements ICmdBulkInsert
 			->setBody([
 				'docs' => $this->payload
 			]);
+		
+		if ($this->params)
+		{
+			$request->setQueryParams($this->params);
+		}
 		
 		$result = $this->connection->request($request);
 		

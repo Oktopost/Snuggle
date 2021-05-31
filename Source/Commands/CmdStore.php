@@ -33,6 +33,9 @@ class CmdStore implements ICmdStore, IStoreConflictCommand
 	use TRefreshView;
 	
 	
+	private int $quorumRead = 0;
+	private int $quorumWrite = 0;
+	
 	private $data		= [];
 	private $rev		= null;
 	private $asBatch	= false;
@@ -169,6 +172,34 @@ class CmdStore implements ICmdStore, IStoreConflictCommand
 		
 		return $this;
 	}
+
+	/**
+	 * @param int $quorum
+	 * @return static
+	 */
+	public function readQuorum(int $quorum)
+	{
+		$this->quorumRead = $quorum;
+		return $this;
+	}
+	
+	/**
+	 * @param int $quorum
+	 * @return static
+	 */
+	public function writeQuorum(int $quorum)
+	{
+		$this->quorumWrite = $quorum;
+		return $this;
+	}
+	
+	public function quorum(int $read, int $write)
+	{
+		$this->quorumWrite = $write;
+		$this->quorumRead = $read;
+		return $this;
+	}
+	
 	
 	public function execute(): IRawResponse
 	{

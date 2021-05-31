@@ -186,6 +186,15 @@ class CmdBulkGet implements ICmdBulkGet
 	{
 		return $this->setJsonParam('descending', $isDesc, false);
 	}
+
+	/**
+	 * @param int $quorum
+	 * @return static
+	 */
+	public function readQuorum(int $quorum)
+	{
+		return $this->setParam('r', $quorum);
+	}
 	
 	
 	public function execute(): IRawResponse

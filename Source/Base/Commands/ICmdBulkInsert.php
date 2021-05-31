@@ -5,7 +5,7 @@ namespace Snuggle\Base\Commands;
 use Snuggle\Core\Doc;
 
 
-interface ICmdBulkInsert extends IExecute, IQuery, IRefreshView
+interface ICmdBulkInsert extends IExecute, IQuery, IRefreshView, IWriteOperation
 {
 	/**
 	 * @param string $db

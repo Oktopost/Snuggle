@@ -30,6 +30,9 @@ class CmdBulkStore implements ICmdBulkStore
 	use TRefreshView;
 	
 	
+	private int $quorumRead = 0;
+	private int $quorumWrite = 0;
+	
 	private $db;
 	private $retires = null;
 	private $forceUpdateUnmodified = false;
@@ -57,6 +60,11 @@ class CmdBulkStore implements ICmdBulkStore
 		
 		$request = RawRequest::create("/{$this->db}/_bulk_docs", Method::POST);
 		$request->setBody($body);
+		
+		if ($this->quorumWrite)
+		{
+			$request->setQueryParam('w', $this->quorumWrite);
+		}
 		
 		return $this->connection->request($request);
 	}
@@ -168,6 +176,34 @@ class CmdBulkStore implements ICmdBulkStore
 		
 		return $this;
 	}
+
+	/**
+	 * @param int $quorum
+	 * @return static
+	 */
+	public function readQuorum(int $quorum)
+	{
+		$this->quorumRead = $quorum;
+		return $this;
+	}
+	
+	/**
+	 * @param int $quorum
+	 * @return static
+	 */
+	public function writeQuorum(int $quorum)
+	{	
+		$this->quorumWrite = $quorum;
+		return $this;
+	}
+	
+	public function quorum(int $read, int $write)
+	{
+		$this->quorumWrite = $write;
+		$this->quorumRead = $read;
+		return $this;
+	}
+	
 	
 	public function execute(?int $maxRetries = null): IBulkStoreResult
 	{

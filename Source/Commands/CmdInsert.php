@@ -33,6 +33,8 @@ class CmdInsert implements ICmdInsert
 	private $data		= [];
 	private $asBatch	= false;
 	
+	private int $writeQuorum = 0;
+	
 	/** @var IConnection */
 	private $connection;
 	
@@ -86,6 +88,16 @@ class CmdInsert implements ICmdInsert
 		
 		return $this;
 	}
+
+	/**
+	 * @param int $quorum
+	 * @return static
+	 */
+	public function writeQuorum(int $quorum)
+	{
+		$this->writeQuorum = $quorum;
+		return $this;
+	}
 	
 	public function execute(): IRawResponse
 	{
@@ -106,6 +118,11 @@ class CmdInsert implements ICmdInsert
 			$request->setQueryParams(['batch' => 'ok']);
 		}
 		
+		if ($this->writeQuorum)
+		{
+			$request->setQueryParam('w', $this->writeQuorum);
+		}
+		
 		$request
 			->setHeader('Content-Type', 'application/json')
 			->setBody($this->data);
@@ -119,7 +136,6 @@ class CmdInsert implements ICmdInsert
 		
 		return $result;
 	}
-	
 	
 	/**
 	 * @deprecated

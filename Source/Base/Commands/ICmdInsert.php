@@ -2,7 +2,7 @@
 namespace Snuggle\Base\Commands;
 
 
-interface ICmdInsert extends IExecute, IQuery, IQueryRevision, IDocCommand, IRefreshView
+interface ICmdInsert extends IExecute, IQuery, IQueryRevision, IDocCommand, IRefreshView, IWriteOperation
 {
 	/**
 	 * @param string $db

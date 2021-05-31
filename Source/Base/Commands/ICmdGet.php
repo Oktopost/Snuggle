@@ -5,7 +5,7 @@ namespace Snuggle\Base\Commands;
 use Snuggle\Core\Doc;
 
 
-interface ICmdGet extends IExecute, IQuery, IQueryRevision, IRevCommand
+interface ICmdGet extends IExecute, IQuery, IQueryRevision, IRevCommand, IReadOperation
 {
 	/**
 	 * @param bool $ignoreMissing If true and document not found, null is returned instead of 404 exception.
