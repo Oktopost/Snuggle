@@ -8,5 +8,6 @@ interface IQuery
 	public function queryBool(): bool;
 	public function queryBody(): ?string;
 	public function queryHeaders(): array;
+	public function queryETag(): ?string;
 	public function queryJson($asArray = true);
 }

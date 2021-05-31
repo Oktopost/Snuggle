@@ -13,7 +13,7 @@ trait TQueryRevision
 	 */
 	public function queryRevision(): string
 	{
-		$tag = $this->queryHeaders()['etag'] ?? null;
+		$tag = $this->queryETag();
 		
 		if (is_null($tag))
 			throw new SnuggleException('No ETag returned for new object');

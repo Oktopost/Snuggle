@@ -29,6 +29,12 @@ trait TQuery
 		return $this->executeRequest()->getHeaders();
 	}
 	
+	public function queryETag(): ?string
+	{
+		$headers = $this->queryHeaders();
+		return $headers['etag'] ?? $headers['ETag'] ?? null;
+	}
+	
 	public function queryBody(): ?string
 	{
 		return $this->executeRequest()->getRawBody();
