@@ -2,28 +2,28 @@
 namespace Snuggle\Conflict\BulkStoreResolvers;
 
 
+use Snuggle\Base\Commands\ICmdBulkGet;
 use Snuggle\Base\IConnector;
 use Snuggle\Base\IConnection;
 use Snuggle\Base\Commands\Store\IBulkStoreResult;
 use Snuggle\Base\Conflict\Resolvers\IBulkStoreResolution;
 use Snuggle\Base\Connection\Response\IRawResponse;
 
+use Snuggle\Core\Doc;
 use Snuggle\Exceptions\Http\ConflictException;
+
+use Structura\Map;
 
 
 abstract class BaseStoreResolver implements IBulkStoreResolution
 {
-	private $from;
-	private $forceUpdateUnmodified = false;
+	private string	$from = '';
+	private bool	$forceUpdateUnmodified = false;
+	private ?int	$readQuorum = null;
 	
-	/** @var IConnection */
-	private $connection;
-	
-	/** @var IBulkStoreResult */
-	private $store;
-	
-	/** @var IConnector */
-	private $connector;
+	private ?IConnection		$connection = null;
+	private ?IBulkStoreResult	$store = null;
+	private ?IConnector			$connector = null;
 	
 	
 	protected function isForceUpdateUnmodified(): bool
@@ -56,9 +56,45 @@ abstract class BaseStoreResolver implements IBulkStoreResolution
 		return array_column($this->getStore()->Pending, '_id');
 	}
 	
+	protected function getReadQuorum(): ?int
+	{
+		return $this->readQuorum;
+	}
+
+	protected function getStoredDocumentsQuery(): ICmdBulkGet
+	{
+		$readQuorum = $this->getReadQuorum();
+		$query = $this->getConnector()->getAll()
+			->from($this->db())
+			->keys($this->getPendingIds())
+			->includeDocs();
+		
+		if ($readQuorum)
+		{
+			$query->readQuorum($readQuorum);
+		}
+		
+		return $query;
+	}
+	
+	/**
+	 * @return Doc[]|Map
+	 */
+	protected function getStoredDocuments(): Map
+	{
+		return $this
+			->getStoredDocumentsQuery()
+			->queryDocsMap();
+	}
+	
 	
 	protected abstract function doResolve(): void;
 	
+	
+	public function setReadQuorum(?int $read): void
+	{
+		$this->readQuorum = $read;
+	}
 	
 	public function forceUpdateUnmodified(bool $force = false): void
 	{

@@ -109,6 +109,9 @@ class CmdBulkStore implements ICmdBulkStore
 		$resolver->setConnection($this->connector, $this->connection);
 		$resolver->setStore($this->data);
 		
+		if ($this->quorumRead)
+			$resolver->setReadQuorum($this->quorumRead);
+		
 		if ($this->db)
 			$resolver->from($this->db);
 				
@@ -201,6 +204,10 @@ class CmdBulkStore implements ICmdBulkStore
 	{
 		$this->quorumWrite = $write;
 		$this->quorumRead = $read;
+		
+		if ($this->resolver)
+			$this->resolver->setReadQuorum($read);
+		
 		return $this;
 	}
 	

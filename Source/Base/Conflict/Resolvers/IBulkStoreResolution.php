@@ -12,6 +12,7 @@ use Snuggle\Exceptions\Http\ConflictException;
 
 interface IBulkStoreResolution
 {
+	public function setReadQuorum(int $read): void;
 	public function forceUpdateUnmodified(bool $force = false): void;
 	public function setConnection(IConnector $connector, IConnection $connection): void;
 	public function setStore(IBulkStoreResult $store): void;

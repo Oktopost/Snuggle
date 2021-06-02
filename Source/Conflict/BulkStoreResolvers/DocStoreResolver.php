@@ -11,12 +11,7 @@ abstract class DocStoreResolver extends BaseStoreResolver
 	protected function doResolve(): void
 	{
 		$store = $this->getStore();
-		
-		$docs = $this->getConnector()->getAll()
-			->from($this->db())
-			->keys($this->getPendingIds())
-			->includeDocs()
-			->queryDocsMap();
+		$docs = $this->getStoredDocuments();
 		
 		foreach ($store->Pending as $index => $item)
 		{

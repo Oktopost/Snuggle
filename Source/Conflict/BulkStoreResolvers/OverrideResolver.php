@@ -7,13 +7,12 @@ use Snuggle\Core\Doc;
 
 class OverrideResolver extends BaseStoreResolver
 {
-	public function doOverrideIfModified(): void
+	private function doForceOverride(): void
 	{
 		$store = $this->getStore();
 		
-		$revisions = $this->getConnector()->getAll()
-			->from($this->db())
-			->keys($this->getPendingIds())
+		$revisions = $this
+			->getStoredDocumentsQuery()
 			->queryRevisions();
 		
 		foreach ($store->Pending as $index => $data)
@@ -32,11 +31,7 @@ class OverrideResolver extends BaseStoreResolver
 	private function doOverride(): void
 	{
 		$store = $this->getStore();
-		
-		$existing = $this->getConnector()->getAll()
-			->from($this->db())
-			->keys($this->getPendingIds())
-			->queryDocsMap();
+		$existing = $this->getStoredDocuments();
 		
 		foreach ($store->Pending as $index => $data)
 		{
@@ -60,7 +55,7 @@ class OverrideResolver extends BaseStoreResolver
 	{
 		if ($this->isForceUpdateUnmodified())
 		{
-			$this->doOverrideIfModified();
+			$this->doForceOverride();
 		}
 		else
 		{
