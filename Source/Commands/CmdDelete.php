@@ -30,6 +30,9 @@ class CmdDelete implements ICmdDelete, IDeleteConflictCommand
 	use TQueryRevision;
 	
 	
+	private int $quorumRead = 0;
+	private int $quorumWrite = 0;
+	
 	private $params				= [];
 	private $failOnNotFound		= false;
 	
@@ -128,20 +131,30 @@ class CmdDelete implements ICmdDelete, IDeleteConflictCommand
 		$this->failOnNotFound = $fail;
 		return $this;
 	}
-
+	
+	
 	public function readQuorum(int $quorum)
 	{
-		// TODO: Implement readQuorum() method.
+		$this->quorumRead = $quorum;
+		return $this;
 	}
-
+	
 	public function writeQuorum(int $quorum)
 	{
-		// TODO: Implement writeQuorum() method.
+		$this->quorumWrite = $quorum;
+		return $this;
 	}
-
+	
 	public function quorum(int $read, int $write)
 	{
-		// TODO: Implement quorum() method.
+		$this->quorumWrite = $write;
+		$this->quorumRead = $read;
+		return $this;
+	}
+	
+	public function getReadQuorum(): ?int
+	{
+		return $this->quorumRead;
 	}
 	
 	

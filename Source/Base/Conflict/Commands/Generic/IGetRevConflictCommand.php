@@ -10,4 +10,5 @@ interface IGetRevConflictCommand extends IAssemble, IRevCommand
 {
 	public function getDB(): string;
 	public function getDocID(): string;
+	public function getReadQuorum(): ?int;
 }

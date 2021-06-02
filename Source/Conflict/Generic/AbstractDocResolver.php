@@ -76,6 +76,13 @@ abstract class AbstractDocResolver implements
 	protected function getGetCommand(IGetRevConflictCommand $command): ICmdGet
 	{
 		$get = new CmdGet($this->connection);
+		$readQuorum = $command->getReadQuorum();
+		
+		if ($readQuorum)
+		{
+			$get->readQuorum($readQuorum);
+		}
+		
 		return $get->doc($command->getDB(), $command->getDocID());
 	}
 	

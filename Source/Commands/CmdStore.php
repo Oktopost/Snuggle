@@ -172,21 +172,14 @@ class CmdStore implements ICmdStore, IStoreConflictCommand
 		
 		return $this;
 	}
-
-	/**
-	 * @param int $quorum
-	 * @return static
-	 */
+	
+	
 	public function readQuorum(int $quorum)
 	{
 		$this->quorumRead = $quorum;
 		return $this;
 	}
 	
-	/**
-	 * @param int $quorum
-	 * @return static
-	 */
 	public function writeQuorum(int $quorum)
 	{
 		$this->quorumWrite = $quorum;
@@ -198,6 +191,11 @@ class CmdStore implements ICmdStore, IStoreConflictCommand
 		$this->quorumWrite = $write;
 		$this->quorumRead = $read;
 		return $this;
+	}
+	
+	public function getReadQuorum(): ?int
+	{
+		return $this->quorumRead;
 	}
 	
 	
@@ -226,6 +224,9 @@ class CmdStore implements ICmdStore, IStoreConflictCommand
 				
 		if ($this->rev)
 			$params['rev']= $this->rev;
+		
+		if ($this->quorumWrite)
+			$params['w'] = $this->quorumWrite;
 		
 		$request = RawRequest::create($uri, $method, $params);
 		$request->setBody($this->data);

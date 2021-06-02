@@ -31,7 +31,7 @@ class StoreDocResolver extends AbstractDocResolver implements IStoreDocResolver
 	
 	private function merge(callable $mergeCallback): IRawResponse
 	{
-		$doc = $this->getExistingDoc($exisitngResponse);
+		$doc = $this->getExistingDoc($existingResponse);
 		$new = $this->command->getBody();
 		$existing = $doc->Data;
 		
@@ -39,7 +39,7 @@ class StoreDocResolver extends AbstractDocResolver implements IStoreDocResolver
 		
 		if (!$this->forceUpdateUnmodified && $doc->isDataEqualsTo($merged))
 		{
-			return $exisitngResponse;
+			return $existingResponse;
 		}
 		
 		return $this->store($doc->Rev, $merged);
