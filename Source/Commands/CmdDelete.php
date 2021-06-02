@@ -31,7 +31,6 @@ class CmdDelete implements ICmdDelete, IDeleteConflictCommand
 	
 	
 	private int $quorumRead = 0;
-	private int $quorumWrite = 0;
 	
 	private $params				= [];
 	private $failOnNotFound		= false;
@@ -46,7 +45,14 @@ class CmdDelete implements ICmdDelete, IDeleteConflictCommand
 	private function loadRevision(): void
 	{
 		$get = new CmdGet($this->connection);
-		$rev = $get->doc($this->getDB(), $this->getDocID())->queryRevision();
+		$query = $get->doc($this->getDB(), $this->getDocID());
+		
+		if ($this->quorumRead)
+		{
+			$query->quorumRead($this->quorumRead);
+		}
+		
+		$rev = $query->queryRevision();
 		
 		$this->rev($rev);
 	}
@@ -133,21 +139,21 @@ class CmdDelete implements ICmdDelete, IDeleteConflictCommand
 	}
 	
 	
-	public function readQuorum(int $quorum)
+	public function quorumRead(int $quorum)
 	{
 		$this->quorumRead = $quorum;
 		return $this;
 	}
 	
-	public function writeQuorum(int $quorum)
+	public function quorumWrite(int $quorum)
 	{
-		$this->quorumWrite = $quorum;
+		$this->params['w'] = $quorum;
 		return $this;
 	}
 	
 	public function quorum(int $read, int $write)
 	{
-		$this->quorumWrite = $write;
+		$this->params['w'] = $write;
 		$this->quorumRead = $read;
 		return $this;
 	}

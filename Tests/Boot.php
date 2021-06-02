@@ -17,6 +17,11 @@ function createTestDB($name): void
 
 function getSanityConnector(): IConnector
 {
+	return getCouchDB()->connector();
+}
+
+function getCouchDB()
+{
 	$config = ['host' => '127.0.0.1'];
 	
 	if (file_exists(__DIR__ . '/auth.ini'))
@@ -28,7 +33,7 @@ function getSanityConnector(): IConnector
 	$couchDB = new CouchDB();
 	$couchDB->config()->addConnection($config);
 	
-	return $couchDB->connector();
+	return $couchDB;
 }
 
 function getInvalidSanityConnector(): IConnector

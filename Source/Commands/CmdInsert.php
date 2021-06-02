@@ -93,7 +93,7 @@ class CmdInsert implements ICmdInsert
 	 * @param int $quorum
 	 * @return static
 	 */
-	public function writeQuorum(int $quorum)
+	public function quorumWrite(int $quorum)
 	{
 		$this->writeQuorum = $quorum;
 		return $this;

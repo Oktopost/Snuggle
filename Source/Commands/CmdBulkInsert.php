@@ -44,7 +44,7 @@ class CmdBulkInsert implements ICmdBulkInsert
 	 * @param int $quorum
 	 * @return static
 	 */
-	public function writeQuorum(int $quorum)
+	public function quorumWrite(int $quorum)
 	{
 		$this->params['w'] = $quorum;
 		return $this;

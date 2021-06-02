@@ -184,7 +184,7 @@ class CmdBulkStore implements ICmdBulkStore
 	 * @param int $quorum
 	 * @return static
 	 */
-	public function readQuorum(int $quorum)
+	public function quorumRead(int $quorum)
 	{
 		$this->quorumRead = $quorum;
 		return $this;
@@ -194,7 +194,7 @@ class CmdBulkStore implements ICmdBulkStore
 	 * @param int $quorum
 	 * @return static
 	 */
-	public function writeQuorum(int $quorum)
+	public function quorumWrite(int $quorum)
 	{	
 		$this->quorumWrite = $quorum;
 		return $this;

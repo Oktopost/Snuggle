@@ -174,13 +174,13 @@ class CmdStore implements ICmdStore, IStoreConflictCommand
 	}
 	
 	
-	public function readQuorum(int $quorum)
+	public function quorumRead(int $quorum)
 	{
 		$this->quorumRead = $quorum;
 		return $this;
 	}
 	
-	public function writeQuorum(int $quorum)
+	public function quorumWrite(int $quorum)
 	{
 		$this->quorumWrite = $quorum;
 		return $this;

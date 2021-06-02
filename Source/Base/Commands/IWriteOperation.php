@@ -8,5 +8,5 @@ interface IWriteOperation
 	 * @param int $quorum
 	 * @return static
 	 */
-	public function writeQuorum(int $quorum);
+	public function quorumWrite(int $quorum);
 }

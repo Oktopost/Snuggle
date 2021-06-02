@@ -71,7 +71,7 @@ abstract class BaseStoreResolver implements IBulkStoreResolution
 		
 		if ($readQuorum)
 		{
-			$query->readQuorum($readQuorum);
+			$query->quorumRead($readQuorum);
 		}
 		
 		return $query;

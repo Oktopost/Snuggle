@@ -191,7 +191,7 @@ class CmdBulkGet implements ICmdBulkGet
 	 * @param int $quorum
 	 * @return static
 	 */
-	public function readQuorum(int $quorum)
+	public function quorumRead(int $quorum)
 	{
 		return $this->setParam('r', $quorum);
 	}

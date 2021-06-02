@@ -168,7 +168,7 @@ class CmdGet implements ICmdGet
 	 * @param int $quorum
 	 * @return static
 	 */
-	public function readQuorum(int $quorum)
+	public function quorumRead(int $quorum)
 	{
 		$this->params['r'] = $quorum;
 		return $this;

@@ -80,7 +80,7 @@ abstract class AbstractDocResolver implements
 		
 		if ($readQuorum)
 		{
-			$get->readQuorum($readQuorum);
+			$get->quorumRead($readQuorum);
 		}
 		
 		return $get->doc($command->getDB(), $command->getDocID());
