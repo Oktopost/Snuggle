@@ -63,30 +63,54 @@ class QuorumTest extends TestCase
 		return $conn;
 	}
 	
-	private function testConflict(bool &$read, bool &$wrote, string $resolutionName): void
+	private function testConflict(bool &$read, bool &$wrote, string $resolutionName, bool $isBulk = false): void
 	{
 		$read = false;
 		$wrote = false;
 		
 		$conn = $this->getConnectionWithCallback($read, $wrote, 3, 2);
 		
-		if ($resolutionName == 'resolveConflict')
+		if ($isBulk)
 		{
-			$conn->store()
-				->quorum(3, 2)
-				->into(self::DB)
-				->data(['_id' => '2', 'a' => mt_rand(2, 50)])
-				->resolveConflict(function ($a, $b) { return $b; })
-				->queryBool();
+			if ($resolutionName == 'resolveConflict')
+			{
+				$conn->storeAll()
+					->quorum(3, 2)
+					->into(self::DB)
+					->dataSet([['_id' => '2', 'a' => mt_rand(2, 50)]])
+					->resolveConflict(function ($a, $b) { return $b; })
+					->execute();
+			}
+			else
+			{
+				$conn->storeAll()
+					->quorum(3, 2)
+					->into(self::DB)
+					->dataSet([['_id' => '2', 'a' => mt_rand(2, 50)]])
+					->$resolutionName()
+					->execute();
+			}
 		}
 		else
 		{
-			$conn->store()
-				->quorum(3, 2)
-				->into(self::DB)
-				->data(['_id' => '2', 'a' => 4])
-				->$resolutionName()
-				->queryBool();
+			if ($resolutionName == 'resolveConflict')
+			{
+				$conn->store()
+					->quorum(3, 2)
+					->into(self::DB)
+					->data(['_id' => '2', 'a' => mt_rand(2, 50)])
+					->resolveConflict(function ($a, $b) { return $b; })
+					->queryBool();
+			}
+			else
+			{
+				$conn->store()
+					->quorum(3, 2)
+					->into(self::DB)
+					->data(['_id' => '2', 'a' => mt_rand(2, 50)])
+					->$resolutionName()
+					->queryBool();
+			}
 		}
 	}
 	
@@ -233,6 +257,59 @@ class QuorumTest extends TestCase
 		
 		
 		$this->testConflict($read, $wrote, 'resolveConflict'); // Conflict callback not working correctly
+		
+		self::assertTrue($read);
+		self::assertTrue($wrote);
+	}
+	
+	public function test_QuorumPassedTo_Conflict_CmdBulkStore(): void
+	{
+		$read = false;
+		$wrote = false;
+		$conflicted = false;
+		
+		getSanityConnector()->insert()->into(self::DB)->data(['_id' => '2', 'a' => '1'])->execute();
+		
+		
+		$this->testConflict($read, $wrote, 'ignoreConflict', true);
+		
+		self::assertFalse($read);
+		self::assertTrue($wrote);
+		
+		
+		try
+		{
+			$this->testConflict($read, $wrote, 'failOnConflict', true);
+		}
+		catch (ConflictException $exception)
+		{
+			$conflicted = true;
+		}
+		
+		self::assertFalse($read);
+		self::assertTrue($wrote);
+		self::assertTrue($conflicted);
+		
+		
+		$this->testConflict($read, $wrote, 'mergeNewOnConflict', true); // Write did not occur
+		
+		self::assertTrue($read);
+		self::assertTrue($wrote);
+		
+		
+		$this->testConflict($read, $wrote, 'mergeOverOnConflict', true); // Write did not occur
+		
+		self::assertTrue($read);
+		self::assertTrue($wrote);
+		
+		
+		$this->testConflict($read, $wrote, 'overrideConflict', true); // Write did not occur
+		
+		self::assertTrue($read);
+		self::assertTrue($wrote);
+		
+		
+		$this->testConflict($read, $wrote, 'resolveConflict', true); // Conflict callback not working correctly & write did not occur
 		
 		self::assertTrue($read);
 		self::assertTrue($wrote);
