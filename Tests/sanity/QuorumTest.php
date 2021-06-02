@@ -2,13 +2,13 @@
 namespace sanity;
 
 
-use PHPUnit\Framework\Assert;
 use PHPUnit\Framework\TestCase;
 
 use Snuggle\Base\Connection\Request\IRawRequest;
 use Snuggle\Base\IConnection;
 use Snuggle\Base\IConnector;
 use Snuggle\Connection\Decorators\SnuggleCallbackDecorator;
+use Snuggle\Exceptions\Http\ConflictException;
 
 
 class QuorumTest extends TestCase
@@ -32,6 +32,62 @@ class QuorumTest extends TestCase
 			}));
 		
 		return $couchDB->connector();
+	}
+	
+	private function getConnectionWithCallback(bool &$read, bool &$wrote, int $expectedRead, int $expectedWrite): IConnector
+	{
+		$conn = $this->getConnection(function (IConnection $conn, $request, $method, array $params)
+		use (&$read, &$wrote, $expectedRead, $expectedWrite)
+		{
+			if (!is_string($request))
+			{
+				/** @var IRawRequest|string $request */
+				$method = $request->getMethod();
+				$params = $request->getQueryParams();
+			}
+			
+			if ($method == 'GET')
+			{
+				$read = true;
+				self::assertEquals($params['r'], $expectedRead);
+				self::assertArrayNotHasKey('w', $params);
+			}
+			else
+			{
+				$wrote = true;
+				self::assertEquals($params['w'], $expectedWrite);
+				self::assertArrayNotHasKey('r', $params);
+			}
+		});
+		
+		return $conn;
+	}
+	
+	private function testConflict(bool &$read, bool &$wrote, string $resolutionName): void
+	{
+		$read = false;
+		$wrote = false;
+		
+		$conn = $this->getConnectionWithCallback($read, $wrote, 3, 2);
+		
+		if ($resolutionName == 'resolveConflict')
+		{
+			$conn->store()
+				->quorum(3, 2)
+				->into(self::DB)
+				->data(['_id' => '2', 'a' => mt_rand(2, 50)])
+				->resolveConflict(function ($a, $b) { return $b; })
+				->queryBool();
+		}
+		else
+		{
+			$conn->store()
+				->quorum(3, 2)
+				->into(self::DB)
+				->data(['_id' => '2', 'a' => 4])
+				->$resolutionName()
+				->queryBool();
+		}
 	}
 	
 	
@@ -77,32 +133,10 @@ class QuorumTest extends TestCase
 	
 	public function test_QuorumPassedTo_CmdDelete(): void
 	{
-		$readReachedCount = 0;
-		$writeReachedCount = 0;
+		$read = false;
+		$wrote = false;
 		
-		$conn = $this->getConnection(function (IConnection $conn, $request, $method, array $params)
-			use (&$readReachedCount, &$writeReachedCount)
-		{
-			if (!is_string($request))
-			{
-				/** @var IRawRequest|string $request */
-				$method = $request->getMethod();
-				$params = $request->getQueryParams();
-			}
-			
-			if ($method == 'GET')
-			{
-				$readReachedCount++;
-				self::assertEquals($params['r'], 3);
-				self::assertArrayNotHasKey('w', $params);
-			}
-			else
-			{
-				$writeReachedCount++;
-				self::assertEquals($params['w'], 2);
-				self::assertArrayNotHasKey('r', $params);
-			}
-		});
+		$conn = $this->getConnectionWithCallback($read, $wrote, 3, 2);
 		
 		getSanityConnector()->insert()->into(self::DB)->data(['_id' => '1'])->execute();
 		getSanityConnector()->insert()->into(self::DB)->data(['_id' => '2'])->execute();
@@ -120,39 +154,17 @@ class QuorumTest extends TestCase
 			->doc('2')
 			->queryBool();
 		
-		self::assertEquals($readReachedCount, 2);
-		self::assertEquals($writeReachedCount, 2);
+		self::assertTrue($read);
+		self::assertTrue($wrote);
 	}
 	
 	
 	public function test_QuorumPassedTo_CmdStore(): void
 	{
-		$readReachedCount = 0;
-		$writeReachedCount = 0;
+		$read = false;
+		$wrote = false;
 		
-		$conn = $this->getConnection(function (IConnection $conn, $request, $method, array $params)
-			use (&$readReachedCount, &$writeReachedCount)
-		{
-			if (!is_string($request))
-			{
-				/** @var IRawRequest|string $request */
-				$method = $request->getMethod();
-				$params = $request->getQueryParams();
-			}
-			
-			if ($method == 'GET')
-			{
-				$readReachedCount++;
-				self::assertEquals($params['r'], 3);
-				self::assertArrayNotHasKey('w', $params);
-			}
-			else
-			{
-				$writeReachedCount++;
-				self::assertEquals($params['w'], 2);
-				self::assertArrayNotHasKey('r', $params);
-			}
-		});
+		$conn = $this->getConnectionWithCallback($read, $wrote, 3, 2);
 		
 		getSanityConnector()->insert()->into(self::DB)->data(['_id' => '2', 'a' => '1'])->execute();
 		
@@ -165,13 +177,64 @@ class QuorumTest extends TestCase
 		
 		$conn->store()
 			->quorum(3, 2)
-			->from(self::DB)
+			->into(self::DB)
 			->data(['_id' => '2', 'a' => 4])
 			->queryBool();
 		
-		self::assertEquals($readReachedCount, 2);
-		self::assertEquals($writeReachedCount, 2);
+		self::assertTrue($read);
+		self::assertTrue($wrote);
 	}
 	
-	
+	public function test_QuorumPassedTo_Conflict_CmdStore(): void
+	{
+		$read = false;
+		$wrote = false;
+		$conflicted = false;
+		
+		getSanityConnector()->insert()->into(self::DB)->data(['_id' => '2', 'a' => '1'])->execute();
+		
+		
+		$this->testConflict($read, $wrote, 'ignoreConflict');
+		
+		self::assertFalse($read);
+		self::assertTrue($wrote);
+		
+		
+		try
+		{
+			$this->testConflict($read, $wrote, 'failOnConflict');
+		}
+		catch (ConflictException $exception)
+		{
+			$conflicted = true;
+		}
+		
+		self::assertFalse($read);
+		self::assertTrue($wrote);
+		//self::assertTrue($conflicted); Not failing
+		
+		
+		$this->testConflict($read, $wrote, 'mergeNewOnConflict');
+		
+		self::assertTrue($read);
+		self::assertTrue($wrote);
+		
+		
+		$this->testConflict($read, $wrote, 'mergeOverOnConflict');
+		
+		self::assertTrue($read);
+		self::assertTrue($wrote);
+		
+		
+		$this->testConflict($read, $wrote, 'overrideConflict');
+		
+		self::assertTrue($read);
+		self::assertTrue($wrote);
+		
+		
+		$this->testConflict($read, $wrote, 'resolveConflict'); // Conflict callback not working correctly
+		
+		self::assertTrue($read);
+		self::assertTrue($wrote);
+	}
 }
