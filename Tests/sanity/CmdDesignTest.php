@@ -6,6 +6,7 @@ use PHPUnit\Framework\TestCase;
 use Snuggle\Base\Commands\ICmdBulkGet;
 use Snuggle\Commands\CmdDesign;
 use Snuggle\Design\DirectoryScanner;
+use Snuggle\Exceptions\Http\ConflictException;
 use Snuggle\Exceptions\Http\NotFoundException;
 
 
@@ -137,11 +138,10 @@ class CmdDesignTest extends TestCase
 	}
 	
 	
-	/**
-	 * @expectedException \Snuggle\Exceptions\Http\ConflictException
-	 */
 	public function test_ViewIndexAlreadyExists_Throw_ExceptionThrown()
 	{
+		$this->expectException(ConflictException::class);
+		
 		$this->designCmd(__FUNCTION__)
 			->addView('view_a', 'function(doc) { emit(doc.index_a); }')
 			->create();

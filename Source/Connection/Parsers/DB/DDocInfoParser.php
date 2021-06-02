@@ -13,6 +13,16 @@ class DDocInfoParser
 	use TStaticClass;
 	
 	
+	private static function getViewSizes(DDocInfo $info, array $data): void
+	{
+		// data_size is for CouchDB 2.*
+		// size[...] is for CouchDB 3.*
+		
+ 		$info->DataSize = (int)($data['data_size'] ?? $data['sizes']['external'] ?? 0);
+ 		$info->DiskSize	= (int)($data['disk_size'] ?? $data['sizes']['file'] ?? 0);
+	}
+	
+	
 	public static function parse(IRawResponse $response): DDocInfo
 	{
 		$body = $response->getJsonBody();
@@ -24,10 +34,10 @@ class DDocInfoParser
 		$data = new DDocInfo();
 		$data->setSource(is_array($body) ? $body : []);
 		
+		self::getViewSizes($data, $indexInfo);
+		
 		$data->Name				= $body['name'] ?? '';
 		$data->Signature		= $indexInfo['signature'] ?? null;
- 		$data->DataSize			= (int)($indexInfo['data_size'] ?? 0);
- 		$data->DiskSize			= (int)($indexInfo['disk_size'] ?? 0);
  		$data->Language			= $indexInfo['language'] ?? 'unknown';
  		$data->PurgeSeq			= (int)($indexInfo['purge_seq'] ?? 0);
  		$data->UpdateSeq		= $indexInfo['update_seq'] ?? 0;

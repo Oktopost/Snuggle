@@ -3,6 +3,9 @@ namespace Snuggle\Config;
 
 
 use PHPUnit\Framework\TestCase;
+use Snuggle\Exceptions\ConfigurationAlreadyDefinedException;
+use Snuggle\Exceptions\ConfigurationNotFoundException;
+use Snuggle\Exceptions\InvalidConfigFormatException;
 
 
 class ConnectionConfigsManagerTest extends TestCase
@@ -61,11 +64,10 @@ class ConnectionConfigsManagerTest extends TestCase
 		self::assertInstanceOf(ConnectionConfig::class, $subject->get());
 	}
 	
-	/**
-	 * @expectedException \Snuggle\Exceptions\ConfigurationNotFoundException
-	 */
 	public function test_get_ConfigNotExistsAndCouldNotBeLoaded_ExceptionThrown()
 	{
+		$this->expectException(ConfigurationNotFoundException::class);
+		
 		$loadersMock = $this->getMockBuilder(LoadersCollection::class)->getMock();
 		$loadersMock->expects($this->once())->method('tryLoad')->willReturn(null);
 		
@@ -109,11 +111,10 @@ class ConnectionConfigsManagerTest extends TestCase
 		self::assertInstanceOf(LoadersCollection::class, $loaders->getValue($subject));
 	}
 	
-	/**
-	 * @expectedException \Snuggle\Exceptions\ConfigurationAlreadyDefinedException
-	 */
 	public function test_add_ConfigAlreadyExists_ExceptionThrown()
 	{
+		$this->expectException(ConfigurationAlreadyDefinedException::class);
+		
 		$subject = new ConnectionConfigsManager();
 		$subject->add('main');
 		
@@ -148,11 +149,10 @@ class ConnectionConfigsManagerTest extends TestCase
 		
 	}
 	
-	/**
-	 * @expectedException \Snuggle\Exceptions\InvalidConfigFormatException
-	 */
 	public function test_add_DataNotValidConfig_ExceptionThrown()
 	{
+		$this->expectException(InvalidConfigFormatException::class);
+		
 		$subject = new ConnectionConfigsManager();
 		$subject->add('test', 'SomeString');
 	}

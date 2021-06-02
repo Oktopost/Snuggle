@@ -25,6 +25,6 @@ class DDocInfoTest extends TestCase
 		$subject->DataSize = 500;
 		$subject->DiskSize = 1500;
 		
-		self::assertEquals(0.33, $subject->getDataToDiskSizeRatio(), '', 0.01);
+		self::assertEqualsWithDelta(0.33, $subject->getDataToDiskSizeRatio(), 0.01);
 	}
 }

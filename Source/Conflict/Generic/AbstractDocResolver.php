@@ -43,18 +43,18 @@ abstract class AbstractDocResolver implements
 	
 	protected function getRevision(IRawResponse $response): string 
 	{
-		$headers = $this->getGetCommand($this->getCommand())->queryHeaders();
+		$etag = $this->getGetCommand($this->getCommand())->queryETag();
 		
-		if (!isset($headers['etag']))
+		if (!isset($etag))
 			throw new NotFoundException($response, 'Could not get revision for conflicting document');
 		
-		$rev = jsondecode($headers['etag']);
+		$rev = jsondecode($etag);
 		
 		if (!is_string($rev))
 		{
 			throw new NotFoundException(
 				$response, 
-				'Malformed revision format ' . base64_encode($headers['etag']));
+				'Malformed revision format ' . base64_encode($etag));
 		}
 		
 		return $rev;

@@ -3,6 +3,7 @@ namespace Snuggle\Config;
 
 
 use PHPUnit\Framework\TestCase;
+use Snuggle\Exceptions\InvalidLoaderException;
 
 
 class LoadersCollectionTest extends TestCase
@@ -45,11 +46,10 @@ class LoadersCollectionTest extends TestCase
 		self::assertEquals([$mockLoader], $loaders->getValue($subject));
 	}
 	
-	/**
-	 * @expectedException \Snuggle\Exceptions\InvalidLoaderException
-	 */
 	public function test_addLoader_LoaderNotValid_ExceptionThrown()
 	{
+		$this->expectException(InvalidLoaderException::class);
+		
 		$subject = new LoadersCollection();
 		$subject->addLoader('testString');
 	}
