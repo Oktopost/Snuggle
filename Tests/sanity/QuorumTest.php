@@ -65,9 +65,6 @@ class QuorumTest extends TestCase
 	
 	private function testConflict(bool &$read, bool &$wrote, string $resolutionName, bool $isBulk = false): void
 	{
-		$read = false;
-		$wrote = false;
-		
 		$conn = $this->getConnectionWithCallback($read, $wrote, 3, 2);
 		
 		if ($isBulk)
@@ -154,6 +151,33 @@ class QuorumTest extends TestCase
 		$conn->get()->from(self::DB)->queryExists('1');
 	}
 	
+	// No r param
+	public function test_QuorumPassedTo_CmdBulkGet(): void
+	{
+		getSanityConnector()->insert()->into(self::DB)->data(['_id' => '1'])->execute();
+		
+		$conn = $this->getConnection(function (IConnection $conn, $request, $method, array $params)
+		{
+			self::assertEquals($params['r'], 2);
+		});
+		
+		$conn->getAll()
+			->quorumRead(2)
+			->from(self::DB)
+			->keys(['1'])
+			->queryDocs();
+	}
+	
+	public function test_QuorumNotSet_CmdBulkGet(): void
+	{
+		$conn = $this->getConnection(function (IConnection $conn, $request, $method, array $params)
+		{
+			self::assertArrayNotHasKey('r', $params);
+		});
+		
+		$conn->getAll()->from(self::DB)->queryDocs();
+	}
+	
 	
 	public function test_QuorumPassedTo_CmdDelete(): void
 	{
@@ -209,20 +233,27 @@ class QuorumTest extends TestCase
 		self::assertTrue($wrote);
 	}
 	
-	public function test_QuorumPassedTo_Conflict_CmdStore(): void
+	public function test_QuorumPassedTo_IgnoreConflict_CmdStore(): void
+	{
+		$read = false;
+		$wrote = false;
+		
+		getSanityConnector()->insert()->into(self::DB)->data(['_id' => '2', 'a' => '1'])->execute();
+		
+		$this->testConflict($read, $wrote, 'ignoreConflict');
+		
+		self::assertFalse($read);
+		self::assertTrue($wrote);
+	}
+	
+	// Not failed, not wrote
+	public function test_QuorumPassedTo_FailOnConflict_CmdStore(): void
 	{
 		$read = false;
 		$wrote = false;
 		$conflicted = false;
 		
 		getSanityConnector()->insert()->into(self::DB)->data(['_id' => '2', 'a' => '1'])->execute();
-		
-		
-		$this->testConflict($read, $wrote, 'ignoreConflict');
-		
-		self::assertFalse($read);
-		self::assertTrue($wrote);
-		
 		
 		try
 		{
@@ -235,47 +266,82 @@ class QuorumTest extends TestCase
 		
 		self::assertFalse($read);
 		self::assertTrue($wrote);
-		//self::assertTrue($conflicted); Not failing
+		self::assertTrue($conflicted);
+	}
+	
+	public function test_QuorumPassedTo_MergeNewOnConflict_CmdStore(): void
+	{
+		$read = false;
+		$wrote = false;
 		
+		getSanityConnector()->insert()->into(self::DB)->data(['_id' => '2', 'a' => '1'])->execute();
 		
 		$this->testConflict($read, $wrote, 'mergeNewOnConflict');
 		
 		self::assertTrue($read);
 		self::assertTrue($wrote);
+	}
+	
+	public function test_QuorumPassedTo_MergeOverOnConflict_CmdStore(): void
+	{
+		$read = false;
+		$wrote = false;
 		
+		getSanityConnector()->insert()->into(self::DB)->data(['_id' => '2', 'a' => '1'])->execute();
 		
 		$this->testConflict($read, $wrote, 'mergeOverOnConflict');
 		
 		self::assertTrue($read);
 		self::assertTrue($wrote);
+	}
+	
+	public function test_QuorumPassedTo_OverrideConflict_CmdStore(): void
+	{
+		$read = false;
+		$wrote = false;
 		
+		getSanityConnector()->insert()->into(self::DB)->data(['_id' => '2', 'a' => '1'])->execute();
 		
 		$this->testConflict($read, $wrote, 'overrideConflict');
 		
 		self::assertTrue($read);
 		self::assertTrue($wrote);
+	}
+	
+	// Conflict callback not working correctly
+	public function test_QuorumPassedTo_ResolveConflict_CmdStore(): void
+	{
+		$read = false;
+		$wrote = false;
 		
+		getSanityConnector()->insert()->into(self::DB)->data(['_id' => '2', 'a' => '1'])->execute();
 		
-		$this->testConflict($read, $wrote, 'resolveConflict'); // Conflict callback not working correctly
+		$this->testConflict($read, $wrote, 'resolveConflict');
 		
 		self::assertTrue($read);
 		self::assertTrue($wrote);
 	}
 	
-	public function test_QuorumPassedTo_Conflict_CmdBulkStore(): void
+	public function test_QuorumPassedTo_IgnoreConflict_CmdBulkStore(): void
+	{
+		$read = false;
+		$wrote = false;
+		
+		getSanityConnector()->insert()->into(self::DB)->data(['_id' => '2', 'a' => '1'])->execute();
+		
+		$this->testConflict($read, $wrote, 'ignoreConflict', true);
+		
+		self::assertFalse($read);
+		self::assertTrue($wrote);
+	}
+	
+	public function test_QuorumPassedTo_FailOnConflict_CmdBulkStore(): void
 	{
 		$read = false;
 		$wrote = false;
 		$conflicted = false;
 		
 		getSanityConnector()->insert()->into(self::DB)->data(['_id' => '2', 'a' => '1'])->execute();
-		
-		
-		$this->testConflict($read, $wrote, 'ignoreConflict', true);
-		
-		self::assertFalse($read);
-		self::assertTrue($wrote);
-		
 		
 		try
 		{
@@ -289,27 +355,103 @@ class QuorumTest extends TestCase
 		self::assertFalse($read);
 		self::assertTrue($wrote);
 		self::assertTrue($conflicted);
+	}
+	
+	// Write did not occur
+	public function test_QuorumPassedTo_MergeNewOnConflict_CmdBulkStore(): void
+	{
+		$read = false;
+		$wrote = false;
 		
+		getSanityConnector()->insert()->into(self::DB)->data(['_id' => '2', 'a' => '1'])->execute();
 		
-		$this->testConflict($read, $wrote, 'mergeNewOnConflict', true); // Write did not occur
-		
-		self::assertTrue($read);
-		self::assertTrue($wrote);
-		
-		
-		$this->testConflict($read, $wrote, 'mergeOverOnConflict', true); // Write did not occur
-		
-		self::assertTrue($read);
-		self::assertTrue($wrote);
-		
-		
-		$this->testConflict($read, $wrote, 'overrideConflict', true); // Write did not occur
+		$this->testConflict($read, $wrote, 'mergeNewOnConflict', true);
 		
 		self::assertTrue($read);
 		self::assertTrue($wrote);
+	}
+	
+	// Write did not occur
+	public function test_QuorumPassedTo_MergeOverOnConflict_CmdBulkStore(): void
+	{
+		$read = false;
+		$wrote = false;
 		
+		getSanityConnector()->insert()->into(self::DB)->data(['_id' => '2', 'a' => '1'])->execute();
 		
-		$this->testConflict($read, $wrote, 'resolveConflict', true); // Conflict callback not working correctly & write did not occur
+		$this->testConflict($read, $wrote, 'mergeOverOnConflict', true);
+		
+		self::assertTrue($read);
+		self::assertTrue($wrote);
+	}
+	
+	// Write did not occur
+	public function test_QuorumPassedTo_OverrideConflict_CmdBulkStore(): void
+	{
+		$read = false;
+		$wrote = false;
+		
+		getSanityConnector()->insert()->into(self::DB)->data(['_id' => '2', 'a' => '1'])->execute();
+		
+		$this->testConflict($read, $wrote, 'overrideConflict', true);
+		
+		self::assertTrue($read);
+		self::assertTrue($wrote);
+	}
+	
+	// Write did not occur
+	public function test_QuorumPassedTo_ResolveConflict_CmdBulkStore(): void
+	{
+		$read = false;
+		$wrote = false;
+		
+		getSanityConnector()->insert()->into(self::DB)->data(['_id' => '2', 'a' => '1'])->execute();
+		
+		$this->testConflict($read, $wrote, 'resolveConflict', true);
+		
+		self::assertTrue($read);
+		self::assertTrue($wrote);
+	}
+	
+	
+	public function test_QuorumPassedTo_ReadWriteSetters_CmdStore(): void
+	{
+		$read = false;
+		$wrote = false;
+		
+		getSanityConnector()->insert()->into(self::DB)->data(['_id' => '2', 'a' => '1'])->execute();
+		
+		$conn = $this->getConnectionWithCallback($read, $wrote, 2, 3);
+		
+		$conn->store()
+			->quorumRead(2)
+			->quorumWrite(3)
+			->into(self::DB)
+			->data(['_id' => '2', 'a' => mt_rand(2, 50)])
+			->overrideConflict()
+			->queryBool();
+		
+		self::assertTrue($read);
+		self::assertTrue($wrote);
+	}
+	
+	// Write did not occur
+	public function test_QuorumPassedTo_ReadWriteSetters_CmdBulkStore(): void
+	{
+		$read = false;
+		$wrote = false;
+		
+		getSanityConnector()->insert()->into(self::DB)->data(['_id' => '2', 'a' => '1'])->execute();
+		
+		$conn = $this->getConnectionWithCallback($read, $wrote, 2, 3);
+		
+		$conn->storeAll()
+			->quorumRead(2)
+			->quorumWrite(3)
+			->into(self::DB)
+			->dataSet([['_id' => '2', 'a' => mt_rand(2, 50)]])
+			->mergeNewOnConflict()
+			->execute();
 		
 		self::assertTrue($read);
 		self::assertTrue($wrote);
