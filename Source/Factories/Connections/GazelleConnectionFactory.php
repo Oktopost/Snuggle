@@ -3,9 +3,8 @@ namespace Snuggle\Factories\Connections;
 
 
 use Gazelle\Gazelle;
-use Gazelle\IConnectionDecorator;
-use Snuggle\Base\Factories\IConnectionFactory;
 use Snuggle\Base\IConnection;
+use Snuggle\Base\Factories\IConnectionFactory;
 use Snuggle\Config\ConnectionConfig;
 use Snuggle\Connection\Providers\GazelleConnection;
 

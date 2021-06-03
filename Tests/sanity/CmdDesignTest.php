@@ -5,7 +5,6 @@ namespace sanity;
 use PHPUnit\Framework\TestCase;
 use Snuggle\Base\Commands\ICmdBulkGet;
 use Snuggle\Commands\CmdDesign;
-use Snuggle\Design\DirectoryScanner;
 use Snuggle\Exceptions\Http\ConflictException;
 use Snuggle\Exceptions\Http\NotFoundException;
 
