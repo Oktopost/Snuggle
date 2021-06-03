@@ -195,6 +195,59 @@ class CmdStoreTest extends TestCase
 			});
 	}
 	
+	public function test_resolveConflict_ReturnOriginalObject_DataNotModified()
+	{
+		self::assertObjectRevisionChange(
+			false,
+			function (array $data)
+			{
+				$this->storeCmd()
+					->data($data)
+					->resolveConflict(function ($a) { return $a; })
+					->execute();
+			});
+	}
+	
+	public function test_resolveConflict_ReturnExistingObject_DataModified()
+	{
+		self::assertObjectRevisionChange(
+			true,
+			function (array $data)
+			{
+				$this->storeCmd()
+					->data($data)
+					->resolveConflict(function ($a, $b) { return $b; })
+					->execute();
+			});
+	}
+	
+	public function test_resolveConflict_ReturnDataWithoutRevision_RevisionCopied()
+	{
+		self::assertObjectRevisionChange(
+			true,
+			function(array $data) use (&$id)
+			{
+				$this->storeCmd()
+					->data($data)
+					->resolveConflict(
+						function($a, Doc $b) use (&$id)
+						{
+							$c = new Doc();
+							
+							$id = $b->ID;
+							$c->ID = $b->ID;
+							$c->Data = ['a' => 78912];
+							
+							return $c;
+						})
+					->execute();
+			});
+		
+		$doc = $this->getDocument($id);
+		
+		self::assertEquals(['a' => 78912], $doc->Data);
+	}
+	
 	public function test_resolveConflict_forceUpdateUnmodified()
 	{
 		self::assertObjectRevisionChange(

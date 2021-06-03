@@ -75,9 +75,10 @@ class StoreDocResolver extends AbstractDocResolver implements IStoreDocResolver
 	
 	public function resolve(IRawResponse $response, ConflictException $e): IRawResponse
 	{
-		$existingDoc = $this->getExistingDoc($existingResponse);
-		$existingData = $existingDoc->Data;
-		$targetDoc = $this->getNewDocument();
+		$existingDoc	= $this->getExistingDoc($existingResponse);
+		$existingData	= $existingDoc->Data;
+		$targetDoc		= $this->getNewDocument();
+		$rev			= $existingDoc->Rev;
 		
 		$callback = $this->callback();
 		
@@ -89,6 +90,11 @@ class StoreDocResolver extends AbstractDocResolver implements IStoreDocResolver
 			if (!$this->forceUpdateUnmodified && $doc->isDataEqualsTo($existingData))
 			{
 				return $existingResponse;
+			}
+			
+			if (!$doc->Rev)
+			{
+				$doc->Rev = $rev;
 			}
 			
 			return $this->store($doc->Rev, $doc->Data);
