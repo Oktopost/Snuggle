@@ -12,6 +12,9 @@ use Snuggle\Exceptions\Http\ConflictException;
 use Structura\Strings;
 
 
+/**
+ * @group integration
+ */
 class QuorumTest extends TestCase
 {
 	private const DB = 'test_snuggle_quorum';	

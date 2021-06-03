@@ -3,6 +3,7 @@ namespace Snuggle\Factories\Connections;
 
 
 use Gazelle\Gazelle;
+use Gazelle\IConnectionDecorator;
 use Snuggle\Base\Factories\IConnectionFactory;
 use Snuggle\Base\IConnection;
 use Snuggle\Config\ConnectionConfig;
@@ -38,6 +39,16 @@ class GazelleConnectionFactory implements IConnectionFactory
 		return $gazelle;
 	}
 	
+	private function setDecorator(Gazelle $gazelle, ConnectionConfig $config): void
+	{
+		$decorator = $config->Generic['GazelleDecorator'] ?? null;
+		
+		if (!$decorator)
+			return;
+		
+		$gazelle->addDecorator($decorator);
+	}
+	
 	
 	protected function configGazelle(Gazelle $gazelle, ConnectionConfig $config): void
 	{
@@ -55,6 +66,8 @@ class GazelleConnectionFactory implements IConnectionFactory
 				CURLOPT_USERPWD, 
 				"{$config->User}:{$config->Password}");
 		}
+		
+		$this->setDecorator($gazelle, $config);
 		
 		if ($this->configCallback)
 		{

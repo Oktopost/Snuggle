@@ -12,7 +12,8 @@ class ConfigParserTest extends TestCase
 		self::assertEquals([
 			'URI'		=> 'localhost',
 			'Protocol'	=> 'http',
-			'Port'		=> 5984
+			'Port'		=> 5984,
+			'Generic'	=> []
 		], ConfigParser::parse([]));
 	}
 }
