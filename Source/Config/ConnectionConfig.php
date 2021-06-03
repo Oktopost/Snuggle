@@ -12,6 +12,7 @@ use Objection\LiteObject;
  * @property int	$Port
  * @property string $User
  * @property string $Password
+ * @property array	$Generic
  */
 class ConnectionConfig extends LiteObject
 {
@@ -26,6 +27,7 @@ class ConnectionConfig extends LiteObject
 			'Port'		=> LiteSetup::createInt(5984),
 			'User'		=> LiteSetup::createString(null),
 			'Password'	=> LiteSetup::createString(null),
+			'Generic'	=> LiteSetup::createArray([])
 		];
 	}
 	

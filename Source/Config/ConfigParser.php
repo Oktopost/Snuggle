@@ -2,6 +2,7 @@
 namespace Snuggle\Config;
 
 
+use Snuggle\Exceptions\FatalSnuggleException;
 use Traitor\TStaticClass;
 
 
@@ -55,6 +56,16 @@ class ConfigParser
 		];
 	}
 	
+	private static function getGeneric(array $data): array
+	{
+		$generic = $data['generic'] ?? [];
+		
+		if (!is_array($generic))
+			throw new FatalSnuggleException('The `Generic` key in config, must be an array or null');
+		
+		return ['Generic' => $generic];
+	}
+	
 	
 	public static function parse(array $data): array
 	{
@@ -63,7 +74,8 @@ class ConfigParser
 		return array_merge
 			(
 				self::getURL($data),
-				self::getCredentials($data)
+				self::getCredentials($data),
+				self::getGeneric($data)
 			);
 	}
 }
