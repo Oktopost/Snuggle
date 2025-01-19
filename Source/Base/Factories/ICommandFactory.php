@@ -16,13 +16,15 @@ use Snuggle\Base\Commands\ICmdDelete;
 use Snuggle\Base\Commands\ICmdDirect;
 use Snuggle\Base\Commands\ICmdInsert;
 use Snuggle\Base\Commands\ICmdServer;
+use Snuggle\Base\Commands\ICmdChanges;
 
 use Snuggle\Base\Commands\ICmdBulkInsert;
 
 
 interface ICommandFactory
 {
-	public function db(IConnection $connection): ICmdDB; 
+	public function db(IConnection $connection): ICmdDB;
+	public function changes(IConnection $connection): ICmdChanges;
 	public function get(IConnection $connection): ICmdGet;
 	public function store(IConnection $connection): ICmdStore;
 	public function insert(IConnection $connection): ICmdInsert;

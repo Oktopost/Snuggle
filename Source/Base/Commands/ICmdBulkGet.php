@@ -50,7 +50,6 @@ interface ICmdBulkGet extends IExecute, IQuery, IReadOperation
 	 */
 	public function queryExists(): bool;
 	
-	
 	/**
 	 * @return ViewRow[]
 	 */

@@ -15,6 +15,7 @@ use Snuggle\Base\Commands\ICmdDirect;
 use Snuggle\Base\Commands\ICmdServer;
 
 use Snuggle\Base\Commands\ICmdBulkGet;
+use Snuggle\Base\Commands\ICmdChanges;
 use Snuggle\Base\Commands\ICmdBulkStore;
 use Snuggle\Base\Commands\ICmdBulkInsert;
 
@@ -30,6 +31,7 @@ use Snuggle\Commands\CmdInsert;
 use Snuggle\Commands\CmdServer;
 
 use Snuggle\Commands\CmdBulkGet;
+use Snuggle\Commands\CmdChanges;
 use Snuggle\Commands\CmdBulkStore;
 use Snuggle\Commands\CmdBulkInsert;
 
@@ -39,6 +41,11 @@ class SimpleFactory implements ICommandFactory
 	public function db(IConnection $connection): ICmdDB
 	{
 		return new CmdDB($connection);
+	}
+	
+	public function changes(IConnection $connection): ICmdChanges
+	{
+		return new CmdChanges($connection);
 	}
 	
 	public function direct(IConnection $connection): ICmdDirect
