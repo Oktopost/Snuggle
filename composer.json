@@ -13,17 +13,16 @@
 	],
 	"minimum-stability": "stable",
 	"require": {
-		"php": ">=7.4",
-		"oktopost/objection": "^1.0.0",
-		"unstable-cacao/structura": "^2.0",
-		"unstable-cacao/traitor": "^1.0",
-		"oktopost/skeleton": "^1.1",
+		"php": ">=8.1",
+		"oktopost/objection": "^2.1",
+		"oktopost/structura": "^3.0",
+		"oktopost/traitor": "^2.1",
+		"oktopost/skeleton": "^2.1",
 		"oktopost/jsonencode": "^1.0.1",
-		"oktopost/cartograph": "^1.1",
-		"oktopost/gazelle": "^0.2.6"
+		"oktopost/cartograph": "^1.2",
+		"oktopost/gazelle": "^1.0"
 	},
     "require-dev": {
-		"sebastian/global-state": "^4.0",
 		"phpunit/phpunit": "^9.2"
 	},
 	"autoload": {
