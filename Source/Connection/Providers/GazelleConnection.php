@@ -15,6 +15,7 @@ use Snuggle\Connection\Response\RawResponse;
 use Snuggle\Exceptions\SnuggleException;
 use Snuggle\Exceptions\ServerUnreachableException;
 use Snuggle\Connection\Request\RawRequest;
+use Snuggle\Utils\Logging;
 
 
 class GazelleConnection implements IConnection
@@ -73,10 +74,29 @@ class GazelleConnection implements IConnection
 		}
 		catch (RequestException $reqE)
 		{
+			$queryParams = $request->getQueryParams();
+			$body = $request->getBody() ?: '';
+			
+			$logger = Logging::getLogger();
+			$logger->critical('Snuggle Request Timeout',
+				[
+					"Uri" => $request->getURI(),
+					"Params" => $queryParams,
+					"Body" => $body,
+					'exception' => $reqE
+				]);
+			
 			throw new ServerUnreachableException($reqE->getMessage(), $reqE->getCode(), $reqE);
 		}
 		catch (\Exception $e)
 		{
+			$logger = Logging::getLogger();
+			$logger->critical('Unexpected Snuggle Request Exception',
+			[
+				"Uri" => $request->getURI(),
+				"exception" => $e,
+			]);
+			
 			throw new SnuggleException($e->getMessage(), $e->getCode(), $e);
 		}
 		

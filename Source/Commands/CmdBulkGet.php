@@ -20,6 +20,7 @@ use Snuggle\Connection\Parsers\Lists\ViewListParser;
 
 use Snuggle\Exceptions\FatalSnuggleException;
 
+use Snuggle\Utils\Logging;
 use Structura\Map;
 
 
@@ -122,6 +123,12 @@ class CmdBulkGet implements ICmdBulkGet
 	
 	public function keys(?array $keys): ICmdBulkGet
 	{
+		if (!$keys)
+		{
+			$logger = Logging::getLogger();
+			$logger->warning('Empty keys array passed to Snuggle', ['exception' => new \Exception()]);
+		}
+		
 		// Keys are not escaped because this value is passed in the body.
 		return $this->setKeysParameter($keys ? ['keys' => $keys] : null);
 	}

@@ -1,15 +1,17 @@
-<phpunit bootstrap="Tests/Boot.php">
-	<filter>
-		<whitelist processUncoveredFilesFromWhitelist="true">
-			<directory suffix=".php">Source/</directory>
-		</whitelist>
-	</filter>
-	<testsuites>
-		<testsuite name="Snuggle">
-			<directory>Tests/</directory>
-		</testsuite>
-	</testsuites>
-	<logging>
-		<log type="coverage-clover" target="Build/Logs/Clover.xml"/>
-	</logging>
+<?xml version="1.0"?>
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" bootstrap="Tests/Boot.php" xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/9.3/phpunit.xsd">
+  <coverage processUncoveredFiles="true">
+    <include>
+      <directory suffix=".php">Source/</directory>
+    </include>
+    <report>
+      <clover outputFile="Build/Logs/Clover.xml"/>
+    </report>
+  </coverage>
+  <testsuites>
+    <testsuite name="Snuggle">
+      <directory>Tests/</directory>
+    </testsuite>
+  </testsuites>
+  <logging/>
 </phpunit>

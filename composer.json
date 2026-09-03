@@ -20,10 +20,11 @@
 		"oktopost/skeleton": "^2.1",
 		"oktopost/jsonencode": "^1.0.1",
 		"oktopost/cartograph": "^1.2",
-		"oktopost/gazelle": "^1.0"
+		"oktopost/gazelle": "^1.0",
+		"psr/log": "^1.1 || ^2.0 || ^3.0"
 	},
     "require-dev": {
-		"phpunit/phpunit": "^9.2"
+		"phpunit/phpunit": "^9.3"
 	},
 	"autoload": {
 		"psr-4": {
