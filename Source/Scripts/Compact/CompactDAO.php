@@ -23,7 +23,7 @@ class CompactDAO
 	}
 	
 	
-	public function getDataObject(string $date = null): ?InstanceData
+	public function getDataObject(?string $date = null): ?InstanceData
 	{
 		$date = $date ?: date('Y-m-d');
 		

@@ -26,7 +26,7 @@ class CmdDirect implements ICmdDirect
 	private $connection;
 	
 	
-	private function setData(string $method, ?string $uri = null, array $params = [], string $body = null): CmdDirect
+	private function setData(string $method, ?string $uri = null, array $params = [], ?string $body = null): CmdDirect
 	{
 		if ($uri)
 			$this->setURI($uri);
@@ -116,12 +116,12 @@ class CmdDirect implements ICmdDirect
 		return $this->setData(Method::HEAD, $uri, $params);
 	}
 	
-	public function setPUT(?string $uri = null, array $params = [], string $body = null): ICmdDirect
+	public function setPUT(?string $uri = null, array $params = [], ?string $body = null): ICmdDirect
 	{
 		return $this->setData(Method::PUT, $uri, $params, $body);
 	}
 	
-	public function setPOST(?string $uri = null, array $params = [], string $body = null): ICmdDirect
+	public function setPOST(?string $uri = null, array $params = [], ?string $body = null): ICmdDirect
 	{
 		return $this->setData(Method::POST, $uri, $params, $body);
 	}

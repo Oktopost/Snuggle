@@ -9,7 +9,7 @@ interface ICmdInsert extends IExecute, IQuery, IQueryRevision, IDocCommand, IRef
 	 * @param string|null $id
 	 * @return ICmdInsert|static
 	 */
-	public function into(string $db, string $id = null): ICmdInsert;
+	public function into(string $db, ?string $id = null): ICmdInsert;
 	
 	/**
 	 * @param bool $isAsBatch

@@ -58,7 +58,7 @@ class CmdStore implements ICmdStore, IStoreConflictCommand
 	 * @param string|null $id
 	 * @return ICmdInsert|static
 	 */
-	public function into(string $db, string $id = null): ICmdInsert
+	public function into(string $db, ?string $id = null): ICmdInsert
 	{
 		$this->from($db);
 		$this->setRefreshDB($db);

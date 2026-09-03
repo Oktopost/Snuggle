@@ -10,6 +10,7 @@ use Snuggle\Base\Commands\ICmdDelete;
 use Snuggle\Base\Commands\ICmdInsert;
 use Snuggle\Base\Commands\ICmdServer;
 use Snuggle\Base\Commands\ICmdDirect;
+use Snuggle\Base\Commands\ICmdChanges;
 
 use Snuggle\Base\Commands\ICmdBulkGet;
 use Snuggle\Base\Commands\ICmdBulkStore;
@@ -19,6 +20,7 @@ use Snuggle\Base\Commands\ICmdBulkInsert;
 interface IConnector
 {
 	public function db(): ICmdDB; 
+	public function changes(): ICmdChanges;
 	public function get(): ICmdGet;
 	public function store(): ICmdStore;
 	public function insert(): ICmdInsert;

@@ -24,7 +24,7 @@ interface ICmdBulkInsert extends IExecute, IQuery, IRefreshView, IWriteOperation
 	 * @param bool|null $isAssoc
 	 * @return ICmdBulkInsert|static
 	 */
-	public function dataSet(array $documents, bool $isAssoc = null): ICmdBulkInsert;
+	public function dataSet(array $documents, ?bool $isAssoc = null): ICmdBulkInsert;
 	
 	/**
 	 * @deprecated 

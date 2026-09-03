@@ -24,10 +24,10 @@ interface ICmdBulkStore extends IStoreConflict, IRefreshView, IReadWriteOperatio
 	 */
 	public function data($id, $rev = null, ?array $data = null): ICmdBulkStore;
 	
-	public function dataSet(array $data, bool $isAssoc = false): ICmdBulkStore;
+	public function dataSet(array $data, ?bool $isAssoc = false): ICmdBulkStore;
 	
 	public function setMaxRetries(?int $maxRetries = null): ICmdBulkStore;
 	
 	public function execute(?int $maxRetries = null): IBulkStoreResult;
-	public function executeSafe(\Exception &$e = null, ?int $maxRetries = null): ?IBulkStoreResult;
+	public function executeSafe(?\Exception &$e = null, ?int $maxRetries = null): ?IBulkStoreResult;
 }

@@ -13,6 +13,7 @@ use Snuggle\Base\Commands\ICmdInsert;
 use Snuggle\Base\Commands\ICmdDelete;
 use Snuggle\Base\Commands\ICmdDirect;
 use Snuggle\Base\Commands\ICmdServer;
+use Snuggle\Base\Commands\ICmdChanges;
 
 use Snuggle\Base\Commands\ICmdBulkGet;
 use Snuggle\Base\Commands\ICmdBulkStore;
@@ -54,6 +55,11 @@ class Connector implements IConnector
 	public function db(): ICmdDB
 	{
 		return $this->factory->db($this->connection); 
+	}
+
+	public function changes(): ICmdChanges
+	{
+		return $this->factory->changes($this->connection);
 	}
 	
 	public function direct(): ICmdDirect

@@ -51,7 +51,7 @@ class CmdInsert implements ICmdInsert
 	 * @param string|null $id
 	 * @return ICmdInsert|static
 	 */
-	public function into(string $db, string $id = null): ICmdInsert
+	public function into(string $db, ?string $id = null): ICmdInsert
 	{
 		$this->db = $db;
 		$this->setRefreshDB($db);

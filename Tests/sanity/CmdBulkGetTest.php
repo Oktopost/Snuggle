@@ -37,7 +37,7 @@ function (doc)
 EOF;
 	
 	
-	private function getCmd(array $keys = null, string $from = self::MAIN_DB): CmdBulkGet
+	private function getCmd(?array $keys = null, string $from = self::MAIN_DB): CmdBulkGet
 	{
 		$cmd = getSanityConnector()->getAll()->from($from);
 		
@@ -47,7 +47,7 @@ EOF;
 		return $cmd;
 	}
 	
-	private function getCmdFromView(array $keys = null): CmdBulkGet
+	private function getCmdFromView(?array $keys = null): CmdBulkGet
 	{
 		return $this->getCmd($keys, self::VIEW_DB)
 			->view(self::DESIGN_NAME, self::VIEW_NAME);

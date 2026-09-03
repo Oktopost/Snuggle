@@ -147,7 +147,7 @@ class CmdBulkStore implements ICmdBulkStore
 		return $this;
 	}
 	
-	public function dataSet(array $data, bool $isAssoc = false): ICmdBulkStore
+	public function dataSet(array $data, ?bool $isAssoc = false): ICmdBulkStore
 	{
 		if (is_null($isAssoc))
 			$isAssoc = Arrays::isAssoc($data);
@@ -242,7 +242,7 @@ class CmdBulkStore implements ICmdBulkStore
 		return $this->data;
 	}
 	
-	public function executeSafe(\Exception &$e = null, ?int $maxRetries = null): ?IBulkStoreResult
+	public function executeSafe(?\Exception &$e = null, ?int $maxRetries = null): ?IBulkStoreResult
 	{
 		try
 		{

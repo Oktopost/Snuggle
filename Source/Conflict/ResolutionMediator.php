@@ -40,7 +40,7 @@ class ResolutionMediator
 			case ConflictBehavior::OVERRIDE:
 				return $this->template->override($response, $e);
 			
-			case ConflictBehavior::RESOLVE:;
+			case ConflictBehavior::RESOLVE:
 				return $this->template->resolve($response, $e);
 			
 			case ConflictBehavior::MERGE_NEW:

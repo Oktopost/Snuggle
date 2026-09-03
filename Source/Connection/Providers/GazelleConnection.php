@@ -31,7 +31,7 @@ class GazelleConnection implements IConnection
 		
 		foreach ($request->getQueryParams() as $key => $value)
 		{
-			$gazelleRequest->setQueryParam($key, urlencode($value));
+			$gazelleRequest->setQueryParam($key, $value);
 		}
 		
 		if ($request->hasBody())
